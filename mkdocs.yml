@@ -1,0 +1,40 @@
+site_name: Stash
+site_url: https://rouzax.github.io/Stash/
+site_description: Self-hosted family candy tracker with per-person rush meters
+repo_url: https://github.com/Rouzax/Stash
+repo_name: Rouzax/Stash
+
+theme:
+  name: material
+  palette:
+    scheme: slate
+    primary: pink
+    accent: cyan
+  font:
+    text: Outfit
+  icon:
+    repo: fontawesome/brands/github
+
+extra_css:
+  - stylesheets/synthwave.css
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Configuration: configuration.md
+  - Usage: usage.md
+  - Updating: updating.md
+  - FAQ: faq.md
+  - Contributing: contributing.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
