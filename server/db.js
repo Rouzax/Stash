@@ -93,6 +93,18 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_invite_code ON invite_codes(code);
 `);
 
+// ============ Migrations for existing installs ============
+const userCols = db.prepare('PRAGMA table_info(users)').all();
+if (!userCols.some(c => c.name === 'is_superadmin')) {
+  db.exec('ALTER TABLE users ADD COLUMN is_superadmin INTEGER NOT NULL DEFAULT 0');
+  db.exec('UPDATE users SET is_superadmin = 1 WHERE id = (SELECT MIN(id) FROM users)');
+}
+
+const inviteCols = db.prepare('PRAGMA table_info(invite_codes)').all();
+if (!inviteCols.some(c => c.name === 'is_family_starter')) {
+  db.exec('ALTER TABLE invite_codes ADD COLUMN is_family_starter INTEGER NOT NULL DEFAULT 0');
+}
+
 // ============ Boot housekeeping ============
 db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now());
 db.prepare('DELETE FROM invite_codes WHERE expires_at < ?').run(Date.now());

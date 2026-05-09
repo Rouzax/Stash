@@ -71,13 +71,28 @@ Any modern browser works: Chrome, Firefox, Safari, Edge. The app is a single-pag
 
 Yes. Each family is completely separate: shared items, consumption logs, and users are all scoped to a family. Family members cannot see other families' data.
 
-An admin can only manage their own family. There is no super-admin role that spans families. To set up a second family, someone from that family needs to register through an invite code (which creates a new family automatically; this is the bootstrap path for subsequent families after the first one is created directly).
+A regular family admin can only manage their own family. The superadmin (the account created during bootstrap) can create family starter codes to provision new families. See [How do I add a new family?](#how-do-i-add-a-new-family) below.
+
+## How do I add a new family?
+
+Only the superadmin can add new families. There is no open or self-service registration.
+
+1. Log in as the superadmin.
+2. Open the menu and tap **FAMILY**.
+3. Scroll to **NEW FAMILY CODES** (the pink section) and tap **Generate Code**.
+4. Copy the code and send it to the person who will run the new family.
+
+That person goes to the Stash join screen, enters the starter code in the **INVITE CODE** field, types a name in the **FAMILY NAME** field, then picks a username and password. Their account is created, a new family is set up with the name they chose, and they become that family's admin. They can then invite their own family members with member invites.
 
 ## How do invite codes work?
 
-An admin generates a code in the admin panel. They choose how many times it can be used and when it expires. The code is a random 8-character string (letters and numbers, no ambiguous characters like `0`, `O`, `1`, `I`).
+There are two kinds of invite codes:
 
-The invited person opens Stash, taps **Sign up with invite code**, and enters the code. If the code is valid and has uses remaining, their new account is created and automatically joined to the admin's family.
+**Member invites** are created by any family admin in the **MEMBER INVITES** section of the admin panel. The invited person enters the code on the join screen, picks a username and password, and is added to that admin's family. The **FAMILY NAME** field on the join screen is ignored for member invites.
+
+**Family starter codes** are created only by the superadmin in the **NEW FAMILY CODES** section. The recipient enters the code on the join screen along with a family name and their credentials. A new family is created with that name and they become its admin.
+
+For both types: the admin chooses how many times the code can be used and when it expires. The code is a random 8-character string (letters and numbers, no ambiguous characters like `0`, `O`, `1`, `I`).
 
 Once a code reaches its use limit or expires, it stops working. The admin can also revoke it early from the admin panel.
 

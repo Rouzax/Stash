@@ -11,16 +11,28 @@ When you open Stash for the first time, a setup form appears. Fill it in:
 
 Submit the form. You land on the main inventory screen, logged in as admin. This form only appears once. After this, new members must be invited.
 
+!!! info "You are the superadmin"
+    The account created during bootstrap is the superadmin. This is a special role that spans all families on the instance. See [Superadmin](#superadmin) below for what that means.
+
 ## Inviting members
 
-New family members join by entering an invite code you generate for them.
+There are two types of invite codes:
+
+- **Member invites**: invite someone into your own family. Any family admin can create these.
+- **Family starter codes**: let someone create a brand-new family and become its admin. Only the superadmin can create these.
+
+### Member invites
 
 1. Open the menu (three dots, top right) and tap **FAMILY**.
-2. In the admin panel, scroll to **Invite Codes** and tap **Generate Invite**.
+2. In the admin panel, scroll to **MEMBER INVITES** and tap **Generate Invite**.
 3. Choose how many uses the code allows (1, 5, or unlimited) and how long it stays valid (1 hour, 24 hours, or 7 days).
 4. Copy the code and send it to your family member.
 
-The family member opens Stash, sees the login page, and clicks **Sign up with invite code**. They enter the code, pick a username and password, and join your family automatically.
+The family member opens Stash, sees the login/join screen, and enters the code in the **INVITE CODE** field. They pick a username and password. The **FAMILY NAME** field is ignored for member invites. They join your family automatically.
+
+### Family starter codes
+
+See [Superadmin](#superadmin) below.
 
 !!! info "Invite codes are case-insensitive"
     Codes are displayed in uppercase but the registration form accepts any case.
@@ -156,7 +168,12 @@ To create a new account directly without an invite code:
 
 ### Invite codes
 
-The **Invite Codes** section lists all active codes. For each code you see:
+The admin panel has one or two invite code sections depending on your role:
+
+- **MEMBER INVITES** (cyan): visible to all family admins. Codes here add new users to your family.
+- **NEW FAMILY CODES** (pink): visible only to the superadmin. Codes here let a new user create a brand-new family. See [Superadmin](#superadmin).
+
+Each section lists all active codes. For each code you see:
 
 - The code itself (tap the copy icon to copy it)
 - How many uses are left
@@ -164,12 +181,39 @@ The **Invite Codes** section lists all active codes. For each code you see:
 
 Tap the trash icon to revoke a code before it expires.
 
-To generate a new code:
+To generate a new member invite:
 
-1. Tap **Generate Invite**.
+1. Tap **Generate Invite** in the **MEMBER INVITES** section.
 2. Choose max uses: `1`, `5`, or `∞` (unlimited).
 3. Choose expiry: `1h`, `24h`, or `7d`.
 4. Copy the code and share it.
+
+## Superadmin
+
+The account created during the initial bootstrap is the superadmin. The superadmin can do everything a regular family admin can do, plus one extra thing: create family starter codes that let new users set up their own families on the same instance.
+
+There is no open registration. The only way to start a new family is for the superadmin to generate a family starter code.
+
+### Creating a family starter code
+
+1. Log in as the superadmin.
+2. Open the menu and tap **FAMILY**.
+3. Scroll to **NEW FAMILY CODES** (the pink section).
+4. Tap **Generate Code**, choose max uses and expiry, and copy the code.
+5. Send the code to the person who will run the new family.
+
+### How the recipient uses it
+
+The recipient opens Stash, goes to the join screen, and:
+
+1. Enters the family starter code in the **INVITE CODE** field.
+2. Fills in a **FAMILY NAME** for their new family.
+3. Picks a username and password.
+
+Their account is created, a new family is created with the name they chose, and they become that family's admin. They can then generate their own member invites to add people to their family.
+
+!!! warning "Family name is required for starter codes"
+    If someone uses a family starter code without filling in a family name, registration will fail. Let them know to fill in both fields.
 
 ## Changing your password
 

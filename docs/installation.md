@@ -88,10 +88,13 @@ The first time you open Stash, you see a setup form:
 3. **Password** - at least 8 characters
 4. **Emoji** - pick one to represent yourself (optional)
 
-Submit the form. You are now logged in as admin. To add other family members, see [Inviting Members](usage/#inviting-members).
+Submit the form. You are now logged in as admin and superadmin.
 
 !!! info "Only runs once"
     The bootstrap form only appears when the database has no users. Once you submit it, it is gone. If you need to start over, see the [FAQ](faq/#how-do-i-reset-everything).
+
+!!! tip "You are the superadmin"
+    The account created here is the superadmin: the only account that can create family starter codes for new families on this instance. Keep these credentials safe. To add members to your own family, see [Inviting Members](usage/#inviting-members). To set up additional families, see [Superadmin](usage/#superadmin).
 
 ## Step 6 - Verify the container is healthy
 

@@ -57,7 +57,7 @@ Set a threshold on any item. The card pulses neon-pink when the count drops to o
 
 ### Invite Codes
 
-No open registration. Admins generate time-limited invite codes and share them with family members. Codes can be single-use or multi-use.
+No open registration. Family admins generate member invite codes to add people to their family. The superadmin can also generate family starter codes to let someone set up a brand-new family. Codes are time-limited and can be single-use or multi-use.
 </div>
 
 </div>
