@@ -69,7 +69,19 @@ export function decayMinutes(value, fallback = 240) {
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+const VALID_ONSET_MINUTES = [0, 15, 30, 60];
+
 const INVITE_CODE_RE = /^[A-Z0-9]{4,8}$/;
+
+export function onsetMinutes(value, fallback = 0) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return fallback;
+  let closest = VALID_ONSET_MINUTES[0];
+  for (const v of VALID_ONSET_MINUTES) {
+    if (Math.abs(v - n) < Math.abs(closest - n)) closest = v;
+  }
+  return closest;
+}
 
 export function emailAddress(value) {
   if (typeof value !== 'string') return null;

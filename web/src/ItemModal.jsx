@@ -9,6 +9,12 @@ const EMOJI_PRESETS = [
   '💊', '🧪', '⚡', '🌈', '💎', '📦',
 ];
 const UNIT_OPTIONS = ['pcs', 'mg', 'g', 'ml'];
+const ONSET_OPTIONS = [
+  { label: '0m', value: 0 },
+  { label: '15m', value: 15 },
+  { label: '30m', value: 30 },
+  { label: '1h', value: 60 },
+];
 const DECAY_OPTIONS = [
   { label: '30m', value: 30 },
   { label: '1h', value: 60 },
@@ -27,6 +33,7 @@ export default function ItemModal({ item, onSave, onDelete, onClose }) {
   const [threshold, setThreshold] = useState(item?.threshold ?? 0);
   const [portionSize, setPortionSize] = useState(item?.portion_size ?? (item?.unit === 'mg' ? 100 : item?.unit === 'ml' ? 250 : item?.unit === 'g' ? 100 : 1));
   const [rushPct, setRushPct] = useState(Math.round((item?.rush_factor ?? 1.0) * 100));
+  const [onsetMinutes, setOnsetMinutes] = useState(item?.onset_minutes ?? 0);
   const [decayMinutes, setDecayMinutes] = useState(item?.decay_minutes ?? 240);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -40,6 +47,7 @@ export default function ItemModal({ item, onSave, onDelete, onClose }) {
       threshold: Number(threshold) || 0,
       portion_size: Number(portionSize) || 1,
       rush_factor: (Number(rushPct) || 100) / 100,
+      onset_minutes: onsetMinutes,
       decay_minutes: decayMinutes
     });
   };
@@ -141,17 +149,32 @@ export default function ItemModal({ item, onSave, onDelete, onClose }) {
           </div>
         </div>
 
-        <div className="field">
-          <label>DECAY TIME</label>
-          <div className="units">
-            {DECAY_OPTIONS.map(d => (
-              <button
-                key={d.value}
-                className={`unit-btn ${decayMinutes === d.value ? 'active' : ''}`}
-                onClick={() => setDecayMinutes(d.value)}
-                type="button"
-              >{d.label}</button>
-            ))}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
+          <div className="field">
+            <label>ONSET</label>
+            <div className="units">
+              {ONSET_OPTIONS.map(o => (
+                <button
+                  key={o.value}
+                  className={`unit-btn ${onsetMinutes === o.value ? 'active' : ''}`}
+                  onClick={() => setOnsetMinutes(o.value)}
+                  type="button"
+                >{o.label}</button>
+              ))}
+            </div>
+          </div>
+          <div className="field">
+            <label>DECAY</label>
+            <div className="units decay-units">
+              {DECAY_OPTIONS.map(d => (
+                <button
+                  key={d.value}
+                  className={`unit-btn ${decayMinutes === d.value ? 'active' : ''}`}
+                  onClick={() => setDecayMinutes(d.value)}
+                  type="button"
+                >{d.label}</button>
+              ))}
+            </div>
           </div>
         </div>
 

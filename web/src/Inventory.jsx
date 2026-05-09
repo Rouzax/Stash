@@ -182,11 +182,14 @@ export default function Inventory({ user: initialUser, onLogout }) {
     if (entry.ts <= rushResetAt) continue;
     const item = itemsById.get(entry.item_id);
     if (!item) continue;
+    const onsetMs = (item.onset_minutes || 0) * 60 * 1000;
     const decayMs = (item.decay_minutes || 240) * 60 * 1000;
     const age = now - entry.ts;
-    if (age >= decayMs || age < 0) continue;
+    if (age < onsetMs || age < 0) continue;
+    const effectiveAge = age - onsetMs;
+    if (effectiveAge >= decayMs) continue;
     const portions = Math.abs(entry.delta) / (item.portion_size || 1);
-    rushScore += (item.rush_factor || 1) * portions * (1 - age / decayMs);
+    rushScore += (item.rush_factor || 1) * portions * (1 - effectiveAge / decayMs);
   }
   const rushLevel = (rushScore / RUSH_FULL) * 100;
 

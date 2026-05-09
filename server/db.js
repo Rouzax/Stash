@@ -49,6 +49,7 @@ db.exec(`
     threshold REAL NOT NULL DEFAULT 0,
     portion_size REAL NOT NULL DEFAULT 1,
     rush_factor REAL NOT NULL DEFAULT 1.0,
+    onset_minutes INTEGER NOT NULL DEFAULT 0,
     decay_minutes INTEGER NOT NULL DEFAULT 240,
     position INTEGER NOT NULL DEFAULT 0,
     created_at INTEGER NOT NULL,
@@ -98,6 +99,11 @@ const userCols = db.prepare('PRAGMA table_info(users)').all();
 if (!userCols.some(c => c.name === 'is_superadmin')) {
   db.exec('ALTER TABLE users ADD COLUMN is_superadmin INTEGER NOT NULL DEFAULT 0');
   db.exec('UPDATE users SET is_superadmin = 1 WHERE id = (SELECT MIN(id) FROM users)');
+}
+
+const itemCols = db.prepare('PRAGMA table_info(items)').all();
+if (!itemCols.some(c => c.name === 'onset_minutes')) {
+  db.exec('ALTER TABLE items ADD COLUMN onset_minutes INTEGER NOT NULL DEFAULT 0');
 }
 
 const inviteCols = db.prepare('PRAGMA table_info(invite_codes)').all();

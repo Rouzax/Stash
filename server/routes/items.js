@@ -2,10 +2,10 @@ import { db } from '../db.js';
 import { requireAuth } from '../auth.js';
 import {
   nonEmptyString, optionalString, hexColor, unitValue,
-  nonNegativeNumber, rushFactor, decayMinutes, LIMITS
+  nonNegativeNumber, rushFactor, onsetMinutes, decayMinutes, LIMITS
 } from '../validation.js';
 
-const ITEM_COLUMNS = 'id, name, emoji, color, unit, count, threshold, portion_size, rush_factor, decay_minutes, position, created_at, updated_at';
+const ITEM_COLUMNS = 'id, name, emoji, color, unit, count, threshold, portion_size, rush_factor, onset_minutes, decay_minutes, position, created_at, updated_at';
 
 const validId = (raw) => {
   const n = Number(raw);
@@ -36,6 +36,7 @@ export default async function itemRoutes(app) {
     const defaultPortion = unit === 'mg' ? 100 : unit === 'ml' ? 250 : unit === 'g' ? 100 : 1;
     const ps = nonNegativeNumber(request.body?.portion_size, defaultPortion) || defaultPortion;
     const rf = rushFactor(request.body?.rush_factor, 1.0);
+    const om = onsetMinutes(request.body?.onset_minutes, 0);
     const dm = decayMinutes(request.body?.decay_minutes, 240);
 
     const familyId = request.session.family_id;
@@ -46,9 +47,9 @@ export default async function itemRoutes(app) {
     const position = (maxPos.p ?? -1) + 1;
 
     const result = db.prepare(`
-      INSERT INTO items (family_id, name, emoji, color, unit, count, threshold, portion_size, rush_factor, decay_minutes, position, created_at, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).run(familyId, name, emoji, color, unit, count, threshold, ps, rf, dm, position, now, now);
+      INSERT INTO items (family_id, name, emoji, color, unit, count, threshold, portion_size, rush_factor, onset_minutes, decay_minutes, position, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(familyId, name, emoji, color, unit, count, threshold, ps, rf, om, dm, position, now, now);
 
     return db.prepare(`SELECT ${ITEM_COLUMNS} FROM items WHERE id = ?`).get(result.lastInsertRowid);
   });
@@ -89,6 +90,9 @@ export default async function itemRoutes(app) {
     if (request.body?.rush_factor !== undefined) {
       next.rush_factor = rushFactor(request.body.rush_factor, item.rush_factor);
     }
+    if (request.body?.onset_minutes !== undefined) {
+      next.onset_minutes = onsetMinutes(request.body.onset_minutes, item.onset_minutes);
+    }
     if (request.body?.decay_minutes !== undefined) {
       next.decay_minutes = decayMinutes(request.body.decay_minutes, item.decay_minutes);
     }
@@ -100,11 +104,11 @@ export default async function itemRoutes(app) {
     db.prepare(`
       UPDATE items
       SET name = ?, emoji = ?, color = ?, unit = ?, count = ?, threshold = ?,
-          portion_size = ?, rush_factor = ?, decay_minutes = ?, position = ?, updated_at = ?
+          portion_size = ?, rush_factor = ?, onset_minutes = ?, decay_minutes = ?, position = ?, updated_at = ?
       WHERE id = ? AND family_id = ?
     `).run(
       next.name, next.emoji, next.color, next.unit,
-      next.count, next.threshold, next.portion_size, next.rush_factor, next.decay_minutes,
+      next.count, next.threshold, next.portion_size, next.rush_factor, next.onset_minutes, next.decay_minutes,
       next.position, Date.now(),
       id, request.session.family_id
     );
