@@ -1,6 +1,6 @@
 # Installation
 
-Stash runs as a single Docker container with a named volume for the database. You need Docker and Docker Compose — nothing else.
+Stash runs as a single Docker container with a named volume for the database. You need Docker and Docker Compose - nothing else.
 
 ## Prerequisites
 
@@ -8,13 +8,13 @@ Stash runs as a single Docker container with a named volume for the database. Yo
 - Docker Compose v2 (`docker compose`, not `docker-compose`)
 - A machine with a port you can reach from the browser (or a reverse proxy)
 
-## Step 1 — Create a directory
+## Step 1 - Create a directory
 
 ```bash
 mkdir stash && cd stash
 ```
 
-## Step 2 — Get the compose file
+## Step 2 - Get the compose file
 
 Download the production compose file:
 
@@ -45,7 +45,7 @@ volumes:
   stash-data:
 ```
 
-## Step 3 — Create the .env file
+## Step 3 - Create the .env file
 
 Generate a random session secret and write it to `.env`:
 
@@ -54,7 +54,7 @@ echo "SESSION_SECRET=$(openssl rand -hex 32)" > .env
 ```
 
 !!! warning "Keep this secret safe"
-    The `SESSION_SECRET` signs all session cookies. If you change it, every logged-in user will be signed out. If you lose it, generate a new one and restart — the database is unaffected.
+    The `SESSION_SECRET` signs all session cookies. If you change it, every logged-in user will be signed out. If you lose it, generate a new one and restart - the database is unaffected.
 
 Your `.env` should look something like this:
 
@@ -69,7 +69,7 @@ TZ=America/New_York
 PORT=8080
 ```
 
-## Step 4 — Start the container
+## Step 4 - Start the container
 
 ```bash
 docker compose -f docker-compose.prod.yml up -d
@@ -77,23 +77,23 @@ docker compose -f docker-compose.prod.yml up -d
 
 Docker will pull the image from the GitHub Container Registry and start the container. The database is created automatically on first boot.
 
-## Step 5 — Bootstrap your family
+## Step 5 - Bootstrap your family
 
 Open `http://your-host:3000` in a browser.
 
 The first time you open Stash, you see a setup form:
 
-1. **Family name** — what to call your household (e.g. "The Smiths")
-2. **Username** — your admin account username
-3. **Password** — at least 8 characters
-4. **Emoji** — pick one to represent yourself (optional)
+1. **Family name** - what to call your household (e.g. "The Smiths")
+2. **Username** - your admin account username
+3. **Password** - at least 8 characters
+4. **Emoji** - pick one to represent yourself (optional)
 
 Submit the form. You are now logged in as admin. To add other family members, see [Inviting Members](usage/#inviting-members).
 
 !!! info "Only runs once"
     The bootstrap form only appears when the database has no users. Once you submit it, it is gone. If you need to start over, see the [FAQ](faq/#how-do-i-reset-everything).
 
-## Step 6 — Verify the container is healthy
+## Step 6 - Verify the container is healthy
 
 ```bash
 docker inspect --format='{{.State.Health.Status}}' stash

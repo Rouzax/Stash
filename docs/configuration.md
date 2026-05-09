@@ -6,7 +6,7 @@ All configuration is done through environment variables. The recommended way is 
 
 | Variable | Default | Required | Description |
 |---|---|---|---|
-| `SESSION_SECRET` | — | Yes | Signs session cookies. Use `openssl rand -hex 32` to generate. Must be 32+ characters. Changing it invalidates all active sessions. |
+| `SESSION_SECRET` | - | Yes | Signs session cookies. Use `openssl rand -hex 32` to generate. Must be 32+ characters. Changing it invalidates all active sessions. |
 | `PORT` | `3000` | No | Port the container listens on (host side). Change this if 3000 is taken. |
 | `BEHIND_PROXY` | `true` | No | Set to `true` when Stash sits behind a TLS-terminating reverse proxy. Enables Secure cookies and trusts `X-Forwarded-*` headers. Set to `false` for plain-HTTP local access. |
 | `LOG_LEVEL` | `info` | No | Logging verbosity. One of: `trace`, `debug`, `info`, `warn`, `error`. |
@@ -28,7 +28,7 @@ BEHIND_PROXY=true
 
 When `BEHIND_PROXY=true` (the default), Stash does two things:
 
-1. Sets the `Secure` flag on session cookies — the browser will only send them over HTTPS.
+1. Sets the `Secure` flag on session cookies - the browser will only send them over HTTPS.
 2. Trusts `X-Forwarded-For` and `X-Forwarded-Proto` headers from the proxy for rate limiting and logging.
 
 If you run Stash directly on HTTP without a proxy (e.g. on a home LAN), set `BEHIND_PROXY=false`. Otherwise your browser will refuse to set the cookie and you will be stuck on the login screen.
@@ -75,7 +75,7 @@ stash.example.com {
 }
 ```
 
-Caddy handles TLS automatically. No extra headers needed — Caddy sets `X-Forwarded-For` by default.
+Caddy handles TLS automatically. No extra headers needed - Caddy sets `X-Forwarded-For` by default.
 
 ## Database
 
@@ -123,7 +123,7 @@ docker compose -f docker-compose.prod.yml up -d
 
 ### Automatic housekeeping
 
-Stash runs these cleanup jobs automatically — you do not need to configure anything:
+Stash runs these cleanup jobs automatically - you do not need to configure anything:
 
 - Expired sessions are deleted on startup and then every hour.
 - Expired invite codes are deleted on startup and then every hour.

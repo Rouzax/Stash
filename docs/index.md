@@ -17,7 +17,7 @@ Stash is a self-hosted snack and candy tracker for families. Everyone in the hou
 
 ### Shared Family Stash
 
-One inventory per family. Any family member can add, take, or restock items. Counts update in real time — no refreshing.
+One inventory per family. Any family member can add, take, or restock items. Counts update in real time - no refreshing.
 </div>
 
 <div class="feature-card" markdown>

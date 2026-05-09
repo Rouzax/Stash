@@ -29,7 +29,7 @@ The simplest path for a home setup is usually option 2 (reset). Your items and h
 
 ## Can I run Stash without Docker?
 
-Yes. See the [Contributing](contributing/#development-setup) page for the dev setup instructions. It works on any machine with Node.js 22 or later and npm. There is no migration framework — the schema is created from scratch on first boot.
+Yes. See the [Contributing](contributing/#development-setup) page for the dev setup instructions. It works on any machine with Node.js 22 or later and npm. There is no migration framework - the schema is created from scratch on first boot.
 
 ## Is my data safe when I update?
 
@@ -61,7 +61,7 @@ The only way to lose data is to explicitly delete the volume (`docker volume rm`
     docker compose -f docker-compose.prod.yml up -d
     ```
 
-4. Open the browser on the new server — you should see your existing family and items.
+4. Open the browser on the new server - you should see your existing family and items.
 
 ## What browsers does Stash support?
 
@@ -69,9 +69,9 @@ Any modern browser works: Chrome, Firefox, Safari, Edge. The app is a single-pag
 
 ## Can multiple families share one Stash instance?
 
-Yes. Each family is completely separate — shared items, consumption logs, and users are all scoped to a family. Family members cannot see other families' data.
+Yes. Each family is completely separate - shared items, consumption logs, and users are all scoped to a family. Family members cannot see other families' data.
 
-An admin can only manage their own family. There is no super-admin role that spans families. To set up a second family, someone from that family needs to register through an invite code (which creates a new family automatically — this is the bootstrap path for subsequent families after the first one is created directly).
+An admin can only manage their own family. There is no super-admin role that spans families. To set up a second family, someone from that family needs to register through an invite code (which creates a new family automatically - this is the bootstrap path for subsequent families after the first one is created directly).
 
 ## How do invite codes work?
 
@@ -83,7 +83,7 @@ Once a code reaches its use limit or expires, it stops working. The admin can al
 
 ## What happens when an item's stock hits zero?
 
-The count is clamped at zero. You can still tap the take buttons, but nothing happens — the server rejects deltas that would make the count negative. The card will be showing a low-stock pulse (if you have a threshold set) to remind you to restock.
+The count is clamped at zero. You can still tap the take buttons, but nothing happens - the server rejects deltas that would make the count negative. The card will be showing a low-stock pulse (if you have a threshold set) to remind you to restock.
 
 Use the **+** button or the edit form to set the count back to a positive number when you restock.
 

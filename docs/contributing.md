@@ -42,7 +42,7 @@ This builds the image from source (multi-stage build) and starts the container. 
 
 1. Fork the repository and create a feature branch from `main`.
 2. Make your changes.
-3. Test locally — both the dev setup and the Docker build.
+3. Test locally - both the dev setup and the Docker build.
 4. Open a pull request against `main` on [GitHub](https://github.com/Rouzax/Stash).
 
 Keep PRs focused. One feature or fix per PR makes review faster.
@@ -51,10 +51,10 @@ Keep PRs focused. One feature or fix per PR makes review faster.
 
 - ES modules throughout (`"type": "module"` in package.json)
 - Node.js 22 minimum
-- No TypeScript — plain JavaScript with JSX for the frontend
-- Input validation lives in `server/validation.js` — add new validators there rather than inline in route handlers
+- No TypeScript - plain JavaScript with JSX for the frontend
+- Input validation lives in `server/validation.js` - add new validators there rather than inline in route handlers
 - React components are single-file `.jsx` files in `web/src/`
-- No build step for the backend — it runs directly with Node
+- No build step for the backend - it runs directly with Node
 
 ## Project layout
 

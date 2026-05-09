@@ -23,7 +23,7 @@ docker compose -f docker-compose.prod.yml exec stash \
   sh -c 'cat /data/stash.db' > backup-before-update-$(date +%F).db
 ```
 
-Store this file somewhere outside the Docker volume. If anything goes wrong, you can restore it (see [Configuration — Restore](configuration/#restore)).
+Store this file somewhere outside the Docker volume. If anything goes wrong, you can restore it (see [Configuration - Restore](configuration/#restore)).
 
 ## Checking the current version
 

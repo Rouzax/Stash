@@ -10,14 +10,14 @@ Self-hosted family candy tracker with per-person rush meters and a synthwave aes
 
 ## Features
 
-- **Shared family stash** — one candy drawer, everyone sees the same inventory
-- **Per-person rush meter** — each family member has their own Rush-O-Meter
-- **Per-item rush config** — set rush % and decay time for each item
-- **Portion-based tracking** — TAKE 1 or TAKE 1/4 with one tap
-- **Invite codes** — admins generate codes to add family members
-- **Charts** — 7-day and 12-month rush % history per person
-- **Low-stock alerts** — cards pulse when you're running low
-- **User profiles** — emoji avatars and color customization
+- **Shared family stash** - one candy drawer, everyone sees the same inventory
+- **Per-person rush meter** - each family member has their own Rush-O-Meter
+- **Per-item rush config** - set rush % and decay time for each item
+- **Portion-based tracking** - TAKE 1 or TAKE 1/4 with one tap
+- **Invite codes** - admins generate codes to add family members
+- **Charts** - 7-day and 12-month rush % history per person
+- **Low-stock alerts** - cards pulse when you're running low
+- **User profiles** - emoji avatars and color customization
 
 ## Quick Start
 
@@ -34,7 +34,7 @@ echo "SESSION_SECRET=$(openssl rand -hex 32)" > .env
 docker compose up -d
 ```
 
-Open `http://localhost:3000` — name your family and create the admin account.
+Open `http://localhost:3000` - name your family and create the admin account.
 
 ## Configuration
 
@@ -57,7 +57,7 @@ docker compose pull
 docker compose up -d
 ```
 
-Your data is safe — the SQLite database lives on a Docker named volume.
+Your data is safe - the SQLite database lives on a Docker named volume.
 
 ## Backups
 

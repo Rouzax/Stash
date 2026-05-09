@@ -4,10 +4,10 @@
 
 When you open Stash for the first time, a setup form appears. Fill it in:
 
-- **Family name** — the name for your household's shared stash (e.g. "The Smiths", "Apartment 4B")
-- **Username** — your personal login handle
-- **Password** — at least 8 characters
-- **Emoji** — an avatar for yourself (optional, defaults to 😎)
+- **Family name** - the name for your household's shared stash (e.g. "The Smiths", "Apartment 4B")
+- **Username** - your personal login handle
+- **Password** - at least 8 characters
+- **Emoji** - an avatar for yourself (optional, defaults to 😎)
 
 Submit the form. You land on the main inventory screen, logged in as admin. This form only appears once. After this, new members must be invited.
 
@@ -51,8 +51,8 @@ To edit an item, tap the pencil icon on its card.
 
 Each item card has two take buttons:
 
-- **TAKE** — removes one full portion (whatever `portion_size` is set to)
-- **±¼** — removes one quarter of a portion
+- **TAKE** - removes one full portion (whatever `portion_size` is set to)
+- **±¼** - removes one quarter of a portion
 
 Long-pressing either button removes ten portions at once (useful for restocking in reverse, or tracking a big session).
 
@@ -61,7 +61,7 @@ To add stock (restock), use the **+** button on the card. Long-press **+** to ad
 The count on screen updates immediately. If the request fails, the count snaps back.
 
 !!! tip "Quarter doses"
-    The ±¼ button is useful for items you consume in fractions — half a gummy, a small sip of a drink. The quarter step is `portion_size ÷ 4`.
+    The ±¼ button is useful for items you consume in fractions - half a gummy, a small sip of a drink. The quarter step is `portion_size ÷ 4`.
 
 ## Rush-O-Meter
 
@@ -95,23 +95,23 @@ The mascot emoji in the header reflects your current rush level:
 
 You control two settings per item:
 
-- **Rush %** — scales the contribution of each portion. 200% means one portion counts as two standard portions toward the meter. 50% means half. Range: 10%–1000%.
-- **Decay** — how long before that portion's contribution fades. Shorter decay = faster recovery.
+- **Rush %** - scales the contribution of each portion. 200% means one portion counts as two standard portions toward the meter. 50% means half. Range: 10%–1000%.
+- **Decay** - how long before that portion's contribution fades. Shorter decay = faster recovery.
 
 These settings let you model the real-world difference between, say, a piece of dark chocolate (high rush, fast decay) and a cup of tea (low rush, slow decay).
 
 ### Resetting the meter
 
-If you want to clear your rush history without deleting consumption data, tap the Rush-O-Meter bar. A reset button appears. Tapping it sets a "reset timestamp" — log entries before that timestamp are ignored when calculating your current rush level. Your charts are not affected.
+If you want to clear your rush history without deleting consumption data, tap the Rush-O-Meter bar. A reset button appears. Tapping it sets a "reset timestamp" - log entries before that timestamp are ignored when calculating your current rush level. Your charts are not affected.
 
 ## Charts
 
 Below the item grid, you see a bar chart of rush units consumed over time. Use the **WEEK** / **YEAR** toggle to switch views:
 
-- **WEEK** — past 7 days, one bar per day
-- **YEAR** — past 12 months, one bar per month
+- **WEEK** - past 7 days, one bar per day
+- **YEAR** - past 12 months, one bar per month
 
-The chart shows your own consumption only — each person's chart is private to their account.
+The chart shows your own consumption only - each person's chart is private to their account.
 
 ## Low-stock alerts
 
@@ -131,9 +131,9 @@ Tap your name pill in the top-right corner (or go to menu → PROFILE) to open y
 
 You can change:
 
-- **Emoji** — your avatar shown in the header pill
-- **Color** — the neon color associated with your account
-- **Email** — optional, stored but not used for notifications
+- **Emoji** - your avatar shown in the header pill
+- **Color** - the neon color associated with your account
+- **Email** - optional, stored but not used for notifications
 
 Your username cannot be changed after registration. To change your password, see below.
 
@@ -177,4 +177,4 @@ Open the menu and tap **PASSWORD**.
 
 Enter your current password, then your new password (minimum 8 characters). Tap **Change Password**.
 
-Changing your password invalidates all your other sessions — any other browser or device logged in as you will be signed out.
+Changing your password invalidates all your other sessions - any other browser or device logged in as you will be signed out.
