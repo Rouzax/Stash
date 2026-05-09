@@ -66,5 +66,6 @@ export const items = {
 
 export const logApi = {
   fetch: (days = 365) => api.get(`/api/log?days=${days}`),
-  resetRush: () => api.post('/api/log/reset-rush')
+  resetRush: () => api.post('/api/log/reset-rush'),
+  clearHistory: () => api.post('/api/log/clear')
 };

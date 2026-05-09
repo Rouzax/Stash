@@ -18,6 +18,12 @@ export default async function logRoutes(app) {
     `).all(request.session.user_id, since);
   });
 
+  app.post('/api/log/clear', async (request) => {
+    db.prepare('DELETE FROM consumption_log WHERE user_id = ?')
+      .run(request.session.user_id);
+    return { ok: true };
+  });
+
   app.post('/api/log/reset-rush', async (request) => {
     const now = Date.now();
     db.prepare('UPDATE users SET rush_reset_at = ? WHERE id = ?')

@@ -9,12 +9,13 @@ const EMOJI_PRESETS = [
   '🐱', '🐶', '🦊', '🐼', '🦄', '🐉',
 ];
 
-export default function UserSettingsModal({ user, onUpdate, onRushReset, onClose }) {
+export default function UserSettingsModal({ user, onUpdate, onRushReset, onChartClear, onClose }) {
   const [emoji, setEmoji] = useState(user.emoji || '😎');
   const [color, setColor] = useState(user.color || '#ff10f0');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
+  const [confirmClear, setConfirmClear] = useState(false);
 
   const save = async () => {
     setError('');
@@ -101,6 +102,32 @@ export default function UserSettingsModal({ user, onUpdate, onRushReset, onClose
               style={{ width: '100%', padding: '10px', fontSize: 11 }}
               onClick={() => setConfirmReset(true)}
             >RESET RUSH METER</button>
+          )}
+        </div>
+
+        <div style={{ marginTop: 12 }}>
+          {confirmClear ? (
+            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+              <span style={{ fontFamily: 'Orbitron', fontSize: 11, color: '#ff006e', flex: 1 }}>
+                <AlertTriangle size={14} style={{ verticalAlign: -2 }} /> WIPE ALL CHART DATA?
+              </span>
+              <button className="btn-danger" style={{ padding: '8px 14px', fontSize: 11 }} onClick={async () => {
+                try {
+                  await logApi.clearHistory();
+                  onChartClear();
+                  onClose();
+                } catch (e) {
+                  setError(e.message);
+                }
+              }}>YES</button>
+              <button className="btn-secondary" style={{ padding: '8px 14px', fontSize: 11 }} onClick={() => setConfirmClear(false)}>NO</button>
+            </div>
+          ) : (
+            <button
+              className="btn-danger"
+              style={{ width: '100%', padding: '10px', fontSize: 11 }}
+              onClick={() => setConfirmClear(true)}
+            >CLEAR CHART HISTORY</button>
           )}
         </div>
 

@@ -434,6 +434,9 @@ export default function Inventory({ user: initialUser, onLogout }) {
           onRushReset={() => {
             setUser(prev => ({ ...prev, rush_reset_at: Date.now() }));
           }}
+          onChartClear={() => {
+            setLog([]);
+          }}
           onClose={() => setSettingsOpen(false)}
         />
       )}
