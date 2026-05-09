@@ -363,6 +363,8 @@ export default async function authRoutes(app) {
 
   // Admin: list active invite codes for this family
   app.get('/api/auth/invites', { preHandler: requireAdmin }, async (request) => {
+    const normalize = (rows) => rows.map(r => ({ ...r, is_family_starter: !!r.is_family_starter }));
+
     const familyCodes = db.prepare(`
       SELECT id, code, max_uses, use_count, is_family_starter, expires_at, created_at
       FROM invite_codes
@@ -379,10 +381,10 @@ export default async function authRoutes(app) {
         ORDER BY created_at DESC
         LIMIT 100
       `).all(Date.now());
-      return [...familyCodes, ...starterCodes];
+      return normalize([...familyCodes, ...starterCodes]);
     }
 
-    return familyCodes;
+    return normalize(familyCodes);
   });
 
   // Admin: revoke invite code
