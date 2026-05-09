@@ -2,7 +2,7 @@ import { db } from '../db.js';
 import {
   hashPassword, verifyPassword, createSession, deleteSession,
   setSessionCookie, clearSessionCookie, getSessionFromRequest,
-  requireAuth, requireAdmin, COOKIE_NAME
+  requireAuth, requireAdmin, requireSuperadmin, COOKIE_NAME
 } from '../auth.js';
 import { nonEmptyString, optionalString, hexColor, emailAddress, inviteCode, LIMITS } from '../validation.js';
 import crypto from 'node:crypto';
@@ -27,7 +27,7 @@ export default async function authRoutes(app) {
       return reply.code(400).send({ error: 'username and password required' });
     }
     const user = db.prepare(
-      'SELECT id, username, password_hash, is_admin, family_id, email, emoji, color FROM users WHERE username = ?'
+      'SELECT id, username, password_hash, is_admin, is_superadmin, family_id, email, emoji, color FROM users WHERE username = ?'
     ).get(u);
     if (!user) {
       await hashPassword('dummy-password-for-timing');
@@ -42,6 +42,7 @@ export default async function authRoutes(app) {
     setSessionCookie(reply, session.id, session.expiresAt);
     return {
       id: user.id, username: user.username, is_admin: !!user.is_admin,
+      is_superadmin: !!user.is_superadmin,
       family_id: user.family_id, family_name: family?.name,
       email: user.email, emoji: user.emoji, color: user.color
     };
@@ -70,6 +71,7 @@ export default async function authRoutes(app) {
       id: session.user_id,
       username: session.username,
       is_admin: !!session.is_admin,
+      is_superadmin: !!session.is_superadmin,
       family_id: session.family_id,
       family_name: session.family_name,
       email: session.email,
@@ -113,8 +115,8 @@ export default async function authRoutes(app) {
         'INSERT INTO families (name, created_at) VALUES (?, ?)'
       ).run(familyName, now);
       const user = db.prepare(`
-        INSERT INTO users (username, password_hash, family_id, is_admin, email, emoji, color, created_at)
-        VALUES (?, ?, ?, 1, ?, ?, '#ff10f0', ?)
+        INSERT INTO users (username, password_hash, family_id, is_admin, is_superadmin, email, emoji, color, created_at)
+        VALUES (?, ?, ?, 1, 1, ?, ?, '#ff10f0', ?)
       `).run(u, hash, family.lastInsertRowid, email, userEmoji, now);
       return { familyId: family.lastInsertRowid, userId: user.lastInsertRowid };
     });
@@ -131,7 +133,7 @@ export default async function authRoutes(app) {
     const session = createSession(result.userId);
     setSessionCookie(reply, session.id, session.expiresAt);
     return {
-      id: result.userId, username: u, is_admin: true,
+      id: result.userId, username: u, is_admin: true, is_superadmin: true,
       family_id: result.familyId, family_name: familyName,
       email, emoji: userEmoji, color: '#ff10f0'
     };
@@ -274,49 +276,64 @@ export default async function authRoutes(app) {
     const hash = await hashPassword(pw.value);
     const now = Date.now();
 
-    {
-      const txn = db.transaction(() => {
-        const invite = db.prepare(
-          'SELECT id, family_id, max_uses, use_count, expires_at FROM invite_codes WHERE code = ?'
-        ).get(code);
-        if (!invite || invite.expires_at < now || (invite.max_uses > 0 && invite.use_count >= invite.max_uses)) {
-          return { error: 'invalid or expired invite code' };
-        }
+    const familyName = nonEmptyString(request.body?.family_name, LIMITS.familyName);
 
-        const userResult = db.prepare(`
-          INSERT INTO users (username, password_hash, family_id, is_admin, email, emoji, color, created_at)
-          VALUES (?, ?, ?, 0, ?, ?, '#ff10f0', ?)
-        `).run(u, hash, invite.family_id, email, userEmoji, now);
-        db.prepare('UPDATE invite_codes SET use_count = use_count + 1 WHERE id = ?').run(invite.id);
-
-        const family = db.prepare('SELECT name FROM families WHERE id = ?').get(invite.family_id);
-        return { userId: userResult.lastInsertRowid, familyId: invite.family_id, familyName: family?.name };
-      });
-
-      let result;
-      try {
-        result = txn();
-      } catch (e) {
-        if (e.message?.includes('UNIQUE')) return reply.code(409).send({ error: 'username already taken' });
-        throw e;
+    const txn = db.transaction(() => {
+      const invite = db.prepare(
+        'SELECT id, family_id, max_uses, use_count, is_family_starter, expires_at FROM invite_codes WHERE code = ?'
+      ).get(code);
+      if (!invite || invite.expires_at < now || (invite.max_uses > 0 && invite.use_count >= invite.max_uses)) {
+        return { error: 'invalid or expired invite code' };
       }
-      if (result.error) return reply.code(400).send({ error: result.error });
 
-      const session = createSession(result.userId);
-      setSessionCookie(reply, session.id, session.expiresAt);
+      let familyId, isAdmin;
+      if (invite.is_family_starter) {
+        if (!familyName) return { error: 'family name required for this invite code' };
+        const family = db.prepare('INSERT INTO families (name, created_at) VALUES (?, ?)').run(familyName, now);
+        familyId = family.lastInsertRowid;
+        isAdmin = 1;
+      } else {
+        familyId = invite.family_id;
+        isAdmin = 0;
+      }
+
+      const userResult = db.prepare(`
+        INSERT INTO users (username, password_hash, family_id, is_admin, email, emoji, color, created_at)
+        VALUES (?, ?, ?, ?, ?, ?, '#ff10f0', ?)
+      `).run(u, hash, familyId, isAdmin, email, userEmoji, now);
+      db.prepare('UPDATE invite_codes SET use_count = use_count + 1 WHERE id = ?').run(invite.id);
+
+      const family = db.prepare('SELECT name FROM families WHERE id = ?').get(familyId);
       return {
-        id: result.userId, username: u, is_admin: false,
-        family_id: result.familyId, family_name: result.familyName,
-        email, emoji: userEmoji, color: '#ff10f0'
+        userId: userResult.lastInsertRowid, familyId, familyName: family?.name,
+        isAdmin: !!isAdmin, isSuperadmin: false
       };
+    });
+
+    let result;
+    try {
+      result = txn();
+    } catch (e) {
+      if (e.message?.includes('UNIQUE')) return reply.code(409).send({ error: 'username already taken' });
+      throw e;
     }
+    if (result.error) return reply.code(400).send({ error: result.error });
+
+    const session = createSession(result.userId);
+    setSessionCookie(reply, session.id, session.expiresAt);
+    return {
+      id: result.userId, username: u, is_admin: result.isAdmin, is_superadmin: false,
+      family_id: result.familyId, family_name: result.familyName,
+      email, emoji: userEmoji, color: '#ff10f0'
+    };
   });
 
-  // Admin: generate invite code
+  // Admin: generate invite code (family admins create member invites, superadmin can also create family starters)
   app.post('/api/auth/invites', { preHandler: requireAdmin }, async (request) => {
     const rawUses = Number(request.body?.max_uses);
     const maxUses = Number.isFinite(rawUses) ? Math.max(0, Math.floor(rawUses)) : 1;
     const expiresHours = Math.max(1, Math.min(168, Math.floor(Number(request.body?.expires_hours) || 24)));
+    const isFamilyStarter = !!request.body?.is_family_starter && !!request.session.is_superadmin;
     const now = Date.now();
     const expiresAt = now + expiresHours * 60 * 60 * 1000;
 
@@ -337,22 +354,35 @@ export default async function authRoutes(app) {
     }
 
     const result = db.prepare(`
-      INSERT INTO invite_codes (code, family_id, created_by, max_uses, use_count, expires_at, created_at)
-      VALUES (?, ?, ?, ?, 0, ?, ?)
-    `).run(code, request.session.family_id, request.session.user_id, maxUses, expiresAt, now);
+      INSERT INTO invite_codes (code, family_id, created_by, max_uses, use_count, is_family_starter, expires_at, created_at)
+      VALUES (?, ?, ?, ?, 0, ?, ?, ?)
+    `).run(code, request.session.family_id, request.session.user_id, maxUses, isFamilyStarter ? 1 : 0, expiresAt, now);
 
-    return { id: result.lastInsertRowid, code, max_uses: maxUses, use_count: 0, expires_at: expiresAt };
+    return { id: result.lastInsertRowid, code, max_uses: maxUses, use_count: 0, is_family_starter: isFamilyStarter, expires_at: expiresAt };
   });
 
   // Admin: list active invite codes for this family
   app.get('/api/auth/invites', { preHandler: requireAdmin }, async (request) => {
-    return db.prepare(`
-      SELECT id, code, max_uses, use_count, expires_at, created_at
+    const familyCodes = db.prepare(`
+      SELECT id, code, max_uses, use_count, is_family_starter, expires_at, created_at
       FROM invite_codes
-      WHERE family_id = ? AND expires_at > ?
+      WHERE family_id = ? AND is_family_starter = 0 AND expires_at > ?
       ORDER BY created_at DESC
       LIMIT 100
     `).all(request.session.family_id, Date.now());
+
+    if (request.session.is_superadmin) {
+      const starterCodes = db.prepare(`
+        SELECT id, code, max_uses, use_count, is_family_starter, expires_at, created_at
+        FROM invite_codes
+        WHERE is_family_starter = 1 AND expires_at > ?
+        ORDER BY created_at DESC
+        LIMIT 100
+      `).all(Date.now());
+      return [...familyCodes, ...starterCodes];
+    }
+
+    return familyCodes;
   });
 
   // Admin: revoke invite code

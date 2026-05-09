@@ -424,7 +424,7 @@ export default function Inventory({ user: initialUser, onLogout }) {
       )}
 
       {adminOpen && (
-        <AdminPanel currentUserId={user.id} onClose={() => setAdminOpen(false)} />
+        <AdminPanel currentUserId={user.id} isSuperadmin={user.is_superadmin} onClose={() => setAdminOpen(false)} />
       )}
 
       {settingsOpen && (

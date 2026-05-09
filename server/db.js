@@ -28,6 +28,7 @@ db.exec(`
     password_hash TEXT NOT NULL,
     family_id INTEGER NOT NULL REFERENCES families(id) ON DELETE CASCADE,
     is_admin INTEGER NOT NULL DEFAULT 0,
+    is_superadmin INTEGER NOT NULL DEFAULT 0,
     email TEXT,
     emoji TEXT DEFAULT '😎',
     color TEXT DEFAULT '#ff10f0',
@@ -84,6 +85,7 @@ db.exec(`
     created_by INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     max_uses INTEGER NOT NULL DEFAULT 1,
     use_count INTEGER NOT NULL DEFAULT 0,
+    is_family_starter INTEGER NOT NULL DEFAULT 0,
     expires_at INTEGER NOT NULL,
     created_at INTEGER NOT NULL
   );

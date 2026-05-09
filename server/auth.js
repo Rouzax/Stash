@@ -32,7 +32,7 @@ export function getSession(sessionId) {
   if (!sessionId) return null;
   const row = db.prepare(`
     SELECT s.id, s.user_id, s.expires_at,
-           u.username, u.is_admin, u.family_id, u.email, u.emoji, u.color, u.rush_reset_at,
+           u.username, u.is_admin, u.is_superadmin, u.family_id, u.email, u.emoji, u.color, u.rush_reset_at,
            f.name AS family_name
     FROM sessions s
     JOIN users u ON u.id = s.user_id
@@ -84,6 +84,17 @@ export async function requireAdmin(request, reply) {
     return reply.code(401).send({ error: 'unauthorized' });
   }
   if (!session.is_admin) {
+    return reply.code(403).send({ error: 'forbidden' });
+  }
+  request.session = session;
+}
+
+export async function requireSuperadmin(request, reply) {
+  const session = getSessionFromRequest(request);
+  if (!session) {
+    return reply.code(401).send({ error: 'unauthorized' });
+  }
+  if (!session.is_superadmin) {
     return reply.code(403).send({ error: 'forbidden' });
   }
   request.session = session;

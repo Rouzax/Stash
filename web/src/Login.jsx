@@ -48,6 +48,7 @@ export default function Login({ mode, onAuth }) {
         user = await auth.bootstrapAdmin(familyName.trim(), username.trim(), password, emoji, email.trim());
       } else if (isRegister) {
         const data = { username: username.trim(), password, emoji, invite_code: inviteCodeVal.trim() };
+        if (familyName.trim()) data.family_name = familyName.trim();
         if (email.trim()) data.email = email.trim();
         user = await auth.register(data);
       } else {
@@ -88,18 +89,31 @@ export default function Login({ mode, onAuth }) {
           )}
 
           {isRegister && (
-            <div className="field" style={{ marginTop: 16 }}>
-              <label>INVITE CODE</label>
-              <input
-                type="text"
-                value={inviteCodeVal}
-                onChange={e => setInviteCodeVal(e.target.value.toUpperCase())}
-                placeholder="Ask your family admin"
-                maxLength={8}
-                autoComplete="off"
-                style={{ fontFamily: 'Orbitron', letterSpacing: '3px', textAlign: 'center' }}
-              />
-            </div>
+            <>
+              <div className="field" style={{ marginTop: 16 }}>
+                <label>INVITE CODE</label>
+                <input
+                  type="text"
+                  value={inviteCodeVal}
+                  onChange={e => setInviteCodeVal(e.target.value.toUpperCase())}
+                  placeholder="Ask your family admin"
+                  maxLength={8}
+                  autoComplete="off"
+                  style={{ fontFamily: 'Orbitron', letterSpacing: '3px', textAlign: 'center' }}
+                />
+              </div>
+              <div className="field">
+                <label>FAMILY NAME (FOR NEW FAMILIES)</label>
+                <input
+                  type="text"
+                  value={familyName}
+                  onChange={e => setFamilyName(e.target.value)}
+                  placeholder="Only needed for new family codes"
+                  maxLength={64}
+                  autoComplete="off"
+                />
+              </div>
+            </>
           )}
 
           {isBootstrap && (

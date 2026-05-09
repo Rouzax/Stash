@@ -14,7 +14,7 @@ const USES_OPTIONS = [
   { label: '∞', value: 0 },
 ];
 
-export default function AdminPanel({ currentUserId, onClose }) {
+export default function AdminPanel({ currentUserId, isSuperadmin, onClose }) {
   const [users, setUsers] = useState([]);
   const [invites, setInvites] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
@@ -201,15 +201,15 @@ export default function AdminPanel({ currentUserId, onClose }) {
               </button>
             )}
 
-            {/* ============ Invite Codes ============ */}
+            {/* ============ Member Invite Codes ============ */}
             <div style={{ marginTop: 24, borderTop: '1px solid rgba(0,240,255,0.2)', paddingTop: 16 }}>
               <div style={{ fontFamily: 'Orbitron', fontSize: 11, letterSpacing: '2px', color: 'var(--neon-cyan)', marginBottom: 12 }}>
-                ◢ INVITE CODES ◣
+                ◢ MEMBER INVITES ◣
               </div>
 
-              {invites.length > 0 && (
+              {invites.filter(i => !i.is_family_starter).length > 0 && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
-                  {invites.map(inv => (
+                  {invites.filter(i => !i.is_family_starter).map(inv => (
                     <div key={inv.id} className="invite-row">
                       <button className="invite-code" onClick={() => copyCode(inv.code)} title="Copy">
                         {inv.code}
@@ -263,10 +263,51 @@ export default function AdminPanel({ currentUserId, onClose }) {
                   onClick={() => setShowInviteCreate(true)}
                   style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
                 >
-                  <Link size={14} /> GENERATE INVITE CODE
+                  <Link size={14} /> INVITE MEMBER
                 </button>
               )}
             </div>
+
+            {/* ============ Superadmin: New Family Codes ============ */}
+            {isSuperadmin && (
+              <div style={{ marginTop: 24, borderTop: '1px solid rgba(255,16,240,0.3)', paddingTop: 16 }}>
+                <div style={{ fontFamily: 'Orbitron', fontSize: 11, letterSpacing: '2px', color: 'var(--neon-magenta)', marginBottom: 12 }}>
+                  ◢ NEW FAMILY CODES ◣
+                </div>
+
+                {invites.filter(i => i.is_family_starter).length > 0 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 12 }}>
+                    {invites.filter(i => i.is_family_starter).map(inv => (
+                      <div key={inv.id} className="invite-row" style={{ borderColor: 'rgba(255,16,240,0.3)' }}>
+                        <button className="invite-code" onClick={() => copyCode(inv.code)} title="Copy" style={{ color: 'var(--neon-magenta)', borderColor: 'rgba(255,16,240,0.4)', background: 'rgba(255,16,240,0.08)' }}>
+                          {inv.code}
+                          {copiedCode === inv.code ? <Check size={12} /> : <Copy size={12} />}
+                        </button>
+                        <div className="invite-meta">
+                          {inv.max_uses === 0 ? '∞' : `${inv.use_count}/${inv.max_uses}`} uses · {formatExpiry(inv.expires_at)}
+                        </div>
+                        <button className="btn-danger-small" onClick={() => revokeInvite(inv.id)} aria-label="Revoke" style={{ width: 28, height: 28 }}>
+                          <X size={12} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <button
+                  className="btn-primary"
+                  onClick={async () => {
+                    try {
+                      await auth.createInvite({ max_uses: 1, expires_hours: 168, is_family_starter: true });
+                      await refresh();
+                    } catch (e) { setError(e.message); }
+                  }}
+                  style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+                >
+                  <Plus size={14} /> CREATE FAMILY CODE
+                </button>
+              </div>
+            )}
           </>
         )}
 

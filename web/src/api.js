@@ -51,7 +51,8 @@ export const auth = {
     api.post('/api/auth/users', { username, password, is_admin, email: email || undefined, emoji: emoji || undefined }),
   deleteUser: (id) => api.del(`/api/auth/users/${id}`),
   listInvites: () => api.get('/api/auth/invites'),
-  createInvite: (data) => api.post('/api/auth/invites', data),
+  createInvite: ({ max_uses, expires_hours, is_family_starter } = {}) =>
+    api.post('/api/auth/invites', { max_uses, expires_hours, is_family_starter }),
   deleteInvite: (id) => api.del(`/api/auth/invites/${id}`)
 };
 
