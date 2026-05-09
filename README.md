@@ -34,7 +34,7 @@ echo "SESSION_SECRET=$(openssl rand -hex 32)" > .env
 docker compose up -d
 ```
 
-Open `http://localhost:3000` - name your family and create the admin account.
+Open `http://localhost:3000`, name your family and create the admin account.
 
 ## Configuration
 
@@ -57,7 +57,7 @@ docker compose pull
 docker compose up -d
 ```
 
-Your data is safe - the SQLite database lives on a Docker named volume.
+Your data is safe: the SQLite database lives on a Docker named volume.
 
 ## Backups
 

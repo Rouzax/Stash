@@ -28,7 +28,7 @@ BEHIND_PROXY=true
 
 When `BEHIND_PROXY=true` (the default), Stash does two things:
 
-1. Sets the `Secure` flag on session cookies - the browser will only send them over HTTPS.
+1. Sets the `Secure` flag on session cookies: the browser will only send them over HTTPS.
 2. Trusts `X-Forwarded-For` and `X-Forwarded-Proto` headers from the proxy for rate limiting and logging.
 
 If you run Stash directly on HTTP without a proxy (e.g. on a home LAN), set `BEHIND_PROXY=false`. Otherwise your browser will refuse to set the cookie and you will be stuck on the login screen.
@@ -75,7 +75,7 @@ stash.example.com {
 }
 ```
 
-Caddy handles TLS automatically. No extra headers needed - Caddy sets `X-Forwarded-For` by default.
+Caddy handles TLS automatically. No extra headers needed; Caddy sets `X-Forwarded-For` by default.
 
 ## Database
 
@@ -123,7 +123,7 @@ docker compose -f docker-compose.prod.yml up -d
 
 ### Automatic housekeeping
 
-Stash runs these cleanup jobs automatically - you do not need to configure anything:
+Stash runs these cleanup jobs automatically; you do not need to configure anything:
 
 - Expired sessions are deleted on startup and then every hour.
 - Expired invite codes are deleted on startup and then every hour.
