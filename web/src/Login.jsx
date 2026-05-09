@@ -18,6 +18,10 @@ export default function Login({ mode, onAuth }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showForgot, setShowForgot] = useState(false);
+  const [forgotUsername, setForgotUsername] = useState('');
+  const [forgotSent, setForgotSent] = useState(false);
+  const [forgotLoading, setForgotLoading] = useState(false);
   const userRef = useRef(null);
   const pwRef = useRef(null);
 
@@ -203,7 +207,68 @@ export default function Login({ mode, onAuth }) {
               isRegister ? 'JOIN FAMILY' :
               'LOG IN'}
           </button>
+
+          {!isBootstrap && !isRegister && (
+            <button
+              type="button"
+              onClick={() => { setShowForgot(true); setForgotSent(false); setForgotUsername(''); }}
+              style={{
+                background: 'none', border: 'none', color: '#00d2d3', cursor: 'pointer',
+                fontSize: 12, marginTop: 12, padding: 0, textDecoration: 'underline',
+              }}
+            >Forgot password?</button>
+          )}
         </div>
+
+        {showForgot && (
+          <div className="modal-bg" onClick={(e) => e.target === e.currentTarget && setShowForgot(false)}>
+            <div className="modal" style={{ maxWidth: 380 }}>
+              <div className="modal-header">
+                <h2 className="modal-title">RESET PASSWORD</h2>
+                <button className="btn-close" onClick={() => setShowForgot(false)} aria-label="Close" style={{ background: 'none', border: 'none', color: '#888', cursor: 'pointer', fontSize: 18 }}>&times;</button>
+              </div>
+              {forgotSent ? (
+                <div style={{ padding: '16px 0', textAlign: 'center' }}>
+                  <p style={{ color: '#00d2d3', fontSize: 14, margin: '0 0 12px' }}>Check your email for a reset link.</p>
+                  <button className="btn-secondary" onClick={() => setShowForgot(false)} style={{ padding: '8px 20px' }}>OK</button>
+                </div>
+              ) : (
+                <>
+                  <div className="field" style={{ marginTop: 12 }}>
+                    <label>USERNAME</label>
+                    <input
+                      type="text"
+                      value={forgotUsername}
+                      onChange={e => setForgotUsername(e.target.value)}
+                      onKeyDown={e => e.key === 'Enter' && forgotUsername.trim() && !forgotLoading && (async () => {
+                        setForgotLoading(true);
+                        try { await auth.forgotPassword(forgotUsername.trim()); } catch {}
+                        setForgotSent(true);
+                        setForgotLoading(false);
+                      })()}
+                      autoFocus
+                      autoComplete="username"
+                      disabled={forgotLoading}
+                    />
+                  </div>
+                  <div className="modal-actions">
+                    <button className="btn-secondary" onClick={() => setShowForgot(false)}>CANCEL</button>
+                    <button
+                      className="btn-primary"
+                      disabled={!forgotUsername.trim() || forgotLoading}
+                      onClick={async () => {
+                        setForgotLoading(true);
+                        try { await auth.forgotPassword(forgotUsername.trim()); } catch {}
+                        setForgotSent(true);
+                        setForgotLoading(false);
+                      }}
+                    >{forgotLoading ? 'SENDING...' : 'SEND RESET LINK'}</button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

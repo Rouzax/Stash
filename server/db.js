@@ -92,6 +92,23 @@ db.exec(`
   );
 
   CREATE INDEX IF NOT EXISTS idx_invite_code ON invite_codes(code);
+
+  CREATE TABLE IF NOT EXISTS notification_preferences (
+    user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    low_stock INTEGER NOT NULL DEFAULT 0,
+    weekly_digest INTEGER NOT NULL DEFAULT 0,
+    rush_warning INTEGER NOT NULL DEFAULT 0
+  );
+
+  CREATE TABLE IF NOT EXISTS password_reset_tokens (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token TEXT NOT NULL UNIQUE,
+    expires_at INTEGER NOT NULL,
+    used INTEGER NOT NULL DEFAULT 0
+  );
+
+  CREATE INDEX IF NOT EXISTS idx_reset_token ON password_reset_tokens(token);
 `);
 
 // ============ Migrations for existing installs ============
@@ -114,6 +131,7 @@ if (!inviteCols.some(c => c.name === 'is_family_starter')) {
 // ============ Boot housekeeping ============
 db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now());
 db.prepare('DELETE FROM invite_codes WHERE expires_at < ?').run(Date.now());
+db.prepare('DELETE FROM password_reset_tokens WHERE expires_at < ? OR used = 1').run(Date.now());
 
 const cutoff = Date.now() - 400 * 24 * 60 * 60 * 1000;
 db.prepare('DELETE FROM consumption_log WHERE ts < ?').run(cutoff);
@@ -122,6 +140,7 @@ db.prepare('DELETE FROM consumption_log WHERE ts < ?').run(cutoff);
 setInterval(() => {
   db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now());
   db.prepare('DELETE FROM invite_codes WHERE expires_at < ?').run(Date.now());
+  db.prepare('DELETE FROM password_reset_tokens WHERE expires_at < ? OR used = 1').run(Date.now());
 }, 60 * 60 * 1000);
 
 setInterval(() => {

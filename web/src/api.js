@@ -6,7 +6,9 @@ export function setUnauthorizedHandler(fn) {
 const SKIP_AUTH_HANDLER = new Set([
   '/api/auth/login',
   '/api/auth/me',
-  '/api/auth/password'
+  '/api/auth/password',
+  '/api/auth/forgot-password',
+  '/api/auth/reset-password'
 ]);
 
 async function request(path, options = {}) {
@@ -31,6 +33,7 @@ async function request(path, options = {}) {
 export const api = {
   get: (path) => request(path),
   post: (path, body) => request(path, { method: 'POST', body: JSON.stringify(body || {}) }),
+  put: (path, body) => request(path, { method: 'PUT', body: JSON.stringify(body || {}) }),
   patch: (path, body) => request(path, { method: 'PATCH', body: JSON.stringify(body || {}) }),
   del: (path) => request(path, { method: 'DELETE', headers: {} })
 };
@@ -53,7 +56,9 @@ export const auth = {
   listInvites: () => api.get('/api/auth/invites'),
   createInvite: ({ max_uses, expires_hours, is_family_starter } = {}) =>
     api.post('/api/auth/invites', { max_uses, expires_hours, is_family_starter }),
-  deleteInvite: (id) => api.del(`/api/auth/invites/${id}`)
+  deleteInvite: (id) => api.del(`/api/auth/invites/${id}`),
+  forgotPassword: (username) => api.post('/api/auth/forgot-password', { username }),
+  resetPassword: (token, new_password) => api.post('/api/auth/reset-password', { token, new_password })
 };
 
 export const items = {
@@ -62,6 +67,11 @@ export const items = {
   update: (id, data) => api.patch(`/api/items/${id}`, data),
   remove: (id) => api.del(`/api/items/${id}`),
   adjust: (id, delta) => api.post(`/api/items/${id}/adjust`, { delta })
+};
+
+export const notifications = {
+  getPreferences: () => api.get('/api/notifications/preferences'),
+  updatePreferences: (prefs) => api.put('/api/notifications/preferences', prefs),
 };
 
 export const logApi = {

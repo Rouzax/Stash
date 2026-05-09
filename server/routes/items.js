@@ -4,6 +4,7 @@ import {
   nonEmptyString, optionalString, hexColor, unitValue,
   nonNegativeNumber, rushFactor, onsetMinutes, decayMinutes, LIMITS
 } from '../validation.js';
+import { sendLowStockAlert, sendRushWarning } from '../email.js';
 
 const ITEM_COLUMNS = 'id, name, emoji, color, unit, count, threshold, portion_size, rush_factor, onset_minutes, decay_minutes, position, created_at, updated_at';
 
@@ -154,6 +155,60 @@ export default async function itemRoutes(app) {
 
     const result = txn();
     if (!result) return reply.code(404).send({ error: 'not found' });
+
+    if (result.delta < 0) {
+      const item = db.prepare(
+        'SELECT id, name, emoji, count, threshold, unit FROM items WHERE id = ?'
+      ).get(id);
+
+      // Low stock alert
+      if (item && item.threshold > 0 && item.count <= item.threshold && item.count > 0) {
+        const opted = db.prepare(`
+          SELECT u.id, u.username, u.email
+          FROM users u
+          JOIN notification_preferences np ON np.user_id = u.id
+          WHERE u.family_id = ? AND np.low_stock = 1 AND u.email IS NOT NULL
+        `).all(familyId);
+        for (const u of opted) {
+          sendLowStockAlert(u, item);
+        }
+      }
+
+      // Rush warning -- mirrors client-side calculation in Inventory.jsx
+      const user = db.prepare('SELECT id, username, email, rush_reset_at FROM users WHERE id = ?').get(userId);
+      if (user) {
+        const rushResetAt = user.rush_reset_at || 0;
+        const logs = db.prepare(
+          'SELECT delta, ts, item_id FROM consumption_log WHERE user_id = ? AND ts > ?'
+        ).all(userId, rushResetAt);
+        const familyItems = db.prepare(
+          'SELECT id, portion_size, rush_factor, onset_minutes, decay_minutes FROM items WHERE family_id = ?'
+        ).all(familyId);
+        const byId = new Map();
+        for (const it of familyItems) byId.set(it.id, it);
+
+        const ts = Date.now();
+        let rushScore = 0;
+        for (const entry of logs) {
+          if (entry.delta >= 0) continue;
+          const it = byId.get(entry.item_id);
+          if (!it) continue;
+          const onsetMs = (it.onset_minutes || 0) * 60 * 1000;
+          const decayMs = (it.decay_minutes || 240) * 60 * 1000;
+          const age = ts - entry.ts;
+          if (age < onsetMs || age < 0) continue;
+          const effectiveAge = age - onsetMs;
+          if (effectiveAge >= decayMs) continue;
+          const portions = Math.abs(entry.delta) / (it.portion_size || 1);
+          rushScore += (it.rush_factor || 1) * portions * (1 - effectiveAge / decayMs);
+        }
+        const rushLevel = rushScore * 100;
+        if (rushLevel >= 80) {
+          sendRushWarning(user, rushLevel);
+        }
+      }
+    }
+
     return result;
   });
 }

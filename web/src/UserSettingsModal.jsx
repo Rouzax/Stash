@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, AlertTriangle } from 'lucide-react';
-import { auth, logApi } from './api.js';
+import { auth, logApi, notifications } from './api.js';
 
 const COLOR_PRESETS = ['#ff006e', '#fb5607', '#ffbe0b', '#06ffa5', '#3a86ff', '#8338ec', '#ff10f0', '#00f0ff'];
 const EMOJI_PRESETS = [
@@ -16,6 +16,15 @@ export default function UserSettingsModal({ user, onUpdate, onRushReset, onChart
   const [loading, setLoading] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
+  const [notifPrefs, setNotifPrefs] = useState({ low_stock: 0, weekly_digest: 0, rush_warning: 0 });
+  const [notifLoading, setNotifLoading] = useState(true);
+
+  useEffect(() => {
+    notifications.getPreferences()
+      .then(setNotifPrefs)
+      .catch(() => {})
+      .finally(() => setNotifLoading(false));
+  }, []);
 
   const save = async () => {
     setError('');
@@ -74,6 +83,41 @@ export default function UserSettingsModal({ user, onUpdate, onRushReset, onChart
               />
             ))}
           </div>
+        </div>
+
+        <div style={{ marginTop: 16, borderTop: '1px solid rgba(255,0,110,0.3)', paddingTop: 16 }}>
+          <div style={{ fontFamily: 'Orbitron', fontSize: 11, letterSpacing: '2px', color: '#ff006e', marginBottom: 10 }}>
+            ◢ NOTIFICATIONS ◣
+          </div>
+          {!user.email ? (
+            <div style={{ fontSize: 12, color: '#8888aa', fontStyle: 'italic', padding: '8px 0' }}>
+              Set your email in your profile to enable notifications
+            </div>
+          ) : notifLoading ? (
+            <div style={{ fontSize: 12, color: '#8888aa', padding: '8px 0' }}>Loading...</div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {[
+                { key: 'low_stock', label: 'Low stock alerts' },
+                { key: 'weekly_digest', label: 'Weekly digest' },
+                { key: 'rush_warning', label: 'Rush meter warnings' },
+              ].map(({ key, label }) => (
+                <label key={key} className="notif-toggle" style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+                  <span className={`toggle-switch ${notifPrefs[key] ? 'active' : ''}`} onClick={(e) => {
+                    e.preventDefault();
+                    const updated = { ...notifPrefs, [key]: notifPrefs[key] ? 0 : 1 };
+                    setNotifPrefs(updated);
+                    notifications.updatePreferences(updated).catch(() => {
+                      setNotifPrefs(notifPrefs);
+                    });
+                  }}>
+                    <span className="toggle-thumb" />
+                  </span>
+                  <span style={{ fontSize: 13, color: '#e0e0e0' }}>{label}</span>
+                </label>
+              ))}
+            </div>
+          )}
         </div>
 
         <div style={{ marginTop: 16, borderTop: '1px solid rgba(255,0,110,0.3)', paddingTop: 16 }}>

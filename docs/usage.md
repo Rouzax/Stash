@@ -54,6 +54,7 @@ Fill in the fields:
 | **Portion size** | How much one tap of TAKE removes. Defaults to 1 for `pcs`, 100 for `mg` and `g`, 250 for `ml`. |
 | **Rush %** | How much this item contributes to the Rush-O-Meter relative to a standard portion. 100% is default. Set higher for stronger items, lower for milder ones. |
 | **Decay** | How long until one portion's rush contribution fades to zero. Options: 30 min, 1 h, 2 h, 4 h, 6 h, 8 h. |
+| **Onset** | How long after consumption before the rush contribution begins. Options: 0 min (immediate), 5 min, 10 min, 15 min, 30 min. Defaults to 0. |
 
 Tap **SAVE** and the item appears on the inventory grid.
 
@@ -81,11 +82,11 @@ The Rush-O-Meter is a bar at the top of the inventory screen. It shows how much 
 
 ### How it works
 
-Every time you take an item, the server logs the consumption with a timestamp. The Rush-O-Meter replays those log entries, applies each item's rush factor and portion size, and calculates a rolling score. Each portion's contribution decays linearly to zero over the item's decay window. The meter ticks down on its own as time passes.
+Every time you take an item, the server logs the consumption with a timestamp. The Rush-O-Meter replays those log entries, applies each item's rush factor and portion size, and calculates a rolling score. Each portion's contribution decays linearly to zero over the item's decay window. If an item has an onset delay, its contribution is ignored until that delay has passed. The meter ticks down on its own as time passes.
 
 The math:
 
-- **Rush score** = sum over recent consumptions of `(rush_factor × portions_consumed × (1 − age / decay_window))`
+- **Rush score** = sum over recent consumptions of `(rush_factor x portions_consumed x (1 - effective_age / decay_window))`, where `effective_age = max(0, age - onset_delay)`. Entries still within their onset window are not counted.
 - **Rush %** = `rush_score × 100`
 
 A single standard portion (rush factor 1.0, decay 4 hours) at the moment of consumption = 100%.
@@ -109,6 +110,7 @@ You control two settings per item:
 
 - **Rush %**: scales the contribution of each portion. 200% means one portion counts as two standard portions toward the meter. 50% means half. Range: 10%–1000%.
 - **Decay**: how long before that portion's contribution fades. Shorter decay = faster recovery.
+- **Onset**: adds a delay before each portion starts contributing to the meter. Use this for items that take time to kick in. A candy might be immediate (0 min); caffeine might take 15 minutes.
 
 These settings let you model the real-world difference between, say, a piece of dark chocolate (high rush, fast decay) and a cup of tea (low rush, slow decay).
 
@@ -124,6 +126,16 @@ Below the item grid, you see a bar chart of rush units consumed over time. Use t
 - **YEAR** - past 12 months, one bar per month
 
 The chart shows your own consumption only; each person's chart is private to their account.
+
+### Clearing chart history
+
+To clear all your consumption history from the charts:
+
+1. Open your profile settings.
+2. Scroll to the **RUSH METER** section.
+3. Tap **CLEAR CHART HISTORY** and confirm.
+
+This permanently deletes all your consumption log entries. Your rush meter resets to zero and your charts become empty. Other family members' data is not affected. Item counts are not changed.
 
 ## Low-stock alerts
 
@@ -145,9 +157,37 @@ You can change:
 
 - **Emoji** - your avatar shown in the header pill
 - **Color** - the neon color associated with your account
-- **Email** - optional, stored but not used for notifications
+- **Email** - optional. Required to receive email notifications and to use password reset.
 
 Your username cannot be changed after registration. To change your password, see below.
+
+## Notifications
+
+Stash can send email notifications when certain events happen. Notifications require SMTP to be configured (see [Configuration](configuration.md)) and an email address on your account.
+
+### Enabling notifications
+
+1. Set your email address in your profile settings.
+2. Open your profile settings and scroll to the **NOTIFICATIONS** section.
+3. Toggle on the notifications you want:
+   - **Low stock alerts**: sends an email when an item drops to or below its threshold after someone takes one. Sent to all opted-in family members, not just the person who took the item. Rate-limited to one alert per item every 6 hours.
+   - **Weekly digest**: a Monday morning summary of the week's consumption. Includes top consumed items, who consumed the most, items currently below threshold, and peak snack day.
+   - **Rush meter warnings**: sends you an email when your personal rush meter crosses 80%. Rate-limited to one warning every 4 hours.
+
+Notifications are per-user. Each person chooses which types they want. If SMTP is not configured on the server, the toggle section still appears but emails are silently skipped.
+
+### Password reset
+
+If you forget your password:
+
+1. Open the login screen and tap **Forgot password?**
+2. Enter your username and tap **SEND RESET LINK**.
+3. Check your email for a message from Stash with a reset link.
+4. Click the link, enter a new password, and confirm.
+
+The reset link expires after 1 hour. If the link has expired, request a new one.
+
+Password reset requires an email address on your account. If you never set one, ask a family admin to delete your account and re-create it, or to set an email for you.
 
 ## Admin panel
 

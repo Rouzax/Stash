@@ -5,10 +5,12 @@ import rateLimit from '@fastify/rate-limit';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import './db.js'; // ensure schema bootstrap runs
+import { db } from './db.js';
 import authRoutes from './routes/auth.js';
 import itemRoutes from './routes/items.js';
 import logRoutes from './routes/log.js';
+import notificationRoutes from './routes/notifications.js';
+import { isEmailConfigured, sendWeeklyDigest } from './email.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -45,8 +47,51 @@ app.addHook('onSend', async (_request, reply) => {
 await app.register(authRoutes);
 await app.register(itemRoutes);
 await app.register(logRoutes);
+await app.register(notificationRoutes);
 
 app.get('/api/health', async () => ({ ok: true, ts: Date.now() }));
+
+// Weekly digest: check hourly, send on Monday at 08:00 server-local time
+setInterval(() => {
+  if (!isEmailConfigured()) return;
+  const now = new Date();
+  if (now.getDay() !== 1 || now.getHours() !== 8) return;
+
+  const weekAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const families = db.prepare(`
+    SELECT DISTINCT u.family_id FROM notification_preferences np
+    JOIN users u ON u.id = np.user_id WHERE np.weekly_digest = 1
+  `).all();
+
+  for (const { family_id } of families) {
+    const logs = db.prepare(`
+      SELECT cl.item_id, cl.user_id, cl.delta, cl.ts,
+             u.username, u.emoji AS user_emoji,
+             i.name AS item_name, i.emoji AS item_emoji, i.unit AS item_unit
+      FROM consumption_log cl
+      JOIN users u ON u.id = cl.user_id
+      JOIN items i ON i.id = cl.item_id
+      WHERE cl.family_id = ? AND cl.ts >= ? AND cl.delta < 0
+    `).all(family_id, weekAgo);
+
+    const items = db.prepare(
+      'SELECT id, name, emoji, count, threshold, unit FROM items WHERE family_id = ?'
+    ).all(family_id);
+    const lowStockItems = items.filter(it => it.threshold > 0 && it.count <= it.threshold);
+
+    const familyStats = { logs, items, lowStockItems };
+
+    const users = db.prepare(`
+      SELECT u.id, u.username, u.email
+      FROM users u JOIN notification_preferences np ON np.user_id = u.id
+      WHERE u.family_id = ? AND np.weekly_digest = 1 AND u.email IS NOT NULL
+    `).all(family_id);
+
+    for (const u of users) {
+      sendWeeklyDigest(u, familyStats);
+    }
+  }
+}, 60 * 60 * 1000);
 
 const STATIC_DIR = path.join(__dirname, 'public');
 await app.register(fastifyStatic, {

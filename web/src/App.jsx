@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { auth, setUnauthorizedHandler } from './api.js';
 import Login from './Login.jsx';
 import Inventory from './Inventory.jsx';
+import ResetPassword from './ResetPassword.jsx';
 import { SynthBackground } from './background.jsx';
 
 export default function App() {
@@ -54,6 +55,10 @@ export default function App() {
   const handleLogout = () => {
     setUser(null);
   };
+
+  if (window.location.pathname === '/reset-password') {
+    return <ResetPassword onBackToLogin={() => { window.location.href = '/'; }} />;
+  }
 
   if (loading) {
     return (

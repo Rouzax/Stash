@@ -5,6 +5,7 @@ import {
   requireAuth, requireAdmin, requireSuperadmin, COOKIE_NAME
 } from '../auth.js';
 import { nonEmptyString, optionalString, hexColor, emailAddress, inviteCode, LIMITS } from '../validation.js';
+import { sendPasswordReset } from '../email.js';
 import crypto from 'node:crypto';
 
 const validatePassword = (password) => {
@@ -395,6 +396,52 @@ export default async function authRoutes(app) {
       'DELETE FROM invite_codes WHERE id = ? AND family_id = ?'
     ).run(id, request.session.family_id);
     if (result.changes === 0) return reply.code(404).send({ error: 'not found' });
+    return { ok: true };
+  });
+
+  // Forgot password: generate token and send reset email
+  app.post('/api/auth/forgot-password', {
+    config: { rateLimit: { max: 3, timeWindow: '1 minute' } }
+  }, async (request) => {
+    const username = nonEmptyString(request.body?.username, LIMITS.username);
+    if (!username) return { ok: true };
+
+    const user = db.prepare('SELECT id, username, email FROM users WHERE username = ?').get(username);
+    if (user?.email) {
+      const token = crypto.randomBytes(32).toString('hex');
+      const expiresAt = Date.now() + 60 * 60 * 1000;
+      db.prepare('INSERT INTO password_reset_tokens (user_id, token, expires_at) VALUES (?, ?, ?)').run(user.id, token, expiresAt);
+
+      const baseUrl = process.env.APP_URL || `${request.protocol}://${request.hostname}`;
+      const resetUrl = `${baseUrl}/reset-password?token=${token}`;
+      sendPasswordReset(user, resetUrl);
+    }
+
+    return { ok: true };
+  });
+
+  // Reset password: validate token and set new password
+  app.post('/api/auth/reset-password', {
+    config: { rateLimit: { max: 5, timeWindow: '1 minute' } }
+  }, async (request, reply) => {
+    const token = nonEmptyString(request.body?.token, 128);
+    if (!token) return reply.code(400).send({ error: 'token required' });
+
+    const pw = validatePassword(request.body?.new_password);
+    if (!pw.ok) return reply.code(400).send({ error: pw.error });
+
+    const row = db.prepare('SELECT id, user_id, expires_at, used FROM password_reset_tokens WHERE token = ?').get(token);
+    if (!row || row.used || row.expires_at < Date.now()) {
+      return reply.code(400).send({ error: 'invalid or expired token' });
+    }
+
+    const hash = await hashPassword(pw.value);
+    db.transaction(() => {
+      db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(hash, row.user_id);
+      db.prepare('UPDATE password_reset_tokens SET used = 1 WHERE id = ?').run(row.id);
+      db.prepare('DELETE FROM sessions WHERE user_id = ?').run(row.user_id);
+    })();
+
     return { ok: true };
   });
 }

@@ -12,6 +12,12 @@ All configuration is done through environment variables. The recommended way is 
 | `LOG_LEVEL` | `info` | No | Logging verbosity. One of: `trace`, `debug`, `info`, `warn`, `error`. |
 | `TZ` | `Europe/Amsterdam` | No | Container timezone. Affects timestamps in logs. Use any IANA timezone string (e.g. `America/New_York`, `Asia/Tokyo`). |
 | `DB_PATH` | `/data/stash.db` | No | Full path to the SQLite database file inside the container. The default location is on the named volume. Only change this if you know what you are doing. |
+| `SMTP_HOST` | - | No | SMTP server hostname. Email notifications are disabled if this is not set. |
+| `SMTP_PORT` | `587` | No | SMTP server port. |
+| `SMTP_USER` | - | No | SMTP authentication username. |
+| `SMTP_PASS` | - | No | SMTP authentication password. |
+| `SMTP_FROM` | `Stash <stash@example.com>` | No | Sender address for outgoing emails. |
+| `APP_URL` | auto-detected | No | Base URL for links in emails (e.g. `https://stash.example.com`). Auto-detected from request headers if not set. Required for correct password-reset links behind a reverse proxy. |
 
 ### Example .env
 
@@ -20,6 +26,14 @@ SESSION_SECRET=a3f8c2e1d4b7a9f0e5c3b8d1a6f4e2c9b7a3d8f1e4c2b9a6d3f7e1c4b8a5d2
 TZ=Europe/Berlin
 LOG_LEVEL=info
 BEHIND_PROXY=true
+
+# Email (optional)
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=stash@example.com
+SMTP_PASS=your-smtp-password
+SMTP_FROM=Stash <stash@example.com>
+APP_URL=https://stash.example.com
 ```
 
 ## Reverse proxy
@@ -127,4 +141,5 @@ Stash runs these cleanup jobs automatically; you do not need to configure anythi
 
 - Expired sessions are deleted on startup and then every hour.
 - Expired invite codes are deleted on startup and then every hour.
+- Expired and used password reset tokens are deleted on startup and then every hour.
 - Consumption log entries older than 400 days are deleted on startup and then every 24 hours.
