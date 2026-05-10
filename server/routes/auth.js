@@ -15,11 +15,13 @@ const validatePassword = (password) => {
   return { ok: true, value: password };
 };
 
+const LOGIN_RATE_LIMIT = Number(process.env.LOGIN_RATE_LIMIT) || 5;
+
 export default async function authRoutes(app) {
   // Login (rate-limited to mitigate brute force)
   app.post('/api/auth/login', {
     config: {
-      rateLimit: { max: 5, timeWindow: '1 minute' }
+      rateLimit: { max: LOGIN_RATE_LIMIT, timeWindow: '1 minute' }
     }
   }, async (request, reply) => {
     const { username, password } = request.body || {};

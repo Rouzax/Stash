@@ -9,3 +9,5 @@ dist/
 *.log
 .claude/
 CLAUDE.md
+test-results/
+playwright-report/
