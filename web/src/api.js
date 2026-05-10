@@ -61,6 +61,24 @@ export const auth = {
   resetPassword: (token, new_password) => api.post('/api/auth/reset-password', { token, new_password })
 };
 
+export const admin = {
+  updateUser: (id, data) => api.patch(`/api/auth/users/${id}`, data),
+  toggleSuperadmin: (id, is_superadmin) => api.patch(`/api/auth/users/${id}/superadmin`, { is_superadmin }),
+  listAllUsers: () => api.get('/api/auth/users/all'),
+  listFamilies: () => api.get('/api/families'),
+  renameFamily: (id, name) => api.patch(`/api/families/${id}`, { name }),
+  deleteFamily: (id) => api.del(`/api/families/${id}`),
+  familyActivity: (params = {}) => {
+    const qs = new URLSearchParams();
+    if (params.limit) qs.set('limit', params.limit);
+    if (params.before) qs.set('before', params.before);
+    if (params.user_id) qs.set('user_id', params.user_id);
+    if (params.item_id) qs.set('item_id', params.item_id);
+    const q = qs.toString();
+    return api.get(`/api/log/family${q ? '?' + q : ''}`);
+  },
+};
+
 export const items = {
   list: () => api.get('/api/items'),
   create: (data) => api.post('/api/items', data),
