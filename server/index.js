@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.js';
 import itemRoutes from './routes/items.js';
 import logRoutes from './routes/log.js';
 import notificationRoutes from './routes/notifications.js';
+import familyRoutes from './routes/families.js';
 import { isEmailConfigured, sendWeeklyDigest } from './email.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -48,6 +49,7 @@ await app.register(authRoutes);
 await app.register(itemRoutes);
 await app.register(logRoutes);
 await app.register(notificationRoutes);
+await app.register(familyRoutes);
 
 app.get('/api/health', async () => ({ ok: true, ts: Date.now() }));
 
