@@ -61,8 +61,7 @@ Keep PRs focused. One feature or fix per PR makes review faster.
 ```
 .
 ├── Dockerfile              # Multi-stage build (web → server → runtime)
-├── docker-compose.yml      # Dev/local build
-├── docker-compose.prod.yml # Production (pulls from GHCR)
+├── docker-compose.yml      # Production (pulls from GHCR)
 ├── server/
 │   ├── index.js            # Fastify app entry point
 │   ├── db.js               # Schema, SQLite setup, boot housekeeping

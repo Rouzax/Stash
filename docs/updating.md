@@ -6,10 +6,10 @@ Stash uses a named Docker volume for the database, so updating the container doe
 
 ```bash
 # Pull the latest image
-docker compose -f docker-compose.prod.yml pull
+docker compose pull
 
 # Restart with the new image
-docker compose -f docker-compose.prod.yml up -d
+docker compose up -d
 ```
 
 Docker Compose will stop the running container, start a new one with the updated image, and reattach the data volume. Downtime is a few seconds.
@@ -19,7 +19,7 @@ Docker Compose will stop the running container, start a new one with the updated
 It is good practice to snapshot the database before any update:
 
 ```bash
-docker compose -f docker-compose.prod.yml exec stash \
+docker compose exec stash \
   sh -c 'cat /data/stash.db' > backup-before-update-$(date +%F).db
 ```
 
@@ -41,7 +41,7 @@ docker images ghcr.io/rouzax/stash
 
 ## Version pinning
 
-The production compose file uses `:latest`, which always points to the most recent release. If you want to stay on a specific version:
+The compose file uses `:latest`, which always points to the most recent release. If you want to stay on a specific version:
 
 ```yaml
 image: ghcr.io/rouzax/stash:1.2.0

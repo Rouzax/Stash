@@ -70,12 +70,12 @@ mkdir stash && cd stash
 # Generate a session secret
 echo "SESSION_SECRET=$(openssl rand -hex 32)" > .env
 
-# Download the production compose file
-curl -sSL https://raw.githubusercontent.com/Rouzax/Stash/main/docker-compose.prod.yml \
-  -o docker-compose.prod.yml
+# Download the compose file
+curl -sSL https://raw.githubusercontent.com/Rouzax/Stash/main/docker-compose.yml \
+  -o docker-compose.yml
 
 # Start
-docker compose -f docker-compose.prod.yml up -d
+docker compose up -d
 ```
 
 Open `http://your-host:3000` and follow the setup wizard to create your family and admin account.

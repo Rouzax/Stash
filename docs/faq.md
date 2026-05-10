@@ -5,12 +5,12 @@
 Stop the container, delete the database file from the volume, and start again:
 
 ```bash
-docker compose -f docker-compose.prod.yml down
+docker compose down
 
 # Remove the database (this deletes all users, items, and history)
 docker run --rm -v stash_stash-data:/data alpine rm /data/stash.db
 
-docker compose -f docker-compose.prod.yml up -d
+docker compose up -d
 ```
 
 The next time you open Stash, the bootstrap form appears again.
@@ -41,7 +41,7 @@ The only way to lose data is to explicitly delete the volume (`docker volume rm`
 1. On the old server, back up the database:
 
     ```bash
-    docker compose -f docker-compose.prod.yml exec stash \
+    docker compose exec stash \
       sh -c 'cat /data/stash.db' > stash-backup.db
     ```
 
@@ -50,14 +50,14 @@ The only way to lose data is to explicitly delete the volume (`docker volume rm`
 3. Copy the backup file to the new server and restore it:
 
     ```bash
-    docker compose -f docker-compose.prod.yml down
+    docker compose down
 
     docker run --rm \
       -v stash_stash-data:/data \
       -v $(pwd):/backup \
       alpine sh -c "cp /backup/stash-backup.db /data/stash.db"
 
-    docker compose -f docker-compose.prod.yml up -d
+    docker compose up -d
     ```
 
 4. Open the browser on the new server. You should see your existing family and items.

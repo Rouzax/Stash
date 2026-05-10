@@ -25,7 +25,7 @@ Self-hosted family candy tracker with per-person rush meters and a synthwave aes
 mkdir stash && cd stash
 
 # Create docker-compose.yml
-curl -o docker-compose.yml https://raw.githubusercontent.com/Rouzax/Stash/main/docker-compose.prod.yml
+curl -o docker-compose.yml https://raw.githubusercontent.com/Rouzax/Stash/main/docker-compose.yml
 
 # Create .env
 echo "SESSION_SECRET=$(openssl rand -hex 32)" > .env

@@ -16,11 +16,11 @@ mkdir stash && cd stash
 
 ## Step 2 - Get the compose file
 
-Download the production compose file:
+Download the compose file:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/Rouzax/Stash/main/docker-compose.prod.yml \
-  -o docker-compose.prod.yml
+curl -sSL https://raw.githubusercontent.com/Rouzax/Stash/main/docker-compose.yml \
+  -o docker-compose.yml
 ```
 
 Or create it manually:
@@ -72,7 +72,7 @@ PORT=8080
 ## Step 4 - Start the container
 
 ```bash
-docker compose -f docker-compose.prod.yml up -d
+docker compose up -d
 ```
 
 Docker will pull the image from the GitHub Container Registry and start the container. The database is created automatically on first boot.

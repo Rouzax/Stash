@@ -104,14 +104,14 @@ You can move the file by setting `DB_PATH`, but the directory must exist and be 
 To take a snapshot while the container is running:
 
 ```bash
-docker compose -f docker-compose.prod.yml exec stash \
+docker compose exec stash \
   sh -c 'cat /data/stash.db' > backup-$(date +%F).db
 ```
 
 For a consistent backup under concurrent writes, use SQLite's `.backup` command:
 
 ```bash
-docker compose -f docker-compose.prod.yml exec stash \
+docker compose exec stash \
   sh -c 'sqlite3 /data/stash.db ".backup /tmp/snap.db" && cat /tmp/snap.db' \
   > backup-$(date +%F).db
 ```
@@ -120,7 +120,7 @@ docker compose -f docker-compose.prod.yml exec stash \
 
 ```bash
 # Stop the container
-docker compose -f docker-compose.prod.yml down
+docker compose down
 
 # Copy the backup into the volume
 docker run --rm \
@@ -129,7 +129,7 @@ docker run --rm \
   alpine sh -c "cp /backup/backup-2024-01-01.db /data/stash.db"
 
 # Start again
-docker compose -f docker-compose.prod.yml up -d
+docker compose up -d
 ```
 
 !!! warning "Volume name"
@@ -142,4 +142,3 @@ Stash runs these cleanup jobs automatically; you do not need to configure anythi
 - Expired sessions are deleted on startup and then every hour.
 - Expired invite codes are deleted on startup and then every hour.
 - Expired and used password reset tokens are deleted on startup and then every hour.
-- Consumption log entries older than 400 days are deleted on startup and then every 24 hours.
