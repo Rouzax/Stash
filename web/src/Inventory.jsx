@@ -96,7 +96,17 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
         setItems(prev => prev.map(it => it.id === id ? { ...it, count: result.count } : it));
       }
       if (result.delta !== 0) {
-        setLog(prev => [...prev, { item_id: id, user_id: user.id, delta: result.delta, ts: result.ts }]);
+        const logEntry = { item_id: id, user_id: user.id, delta: result.delta, ts: result.ts };
+        if (result.delta < 0) {
+          const it = items.find(x => x.id === id);
+          if (it) {
+            logEntry.snap_rush_factor = it.rush_factor;
+            logEntry.snap_portion_size = it.portion_size;
+            logEntry.snap_onset_minutes = it.onset_minutes;
+            logEntry.snap_decay_minutes = it.decay_minutes;
+          }
+        }
+        setLog(prev => [...prev, logEntry]);
       }
     } catch (e) {
       setItems(prev => prev.map(it =>
@@ -179,15 +189,19 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
     if (entry.delta >= 0) continue;
     if (entry.ts <= rushResetAt) continue;
     const item = itemsById.get(entry.item_id);
-    if (!item) continue;
-    const onsetMs = (item.onset_minutes || 0) * 60 * 1000;
-    const decayMs = (item.decay_minutes || 240) * 60 * 1000;
+    const rf = entry.snap_rush_factor ?? item?.rush_factor;
+    if (rf == null) continue;
+    const ps = entry.snap_portion_size ?? item?.portion_size;
+    const om = entry.snap_onset_minutes ?? item?.onset_minutes;
+    const dm = entry.snap_decay_minutes ?? item?.decay_minutes;
+    const onsetMs = (om || 0) * 60 * 1000;
+    const decayMs = (dm || 240) * 60 * 1000;
     const age = now - entry.ts;
     if (age < onsetMs || age < 0) continue;
     const effectiveAge = age - onsetMs;
     if (effectiveAge >= decayMs) continue;
-    const portions = Math.abs(entry.delta) / (item.portion_size || 1);
-    rushScore += (item.rush_factor || 1) * portions * (1 - effectiveAge / decayMs);
+    const portions = Math.abs(entry.delta) / (ps || 1);
+    rushScore += (rf || 1) * portions * (1 - effectiveAge / decayMs);
   }
   const rushLevel = (rushScore / RUSH_FULL) * 100;
 
@@ -210,7 +224,9 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
           if (l.ts < start.getTime() || l.ts >= end.getTime()) continue;
           if (l.delta >= 0) continue;
           const item = itemsById.get(l.item_id);
-          if (item) units += (item.rush_factor || 1) * (Math.abs(l.delta) / (item.portion_size || 1));
+          const rf = l.snap_rush_factor ?? item?.rush_factor;
+          const ps = l.snap_portion_size ?? item?.portion_size;
+          if (rf != null) units += (rf || 1) * (Math.abs(l.delta) / (ps || 1));
         }
         const pct = (units / RUSH_FULL) * 100;
         data.push({ label: DAY_LABELS[start.getDay()], rush: Math.round(pct) });
@@ -225,7 +241,9 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
           if (l.ts < start.getTime() || l.ts >= end.getTime()) continue;
           if (l.delta >= 0) continue;
           const item = itemsById.get(l.item_id);
-          if (item) units += (item.rush_factor || 1) * (Math.abs(l.delta) / (item.portion_size || 1));
+          const rf = l.snap_rush_factor ?? item?.rush_factor;
+          const ps = l.snap_portion_size ?? item?.portion_size;
+          if (rf != null) units += (rf || 1) * (Math.abs(l.delta) / (ps || 1));
         }
         const pct = (units / RUSH_FULL) * 100;
         data.push({ label: MONTH_LABELS[start.getMonth()], rush: Math.round(pct) });

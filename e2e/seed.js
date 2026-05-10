@@ -56,7 +56,8 @@ export async function seedDatabase() {
       decay_minutes INTEGER NOT NULL DEFAULT 240,
       position INTEGER NOT NULL DEFAULT 0,
       created_at INTEGER NOT NULL,
-      updated_at INTEGER NOT NULL
+      updated_at INTEGER NOT NULL,
+      deleted_at INTEGER DEFAULT NULL
     );
 
     CREATE INDEX IF NOT EXISTS idx_items_family ON items(family_id);
@@ -67,7 +68,11 @@ export async function seedDatabase() {
       family_id INTEGER NOT NULL REFERENCES families(id) ON DELETE CASCADE,
       item_id INTEGER NOT NULL REFERENCES items(id) ON DELETE CASCADE,
       delta REAL NOT NULL,
-      ts INTEGER NOT NULL
+      ts INTEGER NOT NULL,
+      snap_rush_factor REAL DEFAULT NULL,
+      snap_portion_size REAL DEFAULT NULL,
+      snap_onset_minutes INTEGER DEFAULT NULL,
+      snap_decay_minutes INTEGER DEFAULT NULL
     );
 
     CREATE INDEX IF NOT EXISTS idx_log_user_ts ON consumption_log(user_id, ts);

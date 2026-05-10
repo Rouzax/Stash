@@ -77,7 +77,7 @@ setInterval(() => {
     `).all(family_id, weekAgo);
 
     const items = db.prepare(
-      'SELECT id, name, emoji, count, threshold, unit FROM items WHERE family_id = ?'
+      'SELECT id, name, emoji, count, threshold, unit FROM items WHERE family_id = ? AND deleted_at IS NULL'
     ).all(family_id);
     const lowStockItems = items.filter(it => it.threshold > 0 && it.count <= it.threshold);
 

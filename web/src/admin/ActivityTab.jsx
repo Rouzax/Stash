@@ -120,7 +120,7 @@ export default function ActivityTab() {
                 <span>{entry.username}</span>
               </div>
               <div className="activity-action">
-                {entry.item_emoji || '\u{1F4E6}'} {formatDelta(entry.delta, entry.item_unit)} of {entry.item_name}
+                {entry.item_emoji || '\u{1F4E6}'} {formatDelta(entry.delta, entry.item_unit)} of {entry.item_name}{entry.item_deleted_at ? ' (removed)' : ''}
               </div>
             </div>
           ))}

@@ -60,6 +60,8 @@ Tap **SAVE** and the item appears on the inventory grid.
 
 To edit an item, tap the pencil icon on its card.
 
+To delete an item, open the edit form and tap **DELETE**. The item disappears from the inventory grid. Your consumption history for that item is kept: it still counts toward your rush meter and shows up in your charts and the admin activity feed.
+
 ## Taking items
 
 Each item card has two take buttons:
@@ -82,7 +84,7 @@ The Rush-O-Meter is a bar at the top of the inventory screen. It shows how much 
 
 ### How it works
 
-Every time you take an item, the server logs the consumption with a timestamp. The Rush-O-Meter replays those log entries, applies each item's rush factor and portion size, and calculates a rolling score. Each portion's contribution decays linearly to zero over the item's decay window. If an item has an onset delay, its contribution is ignored until that delay has passed. The meter ticks down on its own as time passes.
+Every time you take an item, the server logs the consumption with a timestamp and captures the item's current rush settings (rush factor, portion size, onset, and decay). The Rush-O-Meter replays those log entries using the captured settings and calculates a rolling score. Each portion's contribution decays linearly to zero over the item's decay window. If an item has an onset delay, its contribution is ignored until that delay has passed. The meter ticks down on its own as time passes.
 
 The math:
 
@@ -113,6 +115,8 @@ You control two settings per item:
 - **Onset**: adds a delay before each portion starts contributing to the meter. Use this for items that take time to kick in. A candy might be immediate (0 min); caffeine might take 15 minutes.
 
 These settings let you model the real-world difference between, say, a piece of dark chocolate (high rush, fast decay) and a cup of tea (low rush, slow decay).
+
+Changing these settings only affects future consumption. Past chart entries and rush calculations keep the values that were in effect when you actually took the item.
 
 ### Resetting the meter
 
@@ -228,7 +232,7 @@ The Settings tab also contains a **Danger Zone** section, visible only to the su
 
 ### Activity tab
 
-The Activity tab shows a chronological feed of what your family has been eating and restocking. Each entry shows the timestamp, the user (emoji and name), the item (emoji and name), and the action (consumed or restocked, with the amount).
+The Activity tab shows a chronological feed of what your family has been eating and restocking. Each entry shows the timestamp, the user (emoji and name), the item (emoji and name), and the action (consumed or restocked, with the amount). If an item has been deleted, its entries remain in the feed with a "(removed)" label.
 
 Use the two dropdown filters to narrow the feed by user or by item. Tap **Load More** at the bottom to page through older entries.
 

@@ -6,7 +6,7 @@ import {
 } from '../validation.js';
 import { sendLowStockAlert, sendRushWarning } from '../email.js';
 
-const ITEM_COLUMNS = 'id, name, emoji, color, unit, count, threshold, portion_size, rush_factor, onset_minutes, decay_minutes, position, created_at, updated_at';
+const ITEM_COLUMNS = 'id, name, emoji, color, unit, count, threshold, portion_size, rush_factor, onset_minutes, decay_minutes, position, created_at, updated_at, deleted_at';
 
 const validId = (raw) => {
   const n = Number(raw);
@@ -19,7 +19,7 @@ export default async function itemRoutes(app) {
   app.get('/api/items', async (request) => {
     return db.prepare(`
       SELECT ${ITEM_COLUMNS} FROM items
-      WHERE family_id = ?
+      WHERE family_id = ? AND deleted_at IS NULL
       ORDER BY position ASC, created_at ASC
     `).all(request.session.family_id);
   });
@@ -43,7 +43,7 @@ export default async function itemRoutes(app) {
     const familyId = request.session.family_id;
     const now = Date.now();
     const maxPos = db.prepare(
-      'SELECT MAX(position) as p FROM items WHERE family_id = ?'
+      'SELECT MAX(position) as p FROM items WHERE family_id = ? AND deleted_at IS NULL'
     ).get(familyId);
     const position = (maxPos.p ?? -1) + 1;
 
@@ -60,7 +60,7 @@ export default async function itemRoutes(app) {
     if (!id) return reply.code(400).send({ error: 'invalid id' });
 
     const item = db.prepare(
-      'SELECT * FROM items WHERE id = ? AND family_id = ?'
+      'SELECT * FROM items WHERE id = ? AND family_id = ? AND deleted_at IS NULL'
     ).get(id, request.session.family_id);
     if (!item) return reply.code(404).send({ error: 'not found' });
 
@@ -120,8 +120,8 @@ export default async function itemRoutes(app) {
     const id = validId(request.params.id);
     if (!id) return reply.code(400).send({ error: 'invalid id' });
     const result = db.prepare(
-      'DELETE FROM items WHERE id = ? AND family_id = ?'
-    ).run(id, request.session.family_id);
+      'UPDATE items SET deleted_at = ? WHERE id = ? AND family_id = ? AND deleted_at IS NULL'
+    ).run(Date.now(), id, request.session.family_id);
     if (result.changes === 0) return reply.code(404).send({ error: 'not found' });
     return { ok: true };
   });
@@ -139,7 +139,7 @@ export default async function itemRoutes(app) {
 
     const txn = db.transaction(() => {
       const item = db.prepare(
-        'SELECT id, count FROM items WHERE id = ? AND family_id = ?'
+        'SELECT id, count, rush_factor, portion_size, onset_minutes, decay_minutes FROM items WHERE id = ? AND family_id = ? AND deleted_at IS NULL'
       ).get(id, familyId);
       if (!item) return null;
       const newCount = round4(Math.max(0, item.count + delta));
@@ -147,9 +147,15 @@ export default async function itemRoutes(app) {
       if (realDelta === 0) return { count: item.count, delta: 0, ts: Date.now() };
       const ts = Date.now();
       db.prepare('UPDATE items SET count = ?, updated_at = ? WHERE id = ?').run(newCount, ts, id);
-      db.prepare(
-        'INSERT INTO consumption_log (user_id, family_id, item_id, delta, ts) VALUES (?, ?, ?, ?, ?)'
-      ).run(userId, familyId, id, realDelta, ts);
+      if (realDelta < 0) {
+        db.prepare(
+          'INSERT INTO consumption_log (user_id, family_id, item_id, delta, ts, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        ).run(userId, familyId, id, realDelta, ts, item.rush_factor, item.portion_size, item.onset_minutes, item.decay_minutes);
+      } else {
+        db.prepare(
+          'INSERT INTO consumption_log (user_id, family_id, item_id, delta, ts) VALUES (?, ?, ?, ?, ?)'
+        ).run(userId, familyId, id, realDelta, ts);
+      }
       return { count: newCount, delta: realDelta, ts };
     });
 
@@ -179,7 +185,7 @@ export default async function itemRoutes(app) {
       if (user) {
         const rushResetAt = user.rush_reset_at || 0;
         const logs = db.prepare(
-          'SELECT delta, ts, item_id FROM consumption_log WHERE user_id = ? AND ts > ?'
+          'SELECT delta, ts, item_id, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes FROM consumption_log WHERE user_id = ? AND ts > ?'
         ).all(userId, rushResetAt);
         const familyItems = db.prepare(
           'SELECT id, portion_size, rush_factor, onset_minutes, decay_minutes FROM items WHERE family_id = ?'
@@ -192,15 +198,19 @@ export default async function itemRoutes(app) {
         for (const entry of logs) {
           if (entry.delta >= 0) continue;
           const it = byId.get(entry.item_id);
-          if (!it) continue;
-          const onsetMs = (it.onset_minutes || 0) * 60 * 1000;
-          const decayMs = (it.decay_minutes || 240) * 60 * 1000;
+          const rf = entry.snap_rush_factor ?? it?.rush_factor;
+          if (rf == null) continue;
+          const ps = entry.snap_portion_size ?? it?.portion_size;
+          const om = entry.snap_onset_minutes ?? it?.onset_minutes;
+          const dm = entry.snap_decay_minutes ?? it?.decay_minutes;
+          const onsetMs = (om || 0) * 60 * 1000;
+          const decayMs = (dm || 240) * 60 * 1000;
           const age = ts - entry.ts;
           if (age < onsetMs || age < 0) continue;
           const effectiveAge = age - onsetMs;
           if (effectiveAge >= decayMs) continue;
-          const portions = Math.abs(entry.delta) / (it.portion_size || 1);
-          rushScore += (it.rush_factor || 1) * portions * (1 - effectiveAge / decayMs);
+          const portions = Math.abs(entry.delta) / (ps || 1);
+          rushScore += (rf || 1) * portions * (1 - effectiveAge / decayMs);
         }
         const rushLevel = rushScore * 100;
         if (rushLevel >= 80) {

@@ -11,7 +11,9 @@ export default async function logRoutes(app) {
       : 7;
     const since = Date.now() - days * 24 * 60 * 60 * 1000;
     return db.prepare(`
-      SELECT id, user_id, item_id, delta, ts FROM consumption_log
+      SELECT id, user_id, item_id, delta, ts,
+             snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes
+      FROM consumption_log
       WHERE user_id = ? AND ts >= ?
       ORDER BY ts ASC
       LIMIT 50000
@@ -41,7 +43,8 @@ export default async function logRoutes(app) {
     const rows = db.prepare(`
       SELECT cl.id, cl.user_id, cl.item_id, cl.delta, cl.ts,
              u.username, u.emoji AS user_emoji,
-             i.name AS item_name, i.emoji AS item_emoji, i.unit AS item_unit
+             i.name AS item_name, i.emoji AS item_emoji, i.unit AS item_unit,
+             i.deleted_at AS item_deleted_at
       FROM consumption_log cl
       JOIN users u ON u.id = cl.user_id
       JOIN items i ON i.id = cl.item_id

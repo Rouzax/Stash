@@ -101,6 +101,16 @@ The count is clamped at zero. You can still tap the take buttons, but nothing ha
 
 Use the **+** button or the edit form to set the count back to a positive number when you restock.
 
+## What happens when I delete an item?
+
+The item disappears from the inventory grid immediately. Your consumption history for that item is not deleted: past entries still count toward your rush meter, appear in your charts, and show up in the admin activity feed. In the activity feed, the item's name stays visible with a "(removed)" label so you can still tell what it was.
+
+The item row is kept in the database with a deletion timestamp. There is currently no way to restore a deleted item from the UI.
+
+## If I change an item's rush settings, do my old charts change?
+
+No. Every time you take an item, Stash captures the rush settings in effect at that moment (rush factor, portion size, onset, and decay). Charts and rush calculations always use those captured values for past entries, not the item's current settings. Updating an item's rush configuration only affects consumption logged from that point forward.
+
 ## Why do my charts show 0 after a fresh install?
 
 Charts are built from the consumption log, which only has entries from the moment you started taking items with this installation. If you imported a database backup, the log entries from the backup will appear in the charts.
