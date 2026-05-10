@@ -1,0 +1,45 @@
+name: Feature Request
+description: Suggest something new or an improvement to something existing
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Got an idea? Describe what you'd like and why it matters to you.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What would you like?
+      description: Describe the feature or improvement.
+      placeholder: "It would be great if I could set a daily limit per item and get a warning when I'm close."
+    validations:
+      required: true
+
+  - type: textarea
+    id: why
+    attributes:
+      label: Why is this useful?
+      description: What problem does it solve or what does it make easier?
+      placeholder: "I want to track how much caffeine I have per day without doing the math myself."
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Inventory / items
+        - Rush meter / charts
+        - Login / registration
+        - Admin panel
+        - Notifications / email
+        - Docker / deployment
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Have you tried any workarounds? Are there other approaches that could work?

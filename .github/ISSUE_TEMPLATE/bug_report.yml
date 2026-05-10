@@ -1,0 +1,63 @@
+name: Bug Report
+description: Something broke or isn't working as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! Fill in what you can, skip what you don't know.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the bug. What did you expect vs what actually happened?
+      placeholder: "I clicked TAKE and the count didn't change, but the rush meter went up."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: How can we trigger this?
+      placeholder: |
+        1. Open inventory
+        2. Tap TAKE on an item with count 0
+        3. ...
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Where does the bug show up?
+      options:
+        - Inventory / items
+        - Rush meter / charts
+        - Login / registration
+        - Admin panel
+        - Notifications / email
+        - Docker / deployment
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Stash version
+      description: Tag or commit (check the footer or `docker inspect`)
+      placeholder: "v0.1.8"
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser
+      placeholder: "Chrome 126 on Android 15"
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      description: Paste container logs, browser console errors, or attach a screenshot.
+      render: shell
