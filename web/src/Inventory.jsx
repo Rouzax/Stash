@@ -379,19 +379,22 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
           </div>
         )}
 
-        <div className="chart-section" onClick={() => setHistoryOpen(true)} style={{ cursor: 'pointer' }}>
+        <div className="chart-section">
           <div className="chart-header">
             <div className="chart-title">
               ◢ {chartPeriod === 'year' ? '12-MONTH' : '7-DAY'} RUSH % ◣
+              <button className="chart-edit-btn" onClick={() => setHistoryOpen(true)} aria-label="Edit history">
+                <Edit2 size={12} />
+              </button>
             </div>
             <div className="chart-toggle">
               <button
                 className={chartPeriod === 'week' ? 'active' : ''}
-                onClick={(e) => { e.stopPropagation(); setChartPeriod('week'); }}
+                onClick={() => setChartPeriod('week')}
               >WEEK</button>
               <button
                 className={chartPeriod === 'year' ? 'active' : ''}
-                onClick={(e) => { e.stopPropagation(); setChartPeriod('year'); }}
+                onClick={() => setChartPeriod('year')}
               >YEAR</button>
             </div>
           </div>
@@ -423,7 +426,6 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
           ) : (
             <div className="chart-empty">NO {chartPeriod === 'year' ? 'YEAR' : 'WEEK'} DATA YET</div>
           )}
-          <div className="chart-tap-hint">TAP TO EDIT HISTORY</div>
         </div>
 
       </div>

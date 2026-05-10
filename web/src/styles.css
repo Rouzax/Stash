@@ -1533,13 +1533,19 @@ button {
   color: rgba(255, 255, 255, 0.8);
 }
 
-.chart-tap-hint {
-  text-align: center;
-  margin-top: 8px;
-  font-family: 'Orbitron', sans-serif;
-  font-size: 9px;
-  letter-spacing: 2px;
-  color: rgba(0, 240, 255, 0.4);
+.chart-edit-btn {
+  background: none;
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 4px;
+  color: rgba(0, 240, 255, 0.5);
+  cursor: pointer;
+  padding: 3px 6px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+.chart-edit-btn:hover {
+  color: var(--neon-cyan);
+  border-color: var(--neon-cyan);
 }
 
 .btn-icon {
