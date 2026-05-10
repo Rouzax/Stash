@@ -90,6 +90,7 @@ export const items = {
 export const notifications = {
   getPreferences: () => api.get('/api/notifications/preferences'),
   updatePreferences: (prefs) => api.put('/api/notifications/preferences', prefs),
+  sendTest: () => api.post('/api/notifications/test'),
 };
 
 export const logApi = {

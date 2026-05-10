@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { admin } from '../api.js';
+import { admin, notifications } from '../api.js';
+import { Mail } from 'lucide-react';
 
 export default function SettingsTab({ user }) {
   const [familyName, setFamilyName] = useState(user.family_name || '');
@@ -9,6 +10,8 @@ export default function SettingsTab({ user }) {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleteConfirmName, setDeleteConfirmName] = useState('');
   const [deleting, setDeleting] = useState(false);
+  const [testingEmail, setTestingEmail] = useState(false);
+  const [testEmailResult, setTestEmailResult] = useState('');
 
   const saveFamily = async () => {
     if (!familyName.trim()) {
@@ -62,6 +65,39 @@ export default function SettingsTab({ user }) {
         >
           {saved ? 'SAVED' : saving ? 'SAVING...' : 'SAVE'}
         </button>
+      </div>
+
+      <div className="admin-section">
+        <div className="admin-section-label">{'◢'} EMAIL {'◣'}</div>
+        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.6)', margin: '0 0 10px' }}>
+          Send a test email to <strong>{user.email || 'your account'}</strong> to verify SMTP is working.
+        </p>
+        <button
+          className="btn-secondary"
+          onClick={async () => {
+            setTestingEmail(true);
+            setTestEmailResult('');
+            setError('');
+            try {
+              await notifications.sendTest();
+              setTestEmailResult('sent');
+              setTimeout(() => setTestEmailResult(''), 4000);
+            } catch (e) {
+              setError(e.message);
+            }
+            setTestingEmail(false);
+          }}
+          disabled={testingEmail || !user.email}
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, width: '100%' }}
+        >
+          <Mail size={14} />
+          {testingEmail ? 'SENDING...' : testEmailResult === 'sent' ? 'SENT! CHECK YOUR INBOX' : 'SEND TEST EMAIL'}
+        </button>
+        {!user.email && (
+          <p style={{ fontSize: 11, color: 'var(--neon-pink)', marginTop: 6 }}>
+            Set an email address in your profile first.
+          </p>
+        )}
       </div>
 
       {user.is_superadmin && (

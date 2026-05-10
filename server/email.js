@@ -108,3 +108,14 @@ export function sendPasswordReset(user, resetUrl) {
   const { subject, html, text } = renderPasswordReset(resetUrl);
   send(user.email, subject, html, text);
 }
+
+export async function sendTestEmail(toAddress) {
+  if (!transporter) throw new Error('SMTP not configured');
+  await transporter.sendMail({
+    from: SMTP_FROM,
+    to: toAddress,
+    subject: '🧪 Stash test email',
+    text: 'If you can read this, email notifications are working.',
+    html: '<p>If you can read this, email notifications are working.</p>',
+  });
+}

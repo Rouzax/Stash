@@ -1,5 +1,6 @@
 import { db } from '../db.js';
 import { requireAuth } from '../auth.js';
+import { sendTestEmail } from '../email.js';
 
 export default async function notificationRoutes(app) {
   app.addHook('preHandler', requireAuth);
@@ -27,5 +28,18 @@ export default async function notificationRoutes(app) {
     `).run(request.session.user_id, low_stock, weekly_digest, rush_warning);
 
     return { low_stock, weekly_digest, rush_warning };
+  });
+
+  app.post('/api/notifications/test', async (request, reply) => {
+    const email = request.session.email;
+    if (!email) {
+      return reply.code(400).send({ error: 'no email address on your account' });
+    }
+    try {
+      await sendTestEmail(email);
+      return { ok: true };
+    } catch (e) {
+      return reply.code(500).send({ error: e.message });
+    }
   });
 }
