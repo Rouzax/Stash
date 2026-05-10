@@ -41,6 +41,7 @@ export default async function authRoutes(app) {
     const family = db.prepare('SELECT name FROM families WHERE id = ?').get(user.family_id);
     const session = createSession(user.id);
     setSessionCookie(reply, session.id, session.expiresAt);
+    db.prepare('UPDATE users SET last_login_at = ? WHERE id = ?').run(Date.now(), user.id);
     return {
       id: user.id, username: user.username, is_admin: !!user.is_admin,
       is_superadmin: !!user.is_superadmin,
@@ -143,7 +144,7 @@ export default async function authRoutes(app) {
   // Admin: list users in the same family
   app.get('/api/auth/users', { preHandler: requireAdmin }, async (request) => {
     return db.prepare(`
-      SELECT id, username, is_admin, email, emoji, color, created_at
+      SELECT id, username, is_admin, email, emoji, color, last_login_at, created_at
       FROM users WHERE family_id = ? ORDER BY created_at ASC LIMIT 1000
     `).all(request.session.family_id).map(u => ({ ...u, is_admin: !!u.is_admin }));
   });

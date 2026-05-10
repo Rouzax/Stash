@@ -128,6 +128,10 @@ if (!inviteCols.some(c => c.name === 'is_family_starter')) {
   db.exec('ALTER TABLE invite_codes ADD COLUMN is_family_starter INTEGER NOT NULL DEFAULT 0');
 }
 
+if (!userCols.some(c => c.name === 'last_login_at')) {
+  db.exec('ALTER TABLE users ADD COLUMN last_login_at INTEGER');
+}
+
 // ============ Boot housekeeping ============
 db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now());
 db.prepare('DELETE FROM invite_codes WHERE expires_at < ?').run(Date.now());
