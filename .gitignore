@@ -6,6 +6,7 @@ dist/
 *.db-shm
 .env
 .DS_Store
+docker-compose*.yml
 *.log
 .claude/
 CLAUDE.md
