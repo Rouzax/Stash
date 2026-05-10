@@ -16,6 +16,7 @@ export default function Login({ mode, onAuth }) {
   const [emoji, setEmoji] = useState('😎');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
@@ -43,6 +44,10 @@ export default function Login({ mode, onAuth }) {
     }
     if ((isBootstrap || isRegister) && password.length < 8) {
       setError('Password must be at least 8 characters');
+      return;
+    }
+    if ((isBootstrap || isRegister) && password !== confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
     setLoading(true);
@@ -189,10 +194,24 @@ export default function Login({ mode, onAuth }) {
               autoComplete={(isBootstrap || isRegister) ? 'new-password' : 'current-password'}
               value={password}
               onChange={e => setPassword(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && submit()}
+              onKeyDown={e => e.key === 'Enter' && !(isBootstrap || isRegister) && submit()}
               disabled={loading}
             />
           </div>
+
+          {(isBootstrap || isRegister) && (
+            <div className="field">
+              <label>CONFIRM PASSWORD</label>
+              <input
+                type="password"
+                autoComplete="new-password"
+                value={confirmPassword}
+                onChange={e => setConfirmPassword(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && submit()}
+                disabled={loading}
+              />
+            </div>
+          )}
 
           {error && <div className="error-msg">{error}</div>}
 
