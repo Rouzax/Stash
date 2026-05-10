@@ -12,6 +12,7 @@ const EMOJI_PRESETS = [
 export default function UserSettingsModal({ user, onUpdate, onRushReset, onChartClear, onClose }) {
   const [emoji, setEmoji] = useState(user.emoji || '😎');
   const [color, setColor] = useState(user.color || '#ff10f0');
+  const [email, setEmail] = useState(user.email || '');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
@@ -30,7 +31,9 @@ export default function UserSettingsModal({ user, onUpdate, onRushReset, onChart
     setError('');
     setLoading(true);
     try {
-      const updated = await auth.updateMe({ emoji, color });
+      const data = { emoji, color };
+      if (email !== (user.email || '')) data.email = email;
+      const updated = await auth.updateMe(data);
       onUpdate(updated);
       onClose();
     } catch (e) {
@@ -85,13 +88,27 @@ export default function UserSettingsModal({ user, onUpdate, onRushReset, onChart
           </div>
         </div>
 
+        <div className="field">
+          <label>EMAIL</label>
+          <input
+            type="email"
+            value={email}
+            onChange={e => setEmail(e.target.value)}
+            placeholder="you@example.com"
+            autoComplete="email"
+          />
+          <div style={{ fontSize: 11, color: '#8888aa', marginTop: 4 }}>
+            Used for notifications. Leave blank to disable.
+          </div>
+        </div>
+
         <div style={{ marginTop: 16, borderTop: '1px solid rgba(255,0,110,0.3)', paddingTop: 16 }}>
           <div style={{ fontFamily: 'Orbitron', fontSize: 11, letterSpacing: '2px', color: '#ff006e', marginBottom: 10 }}>
             ◢ NOTIFICATIONS ◣
           </div>
-          {!user.email ? (
+          {!email.trim() ? (
             <div style={{ fontSize: 12, color: '#8888aa', fontStyle: 'italic', padding: '8px 0' }}>
-              Set your email in your profile to enable notifications
+              Add your email above to enable notifications
             </div>
           ) : notifLoading ? (
             <div style={{ fontSize: 12, color: '#8888aa', padding: '8px 0' }}>Loading...</div>
