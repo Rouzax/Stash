@@ -199,6 +199,63 @@ export default async function authRoutes(app) {
     return { ok: true };
   });
 
+  // Admin: update user (toggle admin, reset password)
+  app.patch('/api/auth/users/:id', { preHandler: requireAdmin }, async (request, reply) => {
+    const id = Number(request.params.id);
+    if (!Number.isFinite(id) || id <= 0) {
+      return reply.code(400).send({ error: 'invalid id' });
+    }
+
+    const target = db.prepare('SELECT id, family_id, is_admin FROM users WHERE id = ?').get(id);
+    if (!target) {
+      return reply.code(404).send({ error: 'not found' });
+    }
+    if (target.family_id !== request.session.family_id && !request.session.is_superadmin) {
+      return reply.code(403).send({ error: 'forbidden' });
+    }
+
+    const { is_admin, password } = request.body || {};
+    if (is_admin === undefined && !password) {
+      return reply.code(400).send({ error: 'nothing to update' });
+    }
+
+    const updates = [];
+    const params = [];
+
+    if (is_admin !== undefined) {
+      if (id === request.session.user_id) {
+        return reply.code(400).send({ error: 'cannot change your own admin status' });
+      }
+      if (!is_admin) {
+        const adminCount = db.prepare(
+          'SELECT COUNT(*) as n FROM users WHERE family_id = ? AND is_admin = 1'
+        ).get(target.family_id).n;
+        if (adminCount <= 1) {
+          return reply.code(400).send({ error: 'cannot remove the last admin' });
+        }
+      }
+      updates.push('is_admin = ?');
+      params.push(is_admin ? 1 : 0);
+    }
+
+    if (password) {
+      const pw = validatePassword(password);
+      if (!pw.ok) return reply.code(400).send({ error: pw.error });
+      const hash = await hashPassword(pw.value);
+      updates.push('password_hash = ?');
+      params.push(hash);
+    }
+
+    params.push(id);
+    db.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`).run(...params);
+
+    if (password) {
+      db.prepare('DELETE FROM sessions WHERE user_id = ?').run(id);
+    }
+
+    return { ok: true };
+  });
+
   // Change own password
   app.post('/api/auth/password', {
     preHandler: requireAuth,
