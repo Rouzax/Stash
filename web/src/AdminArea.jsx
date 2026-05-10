@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ArrowLeft, Users, Settings, Activity, Shield } from 'lucide-react';
+import SettingsTab from './admin/SettingsTab.jsx';
 
 export default function AdminArea({ user, onBack }) {
   const tabs = [
@@ -37,7 +38,7 @@ export default function AdminArea({ user, onBack }) {
 
       <div className="admin-content">
         {activeTab === 'users' && <div className="admin-placeholder">Users tab coming soon</div>}
-        {activeTab === 'settings' && <div className="admin-placeholder">Settings tab coming soon</div>}
+        {activeTab === 'settings' && <SettingsTab user={user} />}
         {activeTab === 'activity' && <div className="admin-placeholder">Activity tab coming soon</div>}
         {activeTab === 'system' && <div className="admin-placeholder">System tab coming soon</div>}
       </div>
