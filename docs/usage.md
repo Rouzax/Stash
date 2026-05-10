@@ -133,7 +133,7 @@ The chart shows your own consumption only; each person's chart is private to the
 
 ### Editing history
 
-Tap anywhere on the chart to open the history editor. This shows a scrollable list of all your consumption and restocking entries, most recent first.
+Tap the pencil icon next to the chart title to open the history editor. This shows a scrollable list of all your consumption and restocking entries, most recent first.
 
 You can:
 

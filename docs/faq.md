@@ -113,7 +113,7 @@ No. Every time you take an item, Stash captures the rush settings in effect at t
 
 ## Can I log something I forgot to track?
 
-Yes. Tap the chart on the main inventory screen to open the history editor. Tap ADD, select the item, enter the amount, and pick the date and time it happened. The entry is added to your chart and rush meter as if you had logged it at that time.
+Yes. Tap the pencil icon next to the chart title on the main inventory screen to open the history editor. Tap ADD, select the item, enter the amount, and pick the date and time it happened. The entry is added to your chart and rush meter as if you had logged it at that time.
 
 Adding a history entry does not change the item's current stock count. If you also need to adjust stock, use the item's TAKE or + buttons separately.
 
