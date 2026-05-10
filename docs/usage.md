@@ -191,55 +191,67 @@ Password reset requires an email address on your account. If you never set one, 
 
 ## Admin panel
 
-Open the menu and tap **FAMILY** (visible only to admins) to manage your family.
+Open the menu and tap **FAMILY** (visible only to admins) to open the admin area. The admin area is a full-screen view with four tabs: **Users**, **Settings**, **Activity**, and **System** (superadmin only).
 
-### Managing members
+### Users tab
 
-The admin panel lists all accounts in your family. For each member you can:
+The Users tab lists every member of your family. Each entry shows the member's emoji, username, role badge (Admin or Member), last login time, and the date their account was created.
 
-- See their username and admin status
-- Delete their account (you cannot delete your own account)
+For each member you can:
+
+- Promote or demote admin status (shield icon)
+- Reset their password (key icon)
+- Delete their account (trash icon, requires confirmation)
+
+You cannot delete your own account.
 
 To create a new account directly without an invite code:
 
-1. Tap **New User** in the admin panel.
-2. Fill in username, password, email (optional), emoji, and whether the account should be admin.
+1. Fill in the **Create User** form at the bottom of the tab.
+2. Enter a username, password, email (optional), emoji, and whether the account should be an admin.
 3. Tap **Create**.
 
-### Invite codes
-
-The admin panel has one or two invite code sections depending on your role:
-
-- **MEMBER INVITES** (cyan): visible to all family admins. Codes here add new users to your family.
-- **NEW FAMILY CODES** (pink): visible only to the superadmin. Codes here let a new user create a brand-new family. See [Superadmin](#superadmin).
-
-Each section lists all active codes. For each code you see:
-
-- The code itself (tap the copy icon to copy it)
-- How many uses are left
-- When it expires
-
-Tap the trash icon to revoke a code before it expires.
+**Invite codes** are in a collapsible section on the Users tab. Tap it to expand the list of active member invite codes. Each code shows the code itself (tap the copy icon to copy it), how many uses remain, and when it expires. Tap the trash icon to revoke a code early.
 
 To generate a new member invite:
 
-1. Tap **Generate Invite** in the **MEMBER INVITES** section.
+1. Expand the invite codes section and tap **Generate Invite**.
 2. Choose max uses: `1`, `5`, or `∞` (unlimited).
 3. Choose expiry: `1h`, `24h`, or `7d`.
-4. Copy the code and share it.
+4. Copy the code and share it with the person joining.
+
+### Settings tab
+
+The Settings tab lets you rename your family. Type a new name and save.
+
+The Settings tab also contains a **Danger Zone** section, visible only to the superadmin, for deleting the family. Deletion requires typing the family name to confirm.
+
+### Activity tab
+
+The Activity tab shows a chronological feed of what your family has been eating and restocking. Each entry shows the timestamp, the user (emoji and name), the item (emoji and name), and the action (consumed or restocked, with the amount).
+
+Use the two dropdown filters to narrow the feed by user or by item. Tap **Load More** at the bottom to page through older entries.
 
 ## Superadmin
 
-The account created during the initial bootstrap is the superadmin. The superadmin can do everything a regular family admin can do, plus one extra thing: create family starter codes that let new users set up their own families on the same instance.
+The account created during the initial bootstrap is the superadmin. The superadmin can do everything a regular family admin can do, plus manage the entire instance across all families.
 
 There is no open registration. The only way to start a new family is for the superadmin to generate a family starter code.
+
+### System tab
+
+The System tab is visible only to the superadmin. It has three sections:
+
+- **Global user list**: all users across all families, sortable by last seen, created date, or family. You can toggle admin status, toggle superadmin status, reset a password, or delete any user from here.
+- **Family overview**: cards for every family on the instance, showing the family name, member count, and item count.
+- **Family starter codes**: create and revoke the codes that let new users set up their own families. Each code shows the code itself, remaining uses, and expiry.
 
 ### Creating a family starter code
 
 1. Log in as the superadmin.
 2. Open the menu and tap **FAMILY**.
-3. Scroll to **NEW FAMILY CODES** (the pink section).
-4. Tap **Generate Code**, choose max uses and expiry, and copy the code.
+3. Go to the **System** tab.
+4. In the **Family Starter Codes** section, tap **Generate Code**, choose max uses and expiry, and copy the code.
 5. Send the code to the person who will run the new family.
 
 ### How the recipient uses it
