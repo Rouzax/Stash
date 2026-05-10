@@ -18,14 +18,13 @@ The next time you open Stash, the bootstrap form appears again.
 !!! warning "This deletes everything"
     All users, items, invite codes, and consumption history are gone. Back up the database first if you might want to recover any of it.
 
-## How do I reset the admin password?
+## How do I reset a password?
 
-There is no password reset email or recovery form. If you lose the admin password, the options are:
+**If you have an email address on your account:** Use the password reset feature on the login screen. Tap "Forgot password?", enter your username, and check your email for a reset link. The link expires after 1 hour. See [Password reset](usage.md#password-reset) for details.
 
-1. If another admin account exists, log in as that account and delete/recreate the locked-out account.
-2. If there is only one admin, reset everything (see above) and start fresh, or copy the database out, edit it with an SQLite tool to update the password hash, and copy it back.
+**If you do not have an email set:** Ask a family admin to reset your password from the admin panel (FAMILY > Users tab > key icon next to your name). The admin sets a new password and tells you what it is. Your existing sessions are logged out.
 
-The simplest path for a home setup is usually option 2 (reset). Your items and history are rarely worth recovering compared to the hassle of editing a database manually.
+**If you are the only admin and have no email:** Reset everything (see above) or copy the database out, edit it with an SQLite tool to update the password hash, and copy it back.
 
 ## Can I run Stash without Docker?
 
