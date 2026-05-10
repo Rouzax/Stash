@@ -1668,3 +1668,25 @@ button {
   color: var(--neon-cyan);
   line-height: 1.5;
 }
+
+/* ============ Mobile portrait ============ */
+
+@media (max-width: 480px) {
+  .chart-header {
+    flex-wrap: wrap;
+  }
+  .chart-title {
+    letter-spacing: 2px;
+  }
+  .chart-toggle {
+    margin-left: auto;
+  }
+
+  .admin-tab span {
+    display: none;
+  }
+  .admin-tab {
+    padding: 10px 12px;
+    gap: 0;
+  }
+}
