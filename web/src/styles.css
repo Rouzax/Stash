@@ -1591,3 +1591,80 @@ button {
   display: flex;
   gap: 12px;
 }
+
+/* Help Modal */
+
+.help-topics {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.help-topic {
+  border-bottom: 1px solid rgba(0, 240, 255, 0.12);
+}
+.help-topic:last-child {
+  border-bottom: none;
+}
+
+.help-topic-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 12px 4px;
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  text-align: left;
+}
+.help-topic-header:hover {
+  color: var(--neon-cyan);
+}
+
+.help-topic-emoji {
+  font-size: 18px;
+  line-height: 1;
+}
+
+.help-topic-title {
+  flex: 1;
+}
+
+.help-topic-body {
+  padding: 0 4px 14px 34px;
+  animation: fade-in 0.2s ease;
+}
+
+.help-p {
+  margin: 0 0 8px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.5;
+}
+
+.help-bullets {
+  margin: 0 0 8px;
+  padding-left: 16px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+}
+.help-bullets li {
+  margin-bottom: 4px;
+}
+
+.help-tip {
+  margin: 8px 0;
+  padding: 8px 12px;
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 8px;
+  font-size: 12px;
+  color: var(--neon-cyan);
+  line-height: 1.5;
+}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { Plus, Edit2, LogOut, Users, KeyRound, MoreVertical, UserCircle } from 'lucide-react';
+import { Plus, Edit2, LogOut, Users, KeyRound, MoreVertical, UserCircle, HelpCircle } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { items as itemsApi, logApi, auth } from './api.js';
 import { SynthBackground } from './background.jsx';
@@ -7,6 +7,7 @@ import ChangePasswordModal from './ChangePasswordModal.jsx';
 import ItemModal from './ItemModal.jsx';
 import UserSettingsModal from './UserSettingsModal.jsx';
 import HistoryModal from './HistoryModal.jsx';
+import HelpModal from './HelpModal.jsx';
 
 const RUSH_FULL = 1;
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -42,6 +43,7 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
   const [error, setError] = useState('');
   const [chartPeriod, setChartPeriod] = useState('year');
   const [historyOpen, setHistoryOpen] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const [, setTick] = useState(0);
 
   const adjustSeq = useRef(new Map());
@@ -302,6 +304,9 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
                 <button className="menu-item" onClick={() => { setMenuOpen(false); setPwOpen(true); }}>
                   <KeyRound size={14} /> PASSWORD
                 </button>
+                <button className="menu-item" onClick={() => { setMenuOpen(false); setHelpOpen(true); }}>
+                  <HelpCircle size={14} /> HELP
+                </button>
                 <button className="menu-item" onClick={() => { setMenuOpen(false); handleLogout(); }}>
                   <LogOut size={14} /> LOG OUT
                 </button>
@@ -472,6 +477,8 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
       )}
 
       {pwOpen && <ChangePasswordModal onClose={() => setPwOpen(false)} />}
+
+      {helpOpen && <HelpModal user={user} onClose={() => setHelpOpen(false)} />}
 
       {error && <div className="toast error">{error}</div>}
     </>
