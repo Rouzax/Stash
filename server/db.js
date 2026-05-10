@@ -154,19 +154,11 @@ db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now());
 db.prepare('DELETE FROM invite_codes WHERE expires_at < ?').run(Date.now());
 db.prepare('DELETE FROM password_reset_tokens WHERE expires_at < ? OR used = 1').run(Date.now());
 
-const cutoff = Date.now() - 400 * 24 * 60 * 60 * 1000;
-db.prepare('DELETE FROM consumption_log WHERE ts < ?').run(cutoff);
-
-// Periodic cleanup: expired sessions (hourly) and old log entries (daily)
+// Periodic cleanup: expired sessions (hourly)
 setInterval(() => {
   db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now());
   db.prepare('DELETE FROM invite_codes WHERE expires_at < ?').run(Date.now());
   db.prepare('DELETE FROM password_reset_tokens WHERE expires_at < ? OR used = 1').run(Date.now());
 }, 60 * 60 * 1000);
-
-setInterval(() => {
-  const c = Date.now() - 400 * 24 * 60 * 60 * 1000;
-  db.prepare('DELETE FROM consumption_log WHERE ts < ?').run(c);
-}, 24 * 60 * 60 * 1000);
 
 export default db;

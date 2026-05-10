@@ -96,5 +96,8 @@ export const notifications = {
 export const logApi = {
   fetch: (days = 365) => api.get(`/api/log?days=${days}`),
   resetRush: () => api.post('/api/log/reset-rush'),
-  clearHistory: () => api.post('/api/log/clear')
+  clearHistory: () => api.post('/api/log/clear'),
+  add: (entry) => api.post('/api/log', entry),
+  update: (id, data) => api.patch(`/api/log/${id}`, data),
+  remove: (id) => api.del(`/api/log/${id}`)
 };

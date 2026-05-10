@@ -99,4 +99,9 @@ export function inviteCode(value) {
   return upper;
 }
 
+export function validId(raw) {
+  const n = Number(raw);
+  return Number.isFinite(n) && n > 0 ? n : null;
+}
+
 export { LIMITS };

@@ -2,16 +2,11 @@ import { db } from '../db.js';
 import { requireAuth } from '../auth.js';
 import {
   nonEmptyString, optionalString, hexColor, unitValue,
-  nonNegativeNumber, rushFactor, onsetMinutes, decayMinutes, LIMITS
+  nonNegativeNumber, rushFactor, onsetMinutes, decayMinutes, validId, LIMITS
 } from '../validation.js';
 import { sendLowStockAlert, sendRushWarning } from '../email.js';
 
 const ITEM_COLUMNS = 'id, name, emoji, color, unit, count, threshold, portion_size, rush_factor, onset_minutes, decay_minutes, position, created_at, updated_at, deleted_at';
-
-const validId = (raw) => {
-  const n = Number(raw);
-  return Number.isFinite(n) && n > 0 ? n : null;
-};
 
 export default async function itemRoutes(app) {
   app.addHook('preHandler', requireAuth);

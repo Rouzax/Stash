@@ -131,6 +131,18 @@ Below the item grid, you see a bar chart of rush units consumed over time. Use t
 
 The chart shows your own consumption only; each person's chart is private to their account.
 
+### Editing history
+
+Tap anywhere on the chart to open the history editor. This shows a scrollable list of all your consumption and restocking entries, most recent first.
+
+You can:
+
+- **Add an entry** you forgot to log. Tap ADD, pick the item, choose consumed or restocked, enter the amount, set the date and time, and save. The entry appears in your chart and rush meter as if you had logged it at that time. Adding an entry does not change the item's current stock count.
+- **Edit an entry** to fix the amount or timestamp. Tap the pencil icon next to any entry.
+- **Delete an entry** that was logged by mistake. Tap the trash icon, then confirm.
+
+Changes take effect immediately: the chart and rush meter update as soon as you save.
+
 ### Clearing chart history
 
 To clear all your consumption history from the charts:

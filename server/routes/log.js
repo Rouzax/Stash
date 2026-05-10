@@ -1,5 +1,6 @@
 import { db } from '../db.js';
 import { requireAuth, requireAdmin } from '../auth.js';
+import { validId } from '../validation.js';
 
 export default async function logRoutes(app) {
   app.addHook('preHandler', requireAuth);
@@ -7,7 +8,7 @@ export default async function logRoutes(app) {
   app.get('/api/log', async (request) => {
     const reqDays = Number(request.query.days);
     const days = Number.isFinite(reqDays)
-      ? Math.min(400, Math.max(1, Math.floor(reqDays)))
+      ? Math.max(1, Math.floor(reqDays))
       : 7;
     const since = Date.now() - days * 24 * 60 * 60 * 1000;
     return db.prepare(`
@@ -70,5 +71,82 @@ export default async function logRoutes(app) {
     db.prepare('UPDATE users SET rush_reset_at = ? WHERE id = ?')
       .run(now, request.session.user_id);
     return { ok: true, rush_reset_at: now };
+  });
+
+  app.post('/api/log', async (request, reply) => {
+    const itemId = validId(request.body?.item_id);
+    if (!itemId) return reply.code(400).send({ error: 'invalid item_id' });
+    const delta = Number(request.body?.delta);
+    if (!Number.isFinite(delta) || delta === 0) {
+      return reply.code(400).send({ error: 'invalid delta' });
+    }
+    const ts = Number(request.body?.ts);
+    if (!Number.isFinite(ts) || ts <= 0 || ts > Date.now() + 60000) {
+      return reply.code(400).send({ error: 'invalid timestamp' });
+    }
+
+    const item = db.prepare(
+      'SELECT * FROM items WHERE id = ? AND family_id = ? AND deleted_at IS NULL'
+    ).get(itemId, request.session.family_id);
+    if (!item) return reply.code(404).send({ error: 'item not found' });
+
+    const snapRf = delta < 0 ? item.rush_factor : null;
+    const snapPs = delta < 0 ? item.portion_size : null;
+    const snapOm = delta < 0 ? item.onset_minutes : null;
+    const snapDm = delta < 0 ? item.decay_minutes : null;
+
+    const result = db.prepare(
+      'INSERT INTO consumption_log (user_id, family_id, item_id, delta, ts, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
+    ).run(request.session.user_id, request.session.family_id, itemId, delta, Math.floor(ts), snapRf, snapPs, snapOm, snapDm);
+
+    return db.prepare(
+      'SELECT id, user_id, item_id, delta, ts, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes FROM consumption_log WHERE id = ?'
+    ).get(result.lastInsertRowid);
+  });
+
+  app.patch('/api/log/:id', async (request, reply) => {
+    const id = validId(request.params.id);
+    if (!id) return reply.code(400).send({ error: 'invalid id' });
+
+    const entry = db.prepare(
+      'SELECT * FROM consumption_log WHERE id = ? AND user_id = ?'
+    ).get(id, request.session.user_id);
+    if (!entry) return reply.code(404).send({ error: 'not found' });
+
+    let newDelta = entry.delta;
+    let newTs = entry.ts;
+
+    if (request.body?.delta !== undefined) {
+      const d = Number(request.body.delta);
+      if (!Number.isFinite(d) || d === 0) {
+        return reply.code(400).send({ error: 'invalid delta' });
+      }
+      newDelta = d;
+    }
+    if (request.body?.ts !== undefined) {
+      const t = Number(request.body.ts);
+      if (!Number.isFinite(t) || t <= 0 || t > Date.now() + 60000) {
+        return reply.code(400).send({ error: 'invalid timestamp' });
+      }
+      newTs = Math.floor(t);
+    }
+
+    db.prepare(
+      'UPDATE consumption_log SET delta = ?, ts = ? WHERE id = ? AND user_id = ?'
+    ).run(newDelta, newTs, id, request.session.user_id);
+
+    return db.prepare(
+      'SELECT id, user_id, item_id, delta, ts, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes FROM consumption_log WHERE id = ?'
+    ).get(id);
+  });
+
+  app.delete('/api/log/:id', async (request, reply) => {
+    const id = validId(request.params.id);
+    if (!id) return reply.code(400).send({ error: 'invalid id' });
+    const result = db.prepare(
+      'DELETE FROM consumption_log WHERE id = ? AND user_id = ?'
+    ).run(id, request.session.user_id);
+    if (result.changes === 0) return reply.code(404).send({ error: 'not found' });
+    return { ok: true };
   });
 }

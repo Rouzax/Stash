@@ -111,6 +111,12 @@ The item row is kept in the database with a deletion timestamp. There is current
 
 No. Every time you take an item, Stash captures the rush settings in effect at that moment (rush factor, portion size, onset, and decay). Charts and rush calculations always use those captured values for past entries, not the item's current settings. Updating an item's rush configuration only affects consumption logged from that point forward.
 
+## Can I log something I forgot to track?
+
+Yes. Tap the chart on the main inventory screen to open the history editor. Tap ADD, select the item, enter the amount, and pick the date and time it happened. The entry is added to your chart and rush meter as if you had logged it at that time.
+
+Adding a history entry does not change the item's current stock count. If you also need to adjust stock, use the item's TAKE or + buttons separately.
+
 ## Why do my charts show 0 after a fresh install?
 
 Charts are built from the consumption log, which only has entries from the moment you started taking items with this installation. If you imported a database backup, the log entries from the backup will appear in the charts.

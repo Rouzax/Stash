@@ -6,6 +6,7 @@ import { SynthBackground } from './background.jsx';
 import ChangePasswordModal from './ChangePasswordModal.jsx';
 import ItemModal from './ItemModal.jsx';
 import UserSettingsModal from './UserSettingsModal.jsx';
+import HistoryModal from './HistoryModal.jsx';
 
 const RUSH_FULL = 1;
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -40,6 +41,7 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [error, setError] = useState('');
   const [chartPeriod, setChartPeriod] = useState('year');
+  const [historyOpen, setHistoryOpen] = useState(false);
   const [, setTick] = useState(0);
 
   const adjustSeq = useRef(new Map());
@@ -377,7 +379,7 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
           </div>
         )}
 
-        <div className="chart-section">
+        <div className="chart-section" onClick={() => setHistoryOpen(true)} style={{ cursor: 'pointer' }}>
           <div className="chart-header">
             <div className="chart-title">
               ◢ {chartPeriod === 'year' ? '12-MONTH' : '7-DAY'} RUSH % ◣
@@ -385,11 +387,11 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
             <div className="chart-toggle">
               <button
                 className={chartPeriod === 'week' ? 'active' : ''}
-                onClick={() => setChartPeriod('week')}
+                onClick={(e) => { e.stopPropagation(); setChartPeriod('week'); }}
               >WEEK</button>
               <button
                 className={chartPeriod === 'year' ? 'active' : ''}
-                onClick={() => setChartPeriod('year')}
+                onClick={(e) => { e.stopPropagation(); setChartPeriod('year'); }}
               >YEAR</button>
             </div>
           </div>
@@ -421,9 +423,20 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
           ) : (
             <div className="chart-empty">NO {chartPeriod === 'year' ? 'YEAR' : 'WEEK'} DATA YET</div>
           )}
+          <div className="chart-tap-hint">TAP TO EDIT HISTORY</div>
         </div>
 
       </div>
+
+      {historyOpen && (
+        <HistoryModal
+          log={log}
+          items={items}
+          itemsById={itemsById}
+          onLogChange={setLog}
+          onClose={() => setHistoryOpen(false)}
+        />
+      )}
 
       <button
         className="fab"
