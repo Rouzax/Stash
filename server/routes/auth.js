@@ -181,7 +181,7 @@ export default async function authRoutes(app) {
     };
   });
 
-  // Admin: delete user (must be same family, cannot delete self)
+  // Admin: delete user (same family, or any family for superadmin)
   app.delete('/api/auth/users/:id', { preHandler: requireAdmin }, async (request, reply) => {
     const id = Number(request.params.id);
     if (!Number.isFinite(id) || id <= 0) {
@@ -190,9 +190,14 @@ export default async function authRoutes(app) {
     if (id === request.session.user_id) {
       return reply.code(400).send({ error: 'cannot delete yourself' });
     }
-    const result = db.prepare(
-      'DELETE FROM users WHERE id = ? AND family_id = ?'
-    ).run(id, request.session.family_id);
+    let result;
+    if (request.session.is_superadmin) {
+      result = db.prepare('DELETE FROM users WHERE id = ?').run(id);
+    } else {
+      result = db.prepare(
+        'DELETE FROM users WHERE id = ? AND family_id = ?'
+      ).run(id, request.session.family_id);
+    }
     if (result.changes === 0) {
       return reply.code(404).send({ error: 'not found' });
     }
@@ -254,6 +259,50 @@ export default async function authRoutes(app) {
     }
 
     return { ok: true };
+  });
+
+  // Superadmin: toggle superadmin on another user
+  app.patch('/api/auth/users/:id/superadmin', { preHandler: requireSuperadmin }, async (request, reply) => {
+    const id = Number(request.params.id);
+    if (!Number.isFinite(id) || id <= 0) {
+      return reply.code(400).send({ error: 'invalid id' });
+    }
+    const { is_superadmin } = request.body || {};
+    if (is_superadmin === undefined) {
+      return reply.code(400).send({ error: 'is_superadmin required' });
+    }
+
+    if (!is_superadmin && id === request.session.user_id) {
+      const count = db.prepare('SELECT COUNT(*) as n FROM users WHERE is_superadmin = 1').get().n;
+      if (count <= 1) {
+        return reply.code(400).send({ error: 'cannot remove the last superadmin' });
+      }
+    }
+
+    const target = db.prepare('SELECT id FROM users WHERE id = ?').get(id);
+    if (!target) {
+      return reply.code(404).send({ error: 'not found' });
+    }
+
+    db.prepare('UPDATE users SET is_superadmin = ? WHERE id = ?').run(is_superadmin ? 1 : 0, id);
+    return { ok: true };
+  });
+
+  // Superadmin: list all users across all families
+  app.get('/api/auth/users/all', { preHandler: requireSuperadmin }, async () => {
+    return db.prepare(`
+      SELECT u.id, u.username, u.is_admin, u.is_superadmin, u.family_id,
+             u.email, u.emoji, u.color, u.last_login_at, u.created_at,
+             f.name AS family_name
+      FROM users u
+      JOIN families f ON f.id = u.family_id
+      ORDER BY u.created_at ASC
+      LIMIT 10000
+    `).all().map(u => ({
+      ...u,
+      is_admin: !!u.is_admin,
+      is_superadmin: !!u.is_superadmin
+    }));
   });
 
   // Change own password
@@ -446,13 +495,18 @@ export default async function authRoutes(app) {
     return normalize(familyCodes);
   });
 
-  // Admin: revoke invite code
+  // Admin: revoke invite code (same family, or any family for superadmin)
   app.delete('/api/auth/invites/:id', { preHandler: requireAdmin }, async (request, reply) => {
     const id = Number(request.params.id);
     if (!Number.isFinite(id) || id <= 0) return reply.code(400).send({ error: 'invalid id' });
-    const result = db.prepare(
-      'DELETE FROM invite_codes WHERE id = ? AND family_id = ?'
-    ).run(id, request.session.family_id);
+    let result;
+    if (request.session.is_superadmin) {
+      result = db.prepare('DELETE FROM invite_codes WHERE id = ?').run(id);
+    } else {
+      result = db.prepare(
+        'DELETE FROM invite_codes WHERE id = ? AND family_id = ?'
+      ).run(id, request.session.family_id);
+    }
     if (result.changes === 0) return reply.code(404).send({ error: 'not found' });
     return { ok: true };
   });
