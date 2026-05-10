@@ -4,6 +4,7 @@ import { renderLowStockAlert } from './templates/lowStock.js';
 import { renderWeeklyDigest } from './templates/weeklyDigest.js';
 import { renderRushWarning } from './templates/rushWarning.js';
 import { renderPasswordReset } from './templates/passwordReset.js';
+import { renderTestEmail } from './templates/testEmail.js';
 
 const SMTP_HOST = process.env.SMTP_HOST;
 const SMTP_PORT = Number(process.env.SMTP_PORT) || 587;
@@ -111,11 +112,12 @@ export function sendPasswordReset(user, resetUrl) {
 
 export async function sendTestEmail(toAddress) {
   if (!transporter) throw new Error('SMTP not configured');
+  const { subject, html, text } = renderTestEmail();
   await transporter.sendMail({
     from: SMTP_FROM,
     to: toAddress,
-    subject: '🧪 Stash test email',
-    text: 'If you can read this, email notifications are working.',
-    html: '<p>If you can read this, email notifications are working.</p>',
+    subject,
+    html,
+    text,
   });
 }
