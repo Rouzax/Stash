@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Monoton&family=Orbitron:wght@400;700&display=swap');
+
 :root {
   --md-primary-fg-color: #ff10f0;
   --md-primary-bg-color: #0d0221;
@@ -18,6 +20,17 @@
   box-shadow: 0 0 20px rgba(255, 16, 240, 0.3);
 }
 
+.md-header__topic {
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 2px;
+}
+
+.md-tabs__link {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+}
+
 .md-tabs {
   background: #0d0221;
   border-bottom: 1px solid rgba(255, 16, 240, 0.3);
@@ -34,18 +47,24 @@
 }
 
 .md-typeset h1 {
+  font-family: 'Orbitron', sans-serif;
   color: #ff10f0;
   text-shadow: 0 0 10px rgba(255, 16, 240, 0.5);
+  letter-spacing: 2px;
 }
 
 .md-typeset h2 {
+  font-family: 'Orbitron', sans-serif;
   color: #00f0ff;
   border-bottom: 1px solid rgba(0, 240, 255, 0.3);
   padding-bottom: 0.3em;
+  letter-spacing: 1px;
 }
 
 .md-typeset h3 {
+  font-family: 'Orbitron', sans-serif;
   color: #ff006e;
+  letter-spacing: 1px;
 }
 
 .md-typeset code {
@@ -70,6 +89,9 @@
 }
 
 .md-typeset table:not([class]) th {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 1px;
   background: rgba(255, 16, 240, 0.15);
   color: #00f0ff;
 }
@@ -84,6 +106,7 @@
 }
 
 .hero h1 {
+  font-family: 'Monoton', cursive;
   font-size: 3.5rem;
   background: linear-gradient(180deg, #fff 0%, #ff10f0 50%, #8338ec 100%);
   -webkit-background-clip: text;
@@ -91,6 +114,7 @@
   color: transparent;
   filter: drop-shadow(0 0 10px rgba(255, 16, 240, 0.7));
   margin-bottom: 0.5rem;
+  letter-spacing: 4px;
 }
 
 .hero .tagline {
