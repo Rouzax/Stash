@@ -9,6 +9,7 @@ dist/
 *.log
 .claude/
 CLAUDE.md
+docs/superpowers/
 test-results/
 playwright-report/
 site/
