@@ -1332,3 +1332,128 @@ button {
   padding-top: 20px;
   border-top: 1px solid rgba(255, 0, 110, 0.3);
 }
+
+/* ============ Activity Feed ============ */
+
+.activity-filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.activity-filter {
+  flex: 1;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 6px;
+  color: white;
+  padding: 8px 10px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+.activity-filter:focus {
+  outline: none;
+  border-color: var(--neon-cyan);
+}
+.activity-filter option {
+  background: #1d0c3f;
+  color: white;
+}
+
+.activity-feed {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.activity-entry {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  border-left: 3px solid var(--neon-cyan);
+}
+.activity-entry.consumption {
+  border-left-color: var(--neon-pink);
+}
+.activity-entry.restock {
+  border-left-color: #06ffa5;
+}
+
+.activity-time {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.4);
+  grid-column: 1 / -1;
+}
+
+.activity-user {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.activity-emoji {
+  font-size: 16px;
+}
+
+.activity-action {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ============ System Tab ============ */
+
+.system-sort {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+}
+
+.user-sa-tag {
+  display: inline-block;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 8px;
+  letter-spacing: 1px;
+  background: rgba(255, 16, 240, 0.2);
+  color: var(--neon-magenta);
+  border: 1px solid rgba(255, 16, 240, 0.4);
+  border-radius: 4px;
+  padding: 1px 5px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.family-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.family-row {
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 240, 255, 0.15);
+}
+
+.family-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: var(--neon-cyan);
+  margin-bottom: 4px;
+}
+
+.family-stats {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+}
