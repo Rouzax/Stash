@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { auth, setUnauthorizedHandler } from './api.js';
 import Login from './Login.jsx';
 import Inventory from './Inventory.jsx';
+import AdminArea from './AdminArea.jsx';
 import ResetPassword from './ResetPassword.jsx';
 import { SynthBackground } from './background.jsx';
 
@@ -10,10 +11,12 @@ export default function App() {
   const [needsBootstrap, setNeedsBootstrap] = useState(false);
   const [loading, setLoading] = useState(true);
   const [bootError, setBootError] = useState('');
+  const [view, setView] = useState('inventory');
 
   useEffect(() => {
     setUnauthorizedHandler(() => {
       setUser(null);
+      setView('inventory');
     });
     return () => setUnauthorizedHandler(null);
   }, []);
@@ -54,6 +57,7 @@ export default function App() {
 
   const handleLogout = () => {
     setUser(null);
+    setView('inventory');
   };
 
   if (window.location.pathname === '/reset-password') {
@@ -104,10 +108,20 @@ export default function App() {
     );
   }
 
+  if (view === 'admin' && user.is_admin) {
+    return (
+      <>
+        <SynthBackground />
+        <AdminArea user={user} onBack={() => setView('inventory')} />
+      </>
+    );
+  }
+
   return (
     <Inventory
       user={user}
       onLogout={handleLogout}
+      onNavigate={(v) => setView(v)}
     />
   );
 }

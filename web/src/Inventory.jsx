@@ -3,7 +3,6 @@ import { Plus, Edit2, LogOut, Users, KeyRound, MoreVertical, UserCircle } from '
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { items as itemsApi, logApi, auth } from './api.js';
 import { SynthBackground } from './background.jsx';
-import AdminPanel from './AdminPanel.jsx';
 import ChangePasswordModal from './ChangePasswordModal.jsx';
 import ItemModal from './ItemModal.jsx';
 import UserSettingsModal from './UserSettingsModal.jsx';
@@ -28,7 +27,7 @@ const formatDelta = (n) => {
   return (n > 0 ? '+' : '−') + formatCount(abs);
 };
 
-export default function Inventory({ user: initialUser, onLogout }) {
+export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
   const [user, setUser] = useState(initialUser);
   const [items, setItems] = useState([]);
   const [log, setLog] = useState([]);
@@ -37,7 +36,6 @@ export default function Inventory({ user: initialUser, onLogout }) {
   const [editingId, setEditingId] = useState(null);
   const [floats, setFloats] = useState([]);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [adminOpen, setAdminOpen] = useState(false);
   const [pwOpen, setPwOpen] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [error, setError] = useState('');
@@ -277,7 +275,7 @@ export default function Inventory({ user: initialUser, onLogout }) {
                   <UserCircle size={14} /> PROFILE
                 </button>
                 {user.is_admin && (
-                  <button className="menu-item" onClick={() => { setMenuOpen(false); setAdminOpen(true); }}>
+                  <button className="menu-item" onClick={() => { setMenuOpen(false); onNavigate('admin'); }}>
                     <Users size={14} /> FAMILY
                   </button>
                 )}
@@ -424,10 +422,6 @@ export default function Inventory({ user: initialUser, onLogout }) {
           onDelete={deleteItem}
           onClose={() => { setShowItemModal(false); setEditingId(null); }}
         />
-      )}
-
-      {adminOpen && (
-        <AdminPanel currentUserId={user.id} isSuperadmin={user.is_superadmin} onClose={() => setAdminOpen(false)} />
       )}
 
       {settingsOpen && (
