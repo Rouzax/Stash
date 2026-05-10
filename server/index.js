@@ -43,6 +43,9 @@ app.addHook('onSend', async (_request, reply) => {
   reply.header('Referrer-Policy', 'strict-origin-when-cross-origin');
   reply.header('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
   reply.header('Content-Security-Policy', "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'");
+  if (BEHIND_PROXY) {
+    reply.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
 });
 
 await app.register(authRoutes);

@@ -1,4 +1,5 @@
 import { wrapTemplate, COLORS } from './layout.js';
+import { escapeHtml } from './html.js';
 
 export function renderWeeklyDigest(familyStats) {
   const { logs, lowStockItems } = familyStats;
@@ -51,9 +52,9 @@ export function renderWeeklyDigest(familyStats) {
     const rows = topItems.map(it => {
       const topUser = [...it.users.entries()].sort((a, b) => b[1] - a[1])[0];
       return `<tr>
-        <td style="padding: 8px 12px; border-bottom: 1px solid ${COLORS.border}; color: ${COLORS.text};">${it.emoji} ${it.name}</td>
-        <td style="padding: 8px 12px; border-bottom: 1px solid ${COLORS.border}; color: ${COLORS.cyan}; text-align: right;">${Math.round(it.total * 10) / 10} ${it.unit}</td>
-        <td style="padding: 8px 12px; border-bottom: 1px solid ${COLORS.border}; color: ${COLORS.muted}; text-align: right;">${topUser ? topUser[0] : ''}</td>
+        <td style="padding: 8px 12px; border-bottom: 1px solid ${COLORS.border}; color: ${COLORS.text};">${escapeHtml(it.emoji)} ${escapeHtml(it.name)}</td>
+        <td style="padding: 8px 12px; border-bottom: 1px solid ${COLORS.border}; color: ${COLORS.cyan}; text-align: right;">${Math.round(it.total * 10) / 10} ${escapeHtml(it.unit)}</td>
+        <td style="padding: 8px 12px; border-bottom: 1px solid ${COLORS.border}; color: ${COLORS.muted}; text-align: right;">${topUser ? escapeHtml(topUser[0]) : ''}</td>
       </tr>`;
     }).join('');
 
@@ -72,7 +73,7 @@ export function renderWeeklyDigest(familyStats) {
   let lowStockHtml = '';
   if (lowStockItems.length > 0) {
     const items = lowStockItems.map(it =>
-      `<li style="padding: 4px 0; color: ${COLORS.text};">${it.emoji || ''} ${it.name} - <span style="color: ${COLORS.pink};">${it.count} ${it.unit || 'pcs'}</span></li>`
+      `<li style="padding: 4px 0; color: ${COLORS.text};">${escapeHtml(it.emoji)} ${escapeHtml(it.name)} - <span style="color: ${COLORS.pink};">${it.count} ${escapeHtml(it.unit) || 'pcs'}</span></li>`
     ).join('');
     lowStockHtml = `
       <h3 style="margin: 24px 0 8px; font-size: 14px; color: ${COLORS.pink}; letter-spacing: 2px;">NEEDS RESTOCKING</h3>

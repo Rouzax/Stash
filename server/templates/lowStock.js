@@ -1,11 +1,13 @@
 import { wrapTemplate, ctaButton, COLORS } from './layout.js';
+import { escapeHtml } from './html.js';
 
 const APP_URL = process.env.APP_URL || '';
 
 export function renderLowStockAlert(item) {
-  const emoji = item.emoji || '';
-  const display = `${emoji} ${item.name}`.trim();
-  const unit = item.unit || 'pcs';
+  const emoji = escapeHtml(item.emoji);
+  const name = escapeHtml(item.name);
+  const display = `${emoji} ${name}`.trim();
+  const unit = escapeHtml(item.unit) || 'pcs';
 
   const bodyHtml = `
     <h2 style="margin: 0 0 16px; font-size: 20px; color: ${COLORS.pink};">Running low!</h2>

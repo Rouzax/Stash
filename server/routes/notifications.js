@@ -39,7 +39,8 @@ export default async function notificationRoutes(app) {
       await sendTestEmail(email);
       return { ok: true };
     } catch (e) {
-      return reply.code(500).send({ error: e.message });
+      request.log.error({ err: e }, 'test email failed');
+      return reply.code(500).send({ error: 'failed to send test email' });
     }
   });
 }

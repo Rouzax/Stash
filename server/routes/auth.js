@@ -194,6 +194,13 @@ export default async function authRoutes(app) {
     }
     let result;
     if (request.session.is_superadmin) {
+      const target = db.prepare('SELECT is_superadmin FROM users WHERE id = ?').get(id);
+      if (target?.is_superadmin) {
+        const count = db.prepare('SELECT COUNT(*) as n FROM users WHERE is_superadmin = 1').get().n;
+        if (count <= 1) {
+          return reply.code(400).send({ error: 'cannot delete the last superadmin' });
+        }
+      }
       result = db.prepare('DELETE FROM users WHERE id = ?').run(id);
     } else {
       result = db.prepare(
@@ -256,7 +263,7 @@ export default async function authRoutes(app) {
     params.push(id);
     db.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`).run(...params);
 
-    if (password) {
+    if (is_admin !== undefined || password) {
       db.prepare('DELETE FROM sessions WHERE user_id = ?').run(id);
     }
 
@@ -287,6 +294,7 @@ export default async function authRoutes(app) {
     }
 
     db.prepare('UPDATE users SET is_superadmin = ? WHERE id = ?').run(is_superadmin ? 1 : 0, id);
+    db.prepare('DELETE FROM sessions WHERE user_id = ?').run(id);
     return { ok: true };
   });
 
@@ -449,9 +457,12 @@ export default async function authRoutes(app) {
 
     const generateCode = () => {
       const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      const bytes = crypto.randomBytes(8);
       let code = '';
-      for (let i = 0; i < 8; i++) code += chars[bytes[i] % chars.length];
+      for (let i = 0; i < 8; i++) {
+        let byte;
+        do { byte = crypto.randomBytes(1)[0]; } while (byte >= 248);
+        code += chars[byte % chars.length];
+      }
       return code;
     };
 
