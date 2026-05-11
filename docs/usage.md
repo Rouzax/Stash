@@ -187,7 +187,7 @@ Stash can send email notifications when certain events happen. Notifications req
 2. Open your profile settings and scroll to the **NOTIFICATIONS** section.
 3. Toggle on the notifications you want:
    - **Low stock alerts**: sends an email when an item drops to or below its threshold after someone takes one. Sent to all opted-in family members, not just the person who took the item. Rate-limited to one alert per item every 6 hours.
-   - **Weekly digest**: a Monday morning summary of the week's consumption. Includes top consumed items, who consumed the most, items currently below threshold, and peak snack day.
+   - **Weekly digest**: a Monday morning summary of the week's consumption. Includes top consumed items with a per-user breakdown, items currently below threshold, and peak snack day.
    - **Rush meter warnings**: sends you an email when your personal rush meter crosses 80%. Rate-limited to one warning every 4 hours.
 
 Notifications are per-user. Each person chooses which types they want. If SMTP is not configured on the server, the toggle section still appears but emails are silently skipped.

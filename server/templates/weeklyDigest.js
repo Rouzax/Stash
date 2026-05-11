@@ -50,12 +50,17 @@ export function renderWeeklyDigest(familyStats) {
   let itemsHtml = '';
   if (topItems.length > 0) {
     const rows = topItems.map(it => {
-      const topUser = [...it.users.entries()].sort((a, b) => b[1] - a[1])[0];
+      const sortedUsers = [...it.users.entries()].sort((a, b) => b[1] - a[1]);
+      const userRows = sortedUsers.map(([name, amount]) =>
+        `<tr>
+          <td style="padding: 4px 12px 4px 28px; border-bottom: 1px solid ${COLORS.border}; color: ${COLORS.muted}; font-size: 13px;">${escapeHtml(name)}</td>
+          <td style="padding: 4px 12px; border-bottom: 1px solid ${COLORS.border}; color: ${COLORS.muted}; font-size: 13px; text-align: right;">${Math.round(amount * 10) / 10} ${escapeHtml(it.unit)}</td>
+        </tr>`
+      ).join('');
       return `<tr>
         <td style="padding: 8px 12px; border-bottom: 1px solid ${COLORS.border}; color: ${COLORS.text};">${escapeHtml(it.emoji)} ${escapeHtml(it.name)}</td>
         <td style="padding: 8px 12px; border-bottom: 1px solid ${COLORS.border}; color: ${COLORS.cyan}; text-align: right;">${Math.round(it.total * 10) / 10} ${escapeHtml(it.unit)}</td>
-        <td style="padding: 8px 12px; border-bottom: 1px solid ${COLORS.border}; color: ${COLORS.muted}; text-align: right;">${topUser ? escapeHtml(topUser[0]) : ''}</td>
-      </tr>`;
+      </tr>${userRows}`;
     }).join('');
 
     itemsHtml = `
@@ -64,7 +69,6 @@ export function renderWeeklyDigest(familyStats) {
         <tr>
           <th style="padding: 8px 12px; text-align: left; color: ${COLORS.muted}; font-size: 11px; letter-spacing: 1px;">ITEM</th>
           <th style="padding: 8px 12px; text-align: right; color: ${COLORS.muted}; font-size: 11px; letter-spacing: 1px;">AMOUNT</th>
-          <th style="padding: 8px 12px; text-align: right; color: ${COLORS.muted}; font-size: 11px; letter-spacing: 1px;">TOP SNACKER</th>
         </tr>
         ${rows}
       </table>`;
@@ -95,8 +99,11 @@ export function renderWeeklyDigest(familyStats) {
   if (topItems.length > 0) {
     bodyText += 'TOP CONSUMED:\n';
     for (const it of topItems) {
-      const topUser = [...it.users.entries()].sort((a, b) => b[1] - a[1])[0];
-      bodyText += `  ${it.emoji} ${it.name}: ${Math.round(it.total * 10) / 10} ${it.unit} (top: ${topUser ? topUser[0] : 'n/a'})\n`;
+      bodyText += `  ${it.emoji} ${it.name}: ${Math.round(it.total * 10) / 10} ${it.unit}\n`;
+      const sortedUsers = [...it.users.entries()].sort((a, b) => b[1] - a[1]);
+      for (const [name, amount] of sortedUsers) {
+        bodyText += `    ${name}: ${Math.round(amount * 10) / 10} ${it.unit}\n`;
+      }
     }
   }
   if (lowStockItems.length > 0) {

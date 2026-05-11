@@ -118,6 +118,8 @@ const shutdown = async (signal) => {
   app.log.info(`${signal} received, shutting down...`);
   try {
     await app.close();
+    db.pragma('wal_checkpoint(TRUNCATE)');
+    db.close();
     process.exit(0);
   } catch (err) {
     app.log.error(err);

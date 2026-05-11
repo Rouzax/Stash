@@ -101,7 +101,7 @@ export const helpTopics = [
       { type: 'p', text: 'Available notifications (requires SMTP on the server + email on your account):' },
       { type: 'bullets', items: [
         'Low stock alerts: when an item hits threshold',
-        'Weekly digest: Monday summary of the week\'s activity',
+        'Weekly digest: Monday summary with per-user consumption breakdown',
         'Rush meter warnings: when your meter crosses 80%',
       ]},
     ]
