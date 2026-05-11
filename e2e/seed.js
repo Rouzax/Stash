@@ -158,5 +158,12 @@ export async function seedDatabase() {
       .run(userId, f1.lastInsertRowid, itemId, delta, now - (i * 3600000));
   }
 
+  // Invite codes for registration e2e tests
+  db.prepare(`INSERT INTO invite_codes (code, family_id, created_by, max_uses, use_count, is_family_starter, expires_at, created_at)
+    VALUES (?, ?, ?, ?, 0, 0, ?, ?)`).run('TESTJOIN', f1.lastInsertRowid, u1.lastInsertRowid, 10, now + 86400000, now);
+
+  db.prepare(`INSERT INTO invite_codes (code, family_id, created_by, max_uses, use_count, is_family_starter, expires_at, created_at)
+    VALUES (?, ?, ?, ?, 0, 1, ?, ?)`).run('NEWHOME0', f1.lastInsertRowid, u1.lastInsertRowid, 10, now + 86400000, now);
+
   db.close();
 }
