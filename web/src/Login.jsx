@@ -42,15 +42,15 @@ export default function Login({ mode, onAuth }) {
       const result = await auth.checkInvite(inviteCodeVal.trim());
       if (!result.valid) {
         setError('Invalid or expired invite code');
-        setCheckingCode(false);
         return;
       }
       setInviteInfo({ code: inviteCodeVal.trim(), is_family_starter: result.is_family_starter, family_name: result.family_name });
       setError('');
     } catch {
       setError('Invalid or expired invite code');
+    } finally {
+      setCheckingCode(false);
     }
-    setCheckingCode(false);
   };
 
   const submit = async () => {
