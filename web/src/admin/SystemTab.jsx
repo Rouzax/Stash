@@ -1,16 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Trash2, Plus, Shield, Copy, Check, X, KeyRound, Star } from 'lucide-react';
 import { auth, admin } from '../api.js';
-
-const formatTimeAgo = (ts) => {
-  if (!ts) return 'never';
-  const diff = Date.now() - ts;
-  if (diff < 60000) return 'just now';
-  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-  if (diff < 2592000000) return `${Math.floor(diff / 86400000)}d ago`;
-  return new Date(ts).toLocaleDateString();
-};
+import { formatTimeAgo } from '../format.js';
 
 const formatExpiry = (ts) => {
   const diff = ts - Date.now();
@@ -21,7 +12,7 @@ const formatExpiry = (ts) => {
   return `${Math.floor(hours / 24)}d`;
 };
 
-export default function SystemTab({ currentUserId }) {
+export default function SystemTab({ currentUserId, exactDates }) {
   const [allUsers, setAllUsers] = useState([]);
   const [families, setFamilies] = useState([]);
   const [invites, setInvites] = useState([]);
@@ -185,7 +176,7 @@ export default function SystemTab({ currentUserId }) {
                 {' · '}
                 {u.is_admin ? 'Admin' : 'Member'}
                 {' · '}
-                {formatTimeAgo(u.last_login_at)}
+                {formatTimeAgo(u.last_login_at, exactDates)}
               </div>
             </div>
             {u.id !== currentUserId && (

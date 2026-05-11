@@ -30,7 +30,7 @@ export default async function authRoutes(app) {
       return reply.code(400).send({ error: 'username and password required' });
     }
     const user = db.prepare(
-      'SELECT id, username, password_hash, is_admin, is_superadmin, family_id, email, emoji, color FROM users WHERE username = ?'
+      'SELECT id, username, password_hash, is_admin, is_superadmin, family_id, email, emoji, color, exact_dates, show_background FROM users WHERE username = ?'
     ).get(u);
     if (!user) {
       await hashPassword('dummy-password-for-timing');
@@ -48,7 +48,9 @@ export default async function authRoutes(app) {
       id: user.id, username: user.username, is_admin: !!user.is_admin,
       is_superadmin: !!user.is_superadmin,
       family_id: user.family_id, family_name: family?.name,
-      email: user.email, emoji: user.emoji, color: user.color
+      email: user.email, emoji: user.emoji, color: user.color,
+      exact_dates: !!user.exact_dates,
+      show_background: user.show_background !== 0
     };
   });
 
@@ -81,7 +83,9 @@ export default async function authRoutes(app) {
       email: session.email,
       emoji: session.emoji,
       color: session.color,
-      rush_reset_at: session.rush_reset_at || 0
+      rush_reset_at: session.rush_reset_at || 0,
+      exact_dates: !!session.exact_dates,
+      show_background: session.show_background !== 0
     };
   });
 
@@ -345,31 +349,39 @@ export default async function authRoutes(app) {
     return { ok: true };
   });
 
-  // Update own profile — only emoji, color, email are mutable
+  // Update own profile
   app.patch('/api/auth/me', { preHandler: requireAuth }, async (request, reply) => {
-    const { emoji: rawEmoji, color: rawColor, email: rawEmail } = request.body || {};
+    const { emoji: rawEmoji, color: rawColor, email: rawEmail, exact_dates: rawExactDates, show_background: rawShowBg } = request.body || {};
     const emoji = rawEmoji !== undefined ? optionalString(rawEmoji, LIMITS.emoji, null) : null;
     const color = rawColor !== undefined ? hexColor(rawColor, null) : null;
     const email = rawEmail !== undefined ? emailAddress(rawEmail) : undefined;
+    const exactDates = rawExactDates !== undefined ? (rawExactDates ? 1 : 0) : undefined;
+    const showBackground = rawShowBg !== undefined ? (rawShowBg ? 1 : 0) : undefined;
 
     const updates = [];
     const params = [];
     if (emoji !== null) { updates.push('emoji = ?'); params.push(emoji); }
     if (color !== null) { updates.push('color = ?'); params.push(color); }
     if (email !== undefined) { updates.push('email = ?'); params.push(email); }
+    if (exactDates !== undefined) { updates.push('exact_dates = ?'); params.push(exactDates); }
+    if (showBackground !== undefined) { updates.push('show_background = ?'); params.push(showBackground); }
     if (updates.length === 0) return reply.code(400).send({ error: 'nothing to update' });
 
     params.push(request.session.user_id);
     db.prepare(`UPDATE users SET ${updates.join(', ')} WHERE id = ?`).run(...params);
 
     const user = db.prepare(
-      'SELECT id, username, is_admin, family_id, email, emoji, color FROM users WHERE id = ?'
+      'SELECT id, username, is_admin, is_superadmin, family_id, email, emoji, color, rush_reset_at, exact_dates, show_background FROM users WHERE id = ?'
     ).get(request.session.user_id);
     const family = db.prepare('SELECT name FROM families WHERE id = ?').get(user.family_id);
     return {
       id: user.id, username: user.username, is_admin: !!user.is_admin,
+      is_superadmin: !!user.is_superadmin,
       family_id: user.family_id, family_name: family?.name,
-      email: user.email, emoji: user.emoji, color: user.color
+      rush_reset_at: user.rush_reset_at || 0,
+      email: user.email, emoji: user.emoji, color: user.color,
+      exact_dates: !!user.exact_dates,
+      show_background: user.show_background !== 0
     };
   });
 

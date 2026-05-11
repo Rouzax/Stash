@@ -64,10 +64,11 @@ To delete an item, open the edit form and tap **DELETE**. The item disappears fr
 
 ## Taking items
 
-Each item card has two take buttons:
+Each item card has three action buttons:
 
 - **TAKE** - removes one full portion (whatever `portion_size` is set to)
 - **±¼** - removes one quarter of a portion
+- **GIVE** - give items to someone outside the household
 
 Long-pressing either button removes ten portions at once (useful for restocking in reverse, or tracking a big session).
 
@@ -77,6 +78,10 @@ The count on screen updates immediately. If the request fails, the count snaps b
 
 !!! tip "Quarter doses"
     The ±¼ button is useful for items you consume in fractions (half a gummy, a small sip of a drink). The quarter step is `portion_size ÷ 4`.
+
+### Giving items away
+
+Tap **GIVE** on an item card to record giving snacks to someone outside the household. A small dialog asks for the amount and an optional recipient name (e.g. "Dave", "office"). Give-aways reduce the item count but do not affect your rush meter or chart. They appear in your history with a yellow border, and in the weekly digest under a separate "SHARED" section.
 
 ## Rush-O-Meter
 
@@ -176,6 +181,11 @@ You can change:
 - **Email** - optional. Required to receive email notifications and to use password reset.
 
 Your username cannot be changed after registration. To change your password, see below.
+
+### Display preferences
+
+- **Show exact dates**: replaces relative timestamps ("2h ago") with full dates. Affects the inventory history, admin activity feed, and user lists.
+- **Synthwave background**: toggles the animated grid, stars, and scanlines behind the main interface. Enabled by default.
 
 ## Notifications
 

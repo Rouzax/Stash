@@ -1,6 +1,6 @@
 import { db } from '../db.js';
 import { requireAuth, requireAdmin } from '../auth.js';
-import { validId } from '../validation.js';
+import { validId, giveRecipient } from '../validation.js';
 
 export default async function logRoutes(app) {
   app.addHook('preHandler', requireAuth);
@@ -13,7 +13,8 @@ export default async function logRoutes(app) {
     const since = Date.now() - days * 24 * 60 * 60 * 1000;
     return db.prepare(`
       SELECT id, user_id, item_id, delta, ts,
-             snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes
+             snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes,
+             is_give, give_recipient
       FROM consumption_log
       WHERE user_id = ? AND ts >= ?
       ORDER BY ts ASC
@@ -43,6 +44,7 @@ export default async function logRoutes(app) {
 
     const rows = db.prepare(`
       SELECT cl.id, cl.user_id, cl.item_id, cl.delta, cl.ts,
+             cl.is_give, cl.give_recipient,
              u.username, u.emoji AS user_emoji,
              i.name AS item_name, i.emoji AS item_emoji, i.unit AS item_unit,
              i.deleted_at AS item_deleted_at
@@ -90,17 +92,19 @@ export default async function logRoutes(app) {
     ).get(itemId, request.session.family_id);
     if (!item) return reply.code(404).send({ error: 'item not found' });
 
-    const snapRf = delta < 0 ? item.rush_factor : null;
-    const snapPs = delta < 0 ? item.portion_size : null;
-    const snapOm = delta < 0 ? item.onset_minutes : null;
-    const snapDm = delta < 0 ? item.decay_minutes : null;
+    const isGive = request.body?.is_give ? 1 : 0;
+    const recipient = isGive ? giveRecipient(request.body?.give_recipient) : null;
+    const snapRf = (delta < 0 && !isGive) ? item.rush_factor : null;
+    const snapPs = (delta < 0 && !isGive) ? item.portion_size : null;
+    const snapOm = (delta < 0 && !isGive) ? item.onset_minutes : null;
+    const snapDm = (delta < 0 && !isGive) ? item.decay_minutes : null;
 
     const result = db.prepare(
-      'INSERT INTO consumption_log (user_id, family_id, item_id, delta, ts, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-    ).run(request.session.user_id, request.session.family_id, itemId, delta, Math.floor(ts), snapRf, snapPs, snapOm, snapDm);
+      'INSERT INTO consumption_log (user_id, family_id, item_id, delta, ts, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes, is_give, give_recipient) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+    ).run(request.session.user_id, request.session.family_id, itemId, delta, Math.floor(ts), snapRf, snapPs, snapOm, snapDm, isGive, recipient);
 
     return db.prepare(
-      'SELECT id, user_id, item_id, delta, ts, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes FROM consumption_log WHERE id = ?'
+      'SELECT id, user_id, item_id, delta, ts, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes, is_give, give_recipient FROM consumption_log WHERE id = ?'
     ).get(result.lastInsertRowid);
   });
 
@@ -136,7 +140,7 @@ export default async function logRoutes(app) {
     ).run(newDelta, newTs, id, request.session.user_id);
 
     return db.prepare(
-      'SELECT id, user_id, item_id, delta, ts, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes FROM consumption_log WHERE id = ?'
+      'SELECT id, user_id, item_id, delta, ts, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes, is_give, give_recipient FROM consumption_log WHERE id = ?'
     ).get(id);
   });
 

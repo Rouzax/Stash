@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Trash2, Plus, Shield, User, Copy, Check, Link, X, KeyRound, ChevronDown, ChevronUp } from 'lucide-react';
 import { auth, admin } from '../api.js';
+import { formatTimeAgo } from '../format.js';
 
 const EXPIRY_OPTIONS = [
   { label: '1h', hours: 1 },
@@ -16,17 +17,7 @@ const USES_OPTIONS = [
 
 const EMOJI_PRESETS = ['\u{1F60E}', '\u{1F913}', '\u{1F469}', '\u{1F468}', '\u{1F9D2}', '\u{1F476}', '\u{1F680}', '\u{1F9D1}‍\u{1F680}', '\u{1F47D}', '\u{1F916}', '\u{1F9B8}', '\u{1F9D9}', '\u{1F431}', '\u{1F436}', '\u{1F98A}', '\u{1F43C}', '\u{1F984}', '\u{1F409}'];
 
-const formatTimeAgo = (ts) => {
-  if (!ts) return 'never';
-  const diff = Date.now() - ts;
-  if (diff < 60000) return 'just now';
-  if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
-  if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
-  if (diff < 2592000000) return `${Math.floor(diff / 86400000)}d ago`;
-  return new Date(ts).toLocaleDateString();
-};
-
-export default function UsersTab({ currentUserId }) {
+export default function UsersTab({ currentUserId, exactDates }) {
   const [users, setUsers] = useState([]);
   const [invites, setInvites] = useState([]);
   const [showCreate, setShowCreate] = useState(false);
@@ -172,7 +163,7 @@ export default function UsersTab({ currentUserId }) {
               <div className="user-meta">
                 {u.is_admin ? 'Admin' : 'Member'}
                 {' · '}
-                {formatTimeAgo(u.last_login_at)}
+                {formatTimeAgo(u.last_login_at, exactDates)}
                 {' · '}
                 {new Date(u.created_at).toLocaleDateString()}
               </div>

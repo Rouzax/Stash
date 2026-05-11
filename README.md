@@ -14,10 +14,12 @@ Self-hosted family candy tracker with per-person rush meters and a synthwave aes
 - **Per-person rush meter** - each family member has their own Rush-O-Meter
 - **Per-item rush config** - set rush % and decay time for each item
 - **Portion-based tracking** - TAKE 1 or TAKE 1/4 with one tap
+- **Give-away tracking** - share snacks without inflating your rush meter
 - **Invite codes** - admins generate codes to add family members
 - **Charts** - 7-day and 12-month rush % history per person
 - **Low-stock alerts** - cards pulse when you're running low
-- **User profiles** - emoji avatars and color customization
+- **Email notifications** - low-stock alerts, weekly digest, rush warnings
+- **User profiles** - emoji avatars, color, display preferences
 
 ## Quick Start
 

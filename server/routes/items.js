@@ -2,7 +2,7 @@ import { db } from '../db.js';
 import { requireAuth } from '../auth.js';
 import {
   nonEmptyString, optionalString, hexColor, unitValue,
-  nonNegativeNumber, rushFactor, onsetMinutes, decayMinutes, validId, LIMITS
+  nonNegativeNumber, rushFactor, onsetMinutes, decayMinutes, validId, giveRecipient, LIMITS
 } from '../validation.js';
 import { sendLowStockAlert, sendRushWarning } from '../email.js';
 
@@ -128,6 +128,8 @@ export default async function itemRoutes(app) {
     if (!Number.isFinite(delta) || delta === 0) {
       return reply.code(400).send({ error: 'invalid delta' });
     }
+    const isGive = request.body?.is_give ? 1 : 0;
+    const giveRecipientVal = isGive ? giveRecipient(request.body?.give_recipient) : null;
     const userId = request.session.user_id;
     const familyId = request.session.family_id;
     const round4 = (n) => Math.round(n * 10000) / 10000;
@@ -143,9 +145,13 @@ export default async function itemRoutes(app) {
       const ts = Date.now();
       db.prepare('UPDATE items SET count = ?, updated_at = ? WHERE id = ?').run(newCount, ts, id);
       if (realDelta < 0) {
+        const snapRf = isGive ? null : item.rush_factor;
+        const snapPs = isGive ? null : item.portion_size;
+        const snapOm = isGive ? null : item.onset_minutes;
+        const snapDm = isGive ? null : item.decay_minutes;
         db.prepare(
-          'INSERT INTO consumption_log (user_id, family_id, item_id, delta, ts, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)'
-        ).run(userId, familyId, id, realDelta, ts, item.rush_factor, item.portion_size, item.onset_minutes, item.decay_minutes);
+          'INSERT INTO consumption_log (user_id, family_id, item_id, delta, ts, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes, is_give, give_recipient) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+        ).run(userId, familyId, id, realDelta, ts, snapRf, snapPs, snapOm, snapDm, isGive, giveRecipientVal);
       } else {
         db.prepare(
           'INSERT INTO consumption_log (user_id, family_id, item_id, delta, ts) VALUES (?, ?, ?, ?, ?)'
@@ -180,7 +186,7 @@ export default async function itemRoutes(app) {
       if (user) {
         const rushResetAt = user.rush_reset_at || 0;
         const logs = db.prepare(
-          'SELECT delta, ts, item_id, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes FROM consumption_log WHERE user_id = ? AND ts > ?'
+          'SELECT delta, ts, item_id, is_give, snap_rush_factor, snap_portion_size, snap_onset_minutes, snap_decay_minutes FROM consumption_log WHERE user_id = ? AND ts > ?'
         ).all(userId, rushResetAt);
         const familyItems = db.prepare(
           'SELECT id, portion_size, rush_factor, onset_minutes, decay_minutes FROM items WHERE family_id = ?'
@@ -191,7 +197,7 @@ export default async function itemRoutes(app) {
         const ts = Date.now();
         let rushScore = 0;
         for (const entry of logs) {
-          if (entry.delta >= 0) continue;
+          if (entry.delta >= 0 || entry.is_give) continue;
           const it = byId.get(entry.item_id);
           const rf = entry.snap_rush_factor ?? it?.rush_factor;
           if (rf == null) continue;

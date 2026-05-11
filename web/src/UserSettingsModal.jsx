@@ -17,6 +17,8 @@ export default function UserSettingsModal({ user, onUpdate, onRushReset, onChart
   const [loading, setLoading] = useState(false);
   const [confirmReset, setConfirmReset] = useState(false);
   const [confirmClear, setConfirmClear] = useState(false);
+  const [exactDates, setExactDates] = useState(!!user.exact_dates);
+  const [showBackground, setShowBackground] = useState(user.show_background !== false);
   const [notifPrefs, setNotifPrefs] = useState({ low_stock: 0, weekly_digest: 0, rush_warning: 0 });
   const [notifLoading, setNotifLoading] = useState(true);
 
@@ -31,7 +33,7 @@ export default function UserSettingsModal({ user, onUpdate, onRushReset, onChart
     setError('');
     setLoading(true);
     try {
-      const data = { emoji, color };
+      const data = { emoji, color, exact_dates: exactDates, show_background: showBackground };
       if (email !== (user.email || '')) data.email = email;
       const updated = await auth.updateMe(data);
       onUpdate(updated);
@@ -99,6 +101,36 @@ export default function UserSettingsModal({ user, onUpdate, onRushReset, onChart
           />
           <div style={{ fontSize: 11, color: '#8888aa', marginTop: 4 }}>
             Used for notifications. Leave blank to disable.
+          </div>
+        </div>
+
+        <div style={{ marginTop: 16, borderTop: '1px solid rgba(255,0,110,0.3)', paddingTop: 16 }}>
+          <div style={{ fontFamily: 'Orbitron', fontSize: 11, letterSpacing: '2px', color: '#ff006e', marginBottom: 10 }}>
+            ◢ DISPLAY ◣
+          </div>
+          <label className="notif-toggle" style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer' }}>
+            <span className={`toggle-switch ${exactDates ? 'active' : ''}`} onClick={(e) => {
+              e.preventDefault();
+              setExactDates(!exactDates);
+            }}>
+              <span className="toggle-thumb" />
+            </span>
+            <span style={{ fontSize: 13, color: '#e0e0e0' }}>Show exact dates</span>
+          </label>
+          <div style={{ fontSize: 11, color: '#8888aa', marginTop: 4 }}>
+            Full dates instead of "2h ago"
+          </div>
+          <label className="notif-toggle" style={{ display: 'flex', alignItems: 'center', gap: 10, cursor: 'pointer', marginTop: 10 }}>
+            <span className={`toggle-switch ${showBackground ? 'active' : ''}`} onClick={(e) => {
+              e.preventDefault();
+              setShowBackground(!showBackground);
+            }}>
+              <span className="toggle-thumb" />
+            </span>
+            <span style={{ fontSize: 13, color: '#e0e0e0' }}>Synthwave background</span>
+          </label>
+          <div style={{ fontSize: 11, color: '#8888aa', marginTop: 4 }}>
+            Animated grid and stars
           </div>
         </div>
 

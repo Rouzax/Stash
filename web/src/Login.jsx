@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { auth } from './api.js';
-import { SynthBackground } from './background.jsx';
+import { SynthBackground, Scanlines } from './background.jsx';
 
 const EMOJI_PRESETS = [
   '😎', '🤓', '👩', '👨', '🧒', '👶',
@@ -72,7 +72,7 @@ export default function Login({ mode, onAuth }) {
 
   return (
     <>
-      <SynthBackground />
+      <SynthBackground /><Scanlines />
       <div className="auth-screen">
         <div className="auth-card">
           <h1 className="title">STASH</h1>

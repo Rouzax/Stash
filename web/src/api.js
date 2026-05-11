@@ -84,7 +84,8 @@ export const items = {
   create: (data) => api.post('/api/items', data),
   update: (id, data) => api.patch(`/api/items/${id}`, data),
   remove: (id) => api.del(`/api/items/${id}`),
-  adjust: (id, delta) => api.post(`/api/items/${id}/adjust`, { delta })
+  adjust: (id, delta, { isGive, giveRecipient } = {}) =>
+    api.post(`/api/items/${id}/adjust`, { delta, is_give: isGive || undefined, give_recipient: giveRecipient || undefined })
 };
 
 export const notifications = {

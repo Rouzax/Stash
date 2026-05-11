@@ -7,9 +7,30 @@ export function renderWeeklyDigest(familyStats) {
   const itemTotals = new Map();
   const userTotals = new Map();
   const dayTotals = new Map();
+  const giveTotals = new Map();
 
   for (const entry of logs) {
     const abs = Math.abs(entry.delta);
+
+    if (entry.is_give) {
+      const key = entry.item_id;
+      const prev = giveTotals.get(key);
+      const recipient = entry.give_recipient || 'someone';
+      if (prev) {
+        prev.total += abs;
+        prev.recipients.set(recipient, (prev.recipients.get(recipient) || 0) + abs);
+      } else {
+        giveTotals.set(key, {
+          name: entry.item_name || `Item #${key}`,
+          emoji: entry.item_emoji || '',
+          unit: entry.item_unit || 'pcs',
+          total: abs,
+          recipients: new Map([[recipient, abs]]),
+        });
+      }
+      continue;
+    }
+
     const key = entry.item_id;
     const prev = itemTotals.get(key);
     if (prev) {
@@ -84,6 +105,29 @@ export function renderWeeklyDigest(familyStats) {
       <ul style="margin: 0; padding: 0 0 0 20px;">${items}</ul>`;
   }
 
+  const giveItems = [...giveTotals.values()].sort((a, b) => b.total - a.total);
+  let sharedHtml = '';
+  if (giveItems.length > 0) {
+    const rows = giveItems.map(it => {
+      const recipientList = [...it.recipients.entries()]
+        .map(([name, amount]) => `${escapeHtml(name)}: ${Math.round(amount * 10) / 10} ${escapeHtml(it.unit)}`)
+        .join(', ');
+      return `<tr>
+        <td style="padding: 8px 12px; border-bottom: 1px solid ${COLORS.border}; color: ${COLORS.text};">${escapeHtml(it.emoji)} ${escapeHtml(it.name)}</td>
+        <td style="padding: 8px 12px; border-bottom: 1px solid ${COLORS.border}; color: ${COLORS.muted}; text-align: right;">${recipientList}</td>
+      </tr>`;
+    }).join('');
+    sharedHtml = `
+      <h3 style="margin: 24px 0 8px; font-size: 14px; color: ${COLORS.pink}; letter-spacing: 2px;">SHARED</h3>
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color: ${COLORS.bg}; border-radius: 6px;">
+        <tr>
+          <th style="padding: 8px 12px; text-align: left; color: ${COLORS.muted}; font-size: 11px; letter-spacing: 1px;">ITEM</th>
+          <th style="padding: 8px 12px; text-align: right; color: ${COLORS.muted}; font-size: 11px; letter-spacing: 1px;">GIVEN TO</th>
+        </tr>
+        ${rows}
+      </table>`;
+  }
+
   const funStatHtml = busiestDay
     ? `<p style="margin: 24px 0 0; padding: 12px 16px; background-color: ${COLORS.bg}; border-radius: 6px; color: ${COLORS.cyan}; text-align: center; font-size: 14px;">Peak snack day: <strong>${busiestDay}</strong></p>`
     : '';
@@ -92,6 +136,7 @@ export function renderWeeklyDigest(familyStats) {
     <h2 style="margin: 0 0 8px; font-size: 20px; color: ${COLORS.pink};">Weekly Snack Report</h2>
     <p style="margin: 0 0 16px; font-size: 14px; color: ${COLORS.muted};">Here's what happened this week</p>
     ${itemsHtml}
+    ${sharedHtml}
     ${lowStockHtml}
     ${funStatHtml}`;
 
@@ -104,6 +149,15 @@ export function renderWeeklyDigest(familyStats) {
       for (const [name, amount] of sortedUsers) {
         bodyText += `    ${name}: ${Math.round(amount * 10) / 10} ${it.unit}\n`;
       }
+    }
+  }
+  if (giveItems.length > 0) {
+    bodyText += '\nSHARED:\n';
+    for (const it of giveItems) {
+      const recipientList = [...it.recipients.entries()]
+        .map(([name, amount]) => `${name}: ${Math.round(amount * 10) / 10} ${it.unit}`)
+        .join(', ');
+      bodyText += `  ${it.emoji} ${it.name}: ${recipientList}\n`;
     }
   }
   if (lowStockItems.length > 0) {

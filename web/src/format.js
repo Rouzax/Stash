@@ -1,4 +1,11 @@
-export const formatTimeAgo = (ts) => {
+const exactFormatter = new Intl.DateTimeFormat(undefined, {
+  year: 'numeric', month: 'short', day: 'numeric',
+  hour: '2-digit', minute: '2-digit'
+});
+
+export const formatTimeAgo = (ts, exact) => {
+  if (!ts) return 'never';
+  if (exact) return exactFormatter.format(new Date(ts));
   const diff = Date.now() - ts;
   if (diff < 60000) return 'just now';
   if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;

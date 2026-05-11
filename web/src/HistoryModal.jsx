@@ -15,7 +15,7 @@ const toTimeStr = (ts) => {
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
 };
 
-export default function HistoryModal({ log, items, itemsById, onLogChange, onClose }) {
+export default function HistoryModal({ log, items, itemsById, user, onLogChange, onClose }) {
   const [mode, setMode] = useState('list');
   const [editEntry, setEditEntry] = useState(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
@@ -24,7 +24,8 @@ export default function HistoryModal({ log, items, itemsById, onLogChange, onClo
 
   const [addItemId, setAddItemId] = useState(items[0]?.id || '');
   const [addDelta, setAddDelta] = useState('');
-  const [addIsConsumption, setAddIsConsumption] = useState(true);
+  const [addType, setAddType] = useState('consumed');
+  const [addRecipient, setAddRecipient] = useState('');
   const [addDate, setAddDate] = useState(toDateStr(Date.now()));
   const [addTime, setAddTime] = useState(toTimeStr(Date.now()));
 
@@ -51,12 +52,18 @@ export default function HistoryModal({ log, items, itemsById, onLogChange, onClo
       showError('Invalid or future date');
       return;
     }
-    const delta = addIsConsumption ? -Math.abs(amount) : Math.abs(amount);
+    const delta = addType === 'restocked' ? Math.abs(amount) : -Math.abs(amount);
+    const isGive = addType === 'gave';
     try {
-      const entry = await logApi.add({ item_id: Number(addItemId), delta, ts });
+      const entry = await logApi.add({
+        item_id: Number(addItemId), delta, ts,
+        ...(isGive ? { is_give: true, give_recipient: addRecipient.trim() || undefined } : {}),
+      });
       onLogChange(prev => [...prev, entry]);
       setMode('list');
       setAddDelta('');
+      setAddType('consumed');
+      setAddRecipient('');
     } catch (e) {
       showError(e.message || 'Failed to add entry');
     }
@@ -134,12 +141,14 @@ export default function HistoryModal({ log, items, itemsById, onLogChange, onClo
                   const isConfirming = confirmDeleteId === entry.id;
 
                   return (
-                    <div key={entry.id} className={`history-entry ${entry.delta < 0 ? 'consumption' : 'restock'}`}>
+                    <div key={entry.id} className={`history-entry ${entry.is_give ? 'give' : entry.delta < 0 ? 'consumption' : 'restock'}`}>
                       <div className="history-entry-item">
                         {emoji} {name}
                       </div>
                       <div className="history-entry-detail">
-                        {formatDelta(entry.delta, unit)}
+                        {entry.is_give
+                          ? `gave ${Math.abs(entry.delta)} ${unit}${entry.give_recipient ? ` to ${entry.give_recipient}` : ''}`
+                          : formatDelta(entry.delta, unit)}
                       </div>
                       <div className="history-entry-actions">
                         {isConfirming ? (
@@ -154,7 +163,7 @@ export default function HistoryModal({ log, items, itemsById, onLogChange, onClo
                           </>
                         )}
                       </div>
-                      <div className="history-entry-time">{formatTimeAgo(entry.ts)}</div>
+                      <div className="history-entry-time">{formatTimeAgo(entry.ts, user?.exact_dates)}</div>
                     </div>
                   );
                 })}
@@ -191,11 +200,19 @@ export default function HistoryModal({ log, items, itemsById, onLogChange, onClo
 
             <div className="form-group">
               <label className="form-label">TYPE</label>
-              <div className="chart-toggle">
-                <button className={addIsConsumption ? 'active' : ''} onClick={() => setAddIsConsumption(true)}>CONSUMED</button>
-                <button className={!addIsConsumption ? 'active' : ''} onClick={() => setAddIsConsumption(false)}>RESTOCKED</button>
+              <div className="form-toggle">
+                <button className={addType === 'consumed' ? 'active' : ''} onClick={() => setAddType('consumed')}>CONSUMED</button>
+                <button className={addType === 'restocked' ? 'active' : ''} onClick={() => setAddType('restocked')}>RESTOCKED</button>
+                <button className={addType === 'gave' ? 'active' : ''} onClick={() => setAddType('gave')}>GAVE AWAY</button>
               </div>
             </div>
+
+            {addType === 'gave' && (
+              <div className="form-group">
+                <label className="form-label">TO (OPTIONAL)</label>
+                <input className="form-input" type="text" value={addRecipient} onChange={e => setAddRecipient(e.target.value)} placeholder="Dave, office, etc." maxLength={64} autoComplete="off" />
+              </div>
+            )}
 
             <div className="form-group">
               <label className="form-label">AMOUNT ({selectedItem?.unit || 'pcs'})</label>

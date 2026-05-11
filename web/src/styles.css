@@ -10,10 +10,12 @@
 
 * { box-sizing: border-box; }
 
+html {
+  background: var(--bg-deep);
+}
 html, body, #root {
   margin: 0;
   padding: 0;
-  background: var(--bg-deep);
   font-family: 'Outfit', -apple-system, sans-serif;
   color: white;
   min-height: 100vh;
@@ -57,38 +59,6 @@ button {
   to { opacity: 1; }
 }
 
-.sun {
-  position: absolute;
-  bottom: 38%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 220px;
-  height: 220px;
-  border-radius: 50%;
-  background:
-    linear-gradient(180deg,
-      transparent 0%, transparent 52%,
-      rgba(13, 2, 33, 0.95) 52%, rgba(13, 2, 33, 0.95) 56%,
-      transparent 56%, transparent 62%,
-      rgba(13, 2, 33, 0.95) 62%, rgba(13, 2, 33, 0.95) 67%,
-      transparent 67%, transparent 75%,
-      rgba(13, 2, 33, 0.95) 75%, rgba(13, 2, 33, 0.95) 81%,
-      transparent 81%, transparent 90%,
-      rgba(13, 2, 33, 0.95) 90%, rgba(13, 2, 33, 0.95) 100%
-    ),
-    linear-gradient(180deg, #ffd60a 0%, #ff10f0 55%, #8338ec 100%);
-  animation: sun-pulse 3s ease-in-out infinite;
-}
-@keyframes sun-pulse {
-  0%, 100% {
-    box-shadow: 0 0 60px 10px rgba(255, 16, 240, 0.5),
-                0 0 120px 30px rgba(255, 16, 240, 0.3);
-  }
-  50% {
-    box-shadow: 0 0 90px 20px rgba(255, 16, 240, 0.7),
-                0 0 180px 60px rgba(255, 16, 240, 0.4);
-  }
-}
 
 .grid-floor {
   position: absolute;
@@ -413,11 +383,22 @@ button {
   justify-content: space-between;
 }
 .rush-bar {
+  position: relative;
   height: 14px;
   background: rgba(0, 0, 0, 0.6);
   border-radius: 8px;
   overflow: hidden;
   border: 1px solid rgba(255, 16, 240, 0.3);
+}
+.rush-fill-ghost {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, var(--neon-cyan), #ffd60a, var(--neon-magenta));
+  opacity: 0.3;
+  border-radius: inherit;
+  transition: width 0.4s ease;
 }
 .rush-fill {
   height: 100%;
@@ -648,6 +629,10 @@ button {
   justify-content: center;
 }
 .btn-edit:active { transform: scale(0.92); }
+.btn-give {
+  border-color: rgba(255, 255, 255, 0.25);
+  font-size: 11px;
+}
 
 .float-indicator {
   position: absolute;
@@ -1382,6 +1367,9 @@ button {
 .activity-entry.restock {
   border-left-color: #06ffa5;
 }
+.activity-entry.give {
+  border-left-color: var(--neon-yellow);
+}
 
 .activity-time {
   font-family: 'Orbitron', sans-serif;
@@ -1484,6 +1472,9 @@ button {
 }
 .history-entry.restock {
   border-left-color: #06ffa5;
+}
+.history-entry.give {
+  border-left-color: var(--neon-yellow);
 }
 
 .history-entry-item {
@@ -1591,6 +1582,56 @@ button {
   display: flex;
   gap: 12px;
 }
+.form-group {
+  margin-bottom: 14px;
+}
+.form-label {
+  display: block;
+  font-family: 'Orbitron';
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: var(--neon-cyan);
+  margin-bottom: 6px;
+}
+.form-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1.5px solid rgba(255, 16, 240, 0.4);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: white;
+  font-family: 'Outfit';
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
+}
+.form-input:focus {
+  border-color: var(--neon-magenta);
+  box-shadow: 0 0 12px rgba(255, 16, 240, 0.4);
+}
+.form-toggle {
+  display: flex;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1.5px solid rgba(255, 16, 240, 0.4);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.form-toggle button {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.55);
+  font-family: 'Orbitron';
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  padding: 10px 12px;
+  cursor: pointer;
+}
+.form-toggle button.active {
+  background: var(--neon-magenta);
+  color: white;
+  font-weight: 700;
+}
 
 /* Help Modal */
 
@@ -1688,5 +1729,11 @@ button {
   .admin-tab {
     padding: 10px 12px;
     gap: 0;
+  }
+}
+
+@media (max-width: 360px) {
+  .grid {
+    grid-template-columns: 1fr;
   }
 }

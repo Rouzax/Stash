@@ -141,12 +141,25 @@ if (!itemCols.some(c => c.name === 'deleted_at')) {
   db.exec('ALTER TABLE items ADD COLUMN deleted_at INTEGER DEFAULT NULL');
 }
 
+if (!userCols.some(c => c.name === 'exact_dates')) {
+  db.exec('ALTER TABLE users ADD COLUMN exact_dates INTEGER NOT NULL DEFAULT 0');
+}
+
+if (!userCols.some(c => c.name === 'show_background')) {
+  db.exec('ALTER TABLE users ADD COLUMN show_background INTEGER NOT NULL DEFAULT 1');
+}
+
 const logCols = db.prepare('PRAGMA table_info(consumption_log)').all();
 if (!logCols.some(c => c.name === 'snap_rush_factor')) {
   db.exec('ALTER TABLE consumption_log ADD COLUMN snap_rush_factor REAL DEFAULT NULL');
   db.exec('ALTER TABLE consumption_log ADD COLUMN snap_portion_size REAL DEFAULT NULL');
   db.exec('ALTER TABLE consumption_log ADD COLUMN snap_onset_minutes INTEGER DEFAULT NULL');
   db.exec('ALTER TABLE consumption_log ADD COLUMN snap_decay_minutes INTEGER DEFAULT NULL');
+}
+
+if (!logCols.some(c => c.name === 'is_give')) {
+  db.exec('ALTER TABLE consumption_log ADD COLUMN is_give INTEGER DEFAULT 0');
+  db.exec('ALTER TABLE consumption_log ADD COLUMN give_recipient TEXT DEFAULT NULL');
 }
 
 // ============ Boot housekeeping ============

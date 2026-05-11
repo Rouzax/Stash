@@ -4,7 +4,7 @@ import Login from './Login.jsx';
 import Inventory from './Inventory.jsx';
 import AdminArea from './AdminArea.jsx';
 import ResetPassword from './ResetPassword.jsx';
-import { SynthBackground } from './background.jsx';
+import { SynthBackground, Scanlines } from './background.jsx';
 
 export default function App() {
   const [user, setUser] = useState(null);
@@ -67,7 +67,7 @@ export default function App() {
   if (loading) {
     return (
       <>
-        <SynthBackground />
+        <SynthBackground /><Scanlines />
         <div className="loading-screen">
           <div className="loading-text">LOADING STASH</div>
         </div>
@@ -78,7 +78,7 @@ export default function App() {
   if (bootError) {
     return (
       <>
-        <SynthBackground />
+        <SynthBackground /><Scanlines />
         <div className="loading-screen">
           <div style={{ textAlign: 'center', padding: 24, maxWidth: 360 }}>
             <div className="loading-text" style={{ color: '#ff006e' }}>SERVER ERROR</div>
@@ -111,7 +111,7 @@ export default function App() {
   if (view === 'admin' && user.is_admin) {
     return (
       <>
-        <SynthBackground />
+        <SynthBackground /><Scanlines />
         <AdminArea user={user} onBack={() => setView('inventory')} />
       </>
     );

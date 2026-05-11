@@ -3,7 +3,7 @@ import { auth, admin } from '../api.js';
 import { items as itemsApi } from '../api.js';
 import { formatTimeAgo, formatDelta } from '../format.js';
 
-export default function ActivityTab() {
+export default function ActivityTab({ exactDates }) {
   const [entries, setEntries] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -96,14 +96,16 @@ export default function ActivityTab() {
       ) : (
         <div className="activity-feed">
           {entries.map(entry => (
-            <div key={entry.id} className={`activity-entry ${entry.delta < 0 ? 'consumption' : 'restock'}`}>
-              <div className="activity-time">{formatTimeAgo(entry.ts)}</div>
+            <div key={entry.id} className={`activity-entry ${entry.is_give ? 'give' : entry.delta < 0 ? 'consumption' : 'restock'}`}>
+              <div className="activity-time">{formatTimeAgo(entry.ts, exactDates)}</div>
               <div className="activity-user">
                 <span className="activity-emoji">{entry.user_emoji || '\u{1F464}'}</span>
                 <span>{entry.username}</span>
               </div>
               <div className="activity-action">
-                {entry.item_emoji || '\u{1F4E6}'} {formatDelta(entry.delta, entry.item_unit)} of {entry.item_name}{entry.item_deleted_at ? ' (removed)' : ''}
+                {entry.item_emoji || '\u{1F4E6}'} {entry.is_give
+                  ? `gave ${Math.abs(entry.delta)} ${entry.item_unit} of ${entry.item_name}${entry.give_recipient ? ` to ${entry.give_recipient}` : ''}`
+                  : `${formatDelta(entry.delta, entry.item_unit)} of ${entry.item_name}`}{entry.item_deleted_at ? ' (removed)' : ''}
               </div>
             </div>
           ))}

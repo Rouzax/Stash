@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { auth } from './api.js';
-import { SynthBackground } from './background.jsx';
+import { SynthBackground, Scanlines } from './background.jsx';
 
 export default function ResetPassword({ onBackToLogin }) {
   const params = new URLSearchParams(window.location.search);
@@ -35,7 +35,7 @@ export default function ResetPassword({ onBackToLogin }) {
   if (!token) {
     return (
       <>
-        <SynthBackground />
+        <SynthBackground /><Scanlines />
         <div className="auth-screen">
           <div className="auth-card">
             <h1 className="title">STASH</h1>
@@ -52,7 +52,7 @@ export default function ResetPassword({ onBackToLogin }) {
 
   return (
     <>
-      <SynthBackground />
+      <SynthBackground /><Scanlines />
       <div className="auth-screen">
         <div className="auth-card">
           <h1 className="title">STASH</h1>

@@ -9,7 +9,8 @@ export const helpTopics = [
       { type: 'bullets', items: [
         'TAKE removes one full portion',
         '±¼ removes a quarter portion',
-        'Long-press either to remove ten at once',
+        'GIVE opens a dialog to give items away (no rush impact)',
+        'Long-press TAKE to remove ten at once',
         '+ adds stock (long-press for ten)',
         'If a request fails, the count snaps back automatically',
       ]},
@@ -97,6 +98,8 @@ export const helpTopics = [
         'Emoji: your avatar shown in the header',
         'Color: the neon accent for your account',
         'Email: required for notifications and password reset',
+        'Show exact dates: full dates instead of "2h ago"',
+        'Synthwave background: toggle the animated grid and stars',
       ]},
       { type: 'p', text: 'Available notifications (requires SMTP on the server + email on your account):' },
       { type: 'bullets', items: [

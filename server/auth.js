@@ -32,7 +32,7 @@ export function getSession(sessionId) {
   if (!sessionId) return null;
   const row = db.prepare(`
     SELECT s.id, s.user_id, s.expires_at,
-           u.username, u.is_admin, u.is_superadmin, u.family_id, u.email, u.emoji, u.color, u.rush_reset_at,
+           u.username, u.is_admin, u.is_superadmin, u.family_id, u.email, u.emoji, u.color, u.rush_reset_at, u.exact_dates, u.show_background,
            f.name AS family_name
     FROM sessions s
     JOIN users u ON u.id = s.user_id

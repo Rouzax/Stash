@@ -104,4 +104,11 @@ export function validId(raw) {
   return Number.isFinite(n) && n > 0 ? n : null;
 }
 
+export function giveRecipient(value) {
+  if (value == null || typeof value !== 'string') return null;
+  const trimmed = value.trim();
+  if (!trimmed || trimmed.length > LIMITS.itemName) return null;
+  return trimmed;
+}
+
 export { LIMITS };

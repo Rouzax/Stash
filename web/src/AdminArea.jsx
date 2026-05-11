@@ -40,10 +40,10 @@ export default function AdminArea({ user, onBack }) {
       </div>
 
       <div className="admin-content">
-        {activeTab === 'users' && <UsersTab currentUserId={user.id} />}
+        {activeTab === 'users' && <UsersTab currentUserId={user.id} exactDates={user.exact_dates} />}
         {activeTab === 'settings' && <SettingsTab user={user} />}
-        {activeTab === 'activity' && <ActivityTab />}
-        {activeTab === 'system' && <SystemTab currentUserId={user.id} />}
+        {activeTab === 'activity' && <ActivityTab exactDates={user.exact_dates} />}
+        {activeTab === 'system' && <SystemTab currentUserId={user.id} exactDates={user.exact_dates} />}
       </div>
     </div>
   );

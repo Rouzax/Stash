@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { Plus, Edit2, LogOut, Users, KeyRound, MoreVertical, UserCircle, HelpCircle } from 'lucide-react';
+import { Plus, Edit2, LogOut, Users, KeyRound, MoreVertical, UserCircle, HelpCircle, X } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
 import { items as itemsApi, logApi, auth } from './api.js';
-import { SynthBackground } from './background.jsx';
+import { SynthBackground, Scanlines } from './background.jsx';
 import ChangePasswordModal from './ChangePasswordModal.jsx';
 import ItemModal from './ItemModal.jsx';
 import UserSettingsModal from './UserSettingsModal.jsx';
@@ -44,6 +44,10 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
   const [chartPeriod, setChartPeriod] = useState('year');
   const [historyOpen, setHistoryOpen] = useState(false);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [giveItemId, setGiveItemId] = useState(null);
+  const [giveAmount, setGiveAmount] = useState('');
+  const [giveRecipient, setGiveRecipient] = useState('');
+  const [giveLoading, setGiveLoading] = useState(false);
   const [, setTick] = useState(0);
 
   const adjustSeq = useRef(new Map());
@@ -133,6 +137,29 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
     if (item) updateCount(id, -portionFor(item) / 4);
   };
 
+  const handleGive = async () => {
+    const amount = Number(giveAmount);
+    if (!Number.isFinite(amount) || amount <= 0) return;
+    setGiveLoading(true);
+    try {
+      const result = await itemsApi.adjust(giveItemId, -amount, {
+        isGive: true,
+        giveRecipient: giveRecipient.trim() || undefined,
+      });
+      setItems(prev => prev.map(it => it.id === giveItemId ? { ...it, count: result.count } : it));
+      if (result.delta !== 0) {
+        setLog(prev => [...prev, { item_id: giveItemId, user_id: user.id, delta: result.delta, ts: result.ts, is_give: 1, give_recipient: giveRecipient.trim() || null }]);
+      }
+      setGiveItemId(null);
+      setGiveAmount('');
+      setGiveRecipient('');
+    } catch (e) {
+      if (e.status !== 401) showError('Give failed: ' + e.message);
+    } finally {
+      setGiveLoading(false);
+    }
+  };
+
   const saveItem = async (data) => {
     try {
       if (editingId) {
@@ -189,8 +216,10 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
 
   const now = Date.now();
   let rushScore = 0;
+  let projectedScore = 0;
+  const pendingOnsets = [];
   for (const entry of log) {
-    if (entry.delta >= 0) continue;
+    if (entry.delta >= 0 || entry.is_give) continue;
     if (entry.ts <= rushResetAt) continue;
     const item = itemsById.get(entry.item_id);
     const rf = entry.snap_rush_factor ?? item?.rush_factor;
@@ -201,13 +230,19 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
     const onsetMs = (om || 0) * 60 * 1000;
     const decayMs = (dm || 240) * 60 * 1000;
     const age = now - entry.ts;
-    if (age < onsetMs || age < 0) continue;
+    const portions = Math.abs(entry.delta) / (ps || 1);
+    if (age < onsetMs || age < 0) {
+      projectedScore += (rf || 1) * portions;
+      if (item) pendingOnsets.push({ emoji: item.emoji || '', name: item.name, remainingMs: onsetMs - age });
+      continue;
+    }
     const effectiveAge = age - onsetMs;
     if (effectiveAge >= decayMs) continue;
-    const portions = Math.abs(entry.delta) / (ps || 1);
     rushScore += (rf || 1) * portions * (1 - effectiveAge / decayMs);
   }
   const rushLevel = (rushScore / RUSH_FULL) * 100;
+  const projectedRushLevel = ((rushScore + projectedScore) / RUSH_FULL) * 100;
+  pendingOnsets.sort((a, b) => a.remainingMs - b.remainingMs);
 
   let mascot = '😴', mascotLabel = 'CHILL';
   if (rushLevel > 25) { mascot = '🙂'; mascotLabel = 'WARMING UP'; }
@@ -215,6 +250,7 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
   if (rushLevel > 75) { mascot = '🤪'; mascotLabel = 'FULL RAVE'; }
   if (rushLevel > 150) { mascot = '🤯'; mascotLabel = 'OVERDRIVE'; }
   if (rushLevel > 250) { mascot = '💀'; mascotLabel = 'COMA'; }
+  if (rushLevel <= 25 && pendingOnsets.length > 0) { mascot = '😏'; mascotLabel = 'INCOMING'; }
 
   // ============ Chart data ============
   const chartData = useMemo(() => {
@@ -226,7 +262,7 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
         let units = 0;
         for (const l of log) {
           if (l.ts < start.getTime() || l.ts >= end.getTime()) continue;
-          if (l.delta >= 0) continue;
+          if (l.delta >= 0 || l.is_give) continue;
           const item = itemsById.get(l.item_id);
           const rf = l.snap_rush_factor ?? item?.rush_factor;
           const ps = l.snap_portion_size ?? item?.portion_size;
@@ -243,7 +279,7 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
         let units = 0;
         for (const l of log) {
           if (l.ts < start.getTime() || l.ts >= end.getTime()) continue;
-          if (l.delta >= 0) continue;
+          if (l.delta >= 0 || l.is_give) continue;
           const item = itemsById.get(l.item_id);
           const rf = l.snap_rush_factor ?? item?.rush_factor;
           const ps = l.snap_portion_size ?? item?.portion_size;
@@ -270,9 +306,10 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
 
   return (
     <>
-      <SynthBackground />
+      {user.show_background !== false && <SynthBackground />}
+      <Scanlines />
 
-      <div className="synth-app">
+      <div className="synth-app" data-1p-ignore data-bwignore data-lpignore="true">
         <div className="header">
           <h1 className="title">STASH</h1>
 
@@ -323,9 +360,16 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
             <span>{Math.round(rushLevel)}%</span>
           </div>
           <div className="rush-bar">
+            {projectedRushLevel > rushLevel && (
+              <div className="rush-fill-ghost" style={{ width: `${Math.min(projectedRushLevel, 100)}%` }} />
+            )}
             <div className="rush-fill" style={{ width: `${Math.min(rushLevel, 100)}%` }} />
           </div>
-          <div className="rush-sublabel">YOUR CURRENT HIGH</div>
+          <div className="rush-sublabel">
+            {pendingOnsets.length > 0
+              ? `${pendingOnsets[0].emoji} ${pendingOnsets[0].name} in ${Math.ceil(pendingOnsets[0].remainingMs / 60_000)}m${pendingOnsets.length > 1 ? ` +${pendingOnsets.length - 1} more` : ''}`
+              : 'YOUR CURRENT HIGH'}
+          </div>
         </div>
 
         {items.length === 0 ? (
@@ -362,6 +406,10 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
                       className="btn-take btn-take-quarter"
                       onClick={() => takeQuarter(item.id)}
                     >TAKE {formatCount(portionFor(item) / 4)}</button>
+                    <button
+                      className="btn-take btn-give"
+                      onClick={() => { setGiveItemId(item.id); setGiveAmount(''); setGiveRecipient(''); }}
+                    >GIVE</button>
                     <button
                       className="btn-edit"
                       onClick={() => { setEditingId(item.id); setShowItemModal(true); }}
@@ -440,10 +488,35 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
           log={log}
           items={items}
           itemsById={itemsById}
+          user={user}
           onLogChange={setLog}
           onClose={() => setHistoryOpen(false)}
         />
       )}
+
+      {giveItemId && (() => {
+        const giveItem = items.find(it => it.id === giveItemId);
+        return <div className="modal-bg" onClick={(e) => e.target === e.currentTarget && setGiveItemId(null)}>
+          <div className="modal" style={{ maxWidth: 360 }}>
+            <div className="modal-header">
+              <h2 className="modal-title">GIVE {giveItem?.emoji} {giveItem?.name?.toUpperCase()}</h2>
+              <button className="btn-close" onClick={() => setGiveItemId(null)} aria-label="Close"><X size={18} /></button>
+            </div>
+            <div className="form-group">
+              <label className="form-label">AMOUNT ({giveItem?.unit || 'pcs'})</label>
+              <input className="form-input" type="number" min="0" step="any" value={giveAmount} onChange={e => setGiveAmount(e.target.value)} placeholder="0" autoFocus />
+            </div>
+            <div className="form-group">
+              <label className="form-label">TO (OPTIONAL)</label>
+              <input className="form-input" type="text" value={giveRecipient} onChange={e => setGiveRecipient(e.target.value)} placeholder="Dave, office, etc." maxLength={64} autoComplete="off" data-1p-ignore />
+            </div>
+            <div className="modal-actions">
+              <button className="btn-secondary" onClick={() => setGiveItemId(null)}>CANCEL</button>
+              <button className="btn-primary" onClick={handleGive} disabled={giveLoading}>{giveLoading ? 'GIVING...' : 'GIVE'}</button>
+            </div>
+          </div>
+        </div>;
+      })()}
 
       <button
         className="fab"

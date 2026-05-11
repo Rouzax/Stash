@@ -70,7 +70,7 @@ setInterval(() => {
 
   for (const { family_id } of families) {
     const logs = db.prepare(`
-      SELECT cl.item_id, cl.user_id, cl.delta, cl.ts,
+      SELECT cl.item_id, cl.user_id, cl.delta, cl.ts, cl.is_give, cl.give_recipient,
              u.username, u.emoji AS user_emoji,
              i.name AS item_name, i.emoji AS item_emoji, i.unit AS item_unit
       FROM consumption_log cl
@@ -83,6 +83,8 @@ setInterval(() => {
       'SELECT id, name, emoji, count, threshold, unit FROM items WHERE family_id = ? AND deleted_at IS NULL'
     ).all(family_id);
     const lowStockItems = items.filter(it => it.threshold > 0 && it.count <= it.threshold);
+
+    if (logs.length === 0 && lowStockItems.length === 0) continue;
 
     const familyStats = { logs, items, lowStockItems };
 
