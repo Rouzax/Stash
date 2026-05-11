@@ -143,7 +143,7 @@ export default function UserSettingsModal({ user, appVersion, onUpdate, onRushRe
               Add your email above to enable notifications
             </div>
           ) : notifLoading ? (
-            <div style={{ fontSize: 12, color: '#8888aa', padding: '8px 0' }}>Loading...</div>
+            <div style={{ fontSize: 12, color: '#8888aa', padding: '8px 0' }}>LOADING...</div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {[

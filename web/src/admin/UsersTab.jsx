@@ -231,7 +231,7 @@ export default function UsersTab({ currentUserId, exactDates }) {
           </div>
           <div className="field">
             <label>EMAIL (OPTIONAL)</label>
-            <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="user@example.com" autoComplete="off" />
+            <input type="email" value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="you@example.com" autoComplete="off" />
           </div>
           <div className="field">
             <label>PASSWORD (8+)</label>

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { auth } from './api.js';
 import { SynthBackground, Scanlines } from './background.jsx';
 
@@ -27,9 +27,20 @@ export default function Login({ mode, onAuth }) {
   const [forgotLoading, setForgotLoading] = useState(false);
   const userRef = useRef(null);
   const pwRef = useRef(null);
+  const familyNameRef = useRef(null);
 
   const isBootstrap = mode === 'bootstrap';
   const isRegister = !isBootstrap && tab === 'register';
+
+  useEffect(() => {
+    if (inviteInfo) {
+      if (inviteInfo.is_family_starter) {
+        familyNameRef.current?.focus();
+      } else {
+        userRef.current?.focus();
+      }
+    }
+  }, [inviteInfo]);
 
   const checkInvite = async () => {
     setError('');
@@ -55,6 +66,7 @@ export default function Login({ mode, onAuth }) {
 
   const submit = async () => {
     setError('');
+    if (isRegister && !inviteInfo) return;
     if (isBootstrap && !familyName.trim()) {
       setError('Family name required');
       return;
@@ -93,7 +105,7 @@ export default function Login({ mode, onAuth }) {
       const msg = e.message || 'Failed';
       if (isRegister && (msg.includes('invite') || msg.includes('expired'))) {
         setInviteInfo(null);
-        setError('This code is no longer valid. Please try again or request a new one.');
+        setError('This code is no longer valid. Please try again or request a new one');
       } else {
         setError(msg);
       }
@@ -169,6 +181,7 @@ export default function Login({ mode, onAuth }) {
                 <div className="field" style={{ marginTop: 16 }}>
                   <label>FAMILY NAME</label>
                   <input
+                    ref={familyNameRef}
                     type="text"
                     value={familyName}
                     onChange={e => setFamilyName(e.target.value)}
@@ -176,7 +189,6 @@ export default function Login({ mode, onAuth }) {
                     placeholder="e.g. The Smiths"
                     maxLength={64}
                     autoComplete="off"
-                    autoFocus
                     disabled={loading}
                   />
                 </div>
@@ -211,7 +223,7 @@ export default function Login({ mode, onAuth }) {
                 value={username}
                 onChange={e => setUsername(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && pwRef.current?.focus()}
-                autoFocus={!isBootstrap && (!isRegister || (inviteInfo && !inviteInfo.is_family_starter))}
+                autoFocus={!isBootstrap && !isRegister}
                 disabled={loading}
               />
             </div>
@@ -249,7 +261,7 @@ export default function Login({ mode, onAuth }) {
 
           {(!isRegister || inviteInfo) && (
             <div className="field">
-              <label>PASSWORD {(isBootstrap || isRegister) ? '(8+ CHARS)' : ''}</label>
+              <label>PASSWORD {(isBootstrap || isRegister) ? '(8+)' : ''}</label>
               <input
                 ref={pwRef}
                 type="password"

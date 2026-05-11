@@ -40,7 +40,7 @@ export default function ResetPassword({ onBackToLogin }) {
           <div className="auth-card">
             <h1 className="title">STASH</h1>
             <div className="subtitle">◢ RESET PASSWORD ◣</div>
-            <div className="error-msg">Invalid reset link. No token provided.</div>
+            <div className="error-msg">Invalid reset link. No token provided</div>
             <button className="btn-primary" onClick={onBackToLogin} style={{ width: '100%', marginTop: 16 }}>
               BACK TO LOGIN
             </button>
@@ -70,7 +70,7 @@ export default function ResetPassword({ onBackToLogin }) {
           ) : (
             <>
               <div className="field" style={{ marginTop: 24 }}>
-                <label>NEW PASSWORD (8+ CHARS)</label>
+                <label>NEW PASSWORD (8+)</label>
                 <input
                   type="password"
                   value={password}
