@@ -44,6 +44,7 @@ export const auth = {
     api.post('/api/auth/bootstrap', { family_name, username, password, emoji: emoji || undefined, email: email || undefined }),
   login: (username, password) => api.post('/api/auth/login', { username, password }),
   register: (data) => api.post('/api/auth/register', data),
+  checkInvite: (code) => api.post('/api/auth/invite-check', { code }),
   logout: () => api.post('/api/auth/logout'),
   me: () => api.get('/api/auth/me'),
   updateMe: (data) => api.patch('/api/auth/me', data),
