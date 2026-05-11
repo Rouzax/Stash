@@ -14,6 +14,21 @@ export const formatTimeAgo = (ts, exact) => {
   return new Date(ts).toLocaleDateString();
 };
 
+export const copyToClipboard = (text) => {
+  if (navigator.clipboard) return navigator.clipboard.writeText(text);
+  return new Promise((resolve) => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    resolve();
+  });
+};
+
 export const formatDelta = (delta, unit) => {
   const abs = Math.abs(delta);
   const formatted = Number.isInteger(abs) ? String(abs) : parseFloat(abs.toFixed(4)).toString();

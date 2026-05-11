@@ -162,6 +162,16 @@ if (!logCols.some(c => c.name === 'is_give')) {
   db.exec('ALTER TABLE consumption_log ADD COLUMN give_recipient TEXT DEFAULT NULL');
 }
 
+const idxExists = db.prepare("SELECT 1 FROM sqlite_master WHERE type='index' AND name='idx_users_username_nocase'").get();
+if (!idxExists) {
+  const dupes = db.prepare("SELECT username FROM users GROUP BY username COLLATE NOCASE HAVING COUNT(*) > 1").all();
+  if (dupes.length > 0) {
+    console.error(`Cannot create case-insensitive username index: duplicate usernames found (${dupes.map(d => d.username).join(', ')}). Rename one manually before restarting.`);
+  } else {
+    db.exec('CREATE UNIQUE INDEX idx_users_username_nocase ON users(username COLLATE NOCASE)');
+  }
+}
+
 // ============ Boot housekeeping ============
 db.prepare('DELETE FROM sessions WHERE expires_at < ?').run(Date.now());
 db.prepare('DELETE FROM invite_codes WHERE expires_at < ?').run(Date.now());

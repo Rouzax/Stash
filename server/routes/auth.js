@@ -30,7 +30,7 @@ export default async function authRoutes(app) {
       return reply.code(400).send({ error: 'username and password required' });
     }
     const user = db.prepare(
-      'SELECT id, username, password_hash, is_admin, is_superadmin, family_id, email, emoji, color, exact_dates, show_background FROM users WHERE username = ?'
+      'SELECT id, username, password_hash, is_admin, is_superadmin, family_id, email, emoji, color, exact_dates, show_background FROM users WHERE username = ? COLLATE NOCASE'
     ).get(u);
     if (!user) {
       await hashPassword('dummy-password-for-timing');
@@ -543,7 +543,7 @@ export default async function authRoutes(app) {
     const username = nonEmptyString(request.body?.username, LIMITS.username);
     if (!username) return { ok: true };
 
-    const user = db.prepare('SELECT id, username, email FROM users WHERE username = ?').get(username);
+    const user = db.prepare('SELECT id, username, email FROM users WHERE username = ? COLLATE NOCASE').get(username);
     if (user?.email) {
       const token = crypto.randomBytes(32).toString('hex');
       const expiresAt = Date.now() + 60 * 60 * 1000;

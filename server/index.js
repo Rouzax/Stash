@@ -12,7 +12,11 @@ import logRoutes from './routes/log.js';
 import notificationRoutes from './routes/notifications.js';
 import familyRoutes from './routes/families.js';
 import { isEmailConfigured, sendWeeklyDigest } from './email.js';
+import { requireAuth } from './auth.js';
+import { createRequire } from 'node:module';
 
+const require = createRequire(import.meta.url);
+const { version: APP_VERSION } = require('./package.json');
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PORT = Number(process.env.PORT) || 3000;
@@ -55,6 +59,47 @@ await app.register(notificationRoutes);
 await app.register(familyRoutes);
 
 app.get('/api/health', async () => ({ ok: true, ts: Date.now() }));
+
+// Version + update check
+let latestVersion = null;
+let updateAvailable = false;
+
+const GITHUB_RELEASE_URL = 'https://api.github.com/repos/Rouzax/Stash/releases/latest';
+
+function compareVersions(current, latest) {
+  const c = current.split('.').map(Number);
+  const l = latest.split('.').map(Number);
+  for (let i = 0; i < 3; i++) {
+    if ((l[i] || 0) > (c[i] || 0)) return true;
+    if ((l[i] || 0) < (c[i] || 0)) return false;
+  }
+  return false;
+}
+
+async function checkForUpdates() {
+  try {
+    const res = await fetch(GITHUB_RELEASE_URL, {
+      headers: { 'User-Agent': `Stash/${APP_VERSION}` },
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    const tag = data.tag_name?.replace(/^v/, '');
+    if (tag) {
+      latestVersion = tag;
+      updateAvailable = compareVersions(APP_VERSION, tag);
+    }
+  } catch {}
+}
+
+checkForUpdates();
+setInterval(checkForUpdates, 24 * 60 * 60 * 1000);
+
+app.get('/api/version', { preHandler: requireAuth }, async () => ({
+  version: APP_VERSION,
+  update_available: updateAvailable,
+  latest_version: latestVersion,
+}));
 
 // Weekly digest: check hourly, send on Monday at 08:00 server-local time
 setInterval(() => {

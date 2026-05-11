@@ -9,7 +9,7 @@ const EMOJI_PRESETS = [
   '🐱', '🐶', '🦊', '🐼', '🦄', '🐉',
 ];
 
-export default function UserSettingsModal({ user, onUpdate, onRushReset, onChartClear, onClose }) {
+export default function UserSettingsModal({ user, appVersion, onUpdate, onRushReset, onChartClear, onClose }) {
   const [emoji, setEmoji] = useState(user.emoji || '😎');
   const [color, setColor] = useState(user.color || '#ff10f0');
   const [email, setEmail] = useState(user.email || '');
@@ -232,6 +232,15 @@ export default function UserSettingsModal({ user, onUpdate, onRushReset, onChart
             {loading ? 'SAVING...' : 'SAVE'}
           </button>
         </div>
+
+        {appVersion && (
+          <div style={{ marginTop: 16, textAlign: 'center', fontFamily: 'Orbitron', fontSize: 10, letterSpacing: '1px', color: '#8888aa' }}>
+            v{appVersion.version}
+            {appVersion.update_available && appVersion.latest_version && (
+              <> - <a href={`https://github.com/Rouzax/Stash/releases/tag/v${appVersion.latest_version}`} target="_blank" rel="noopener noreferrer" style={{ color: '#00f0ff' }}>v{appVersion.latest_version} available</a></>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

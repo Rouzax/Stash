@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { Plus, Edit2, LogOut, Users, KeyRound, MoreVertical, UserCircle, HelpCircle, X } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from 'recharts';
-import { items as itemsApi, logApi, auth } from './api.js';
+import { items as itemsApi, logApi, auth, versionApi } from './api.js';
 import { SynthBackground, Scanlines } from './background.jsx';
 import ChangePasswordModal from './ChangePasswordModal.jsx';
 import ItemModal from './ItemModal.jsx';
@@ -48,6 +48,7 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
   const [giveAmount, setGiveAmount] = useState('');
   const [giveRecipient, setGiveRecipient] = useState('');
   const [giveLoading, setGiveLoading] = useState(false);
+  const [appVersion, setAppVersion] = useState(null);
   const [, setTick] = useState(0);
 
   const adjustSeq = useRef(new Map());
@@ -64,6 +65,7 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
         if (cancelled) return;
         setItems(itemsData);
         setLog(logData);
+        versionApi.get().then(v => { if (!cancelled) setAppVersion(v); }).catch(() => {});
       } catch (e) {
         if (cancelled) return;
         if (e.status !== 401) showError(e.message);
@@ -538,6 +540,7 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
       {settingsOpen && (
         <UserSettingsModal
           user={user}
+          appVersion={appVersion}
           onUpdate={setUser}
           onRushReset={() => {
             setUser(prev => ({ ...prev, rush_reset_at: Date.now() }));

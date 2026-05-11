@@ -102,3 +102,7 @@ export const logApi = {
   update: (id, data) => api.patch(`/api/log/${id}`, data),
   remove: (id) => api.del(`/api/log/${id}`)
 };
+
+export const versionApi = {
+  get: () => api.get('/api/version'),
+};

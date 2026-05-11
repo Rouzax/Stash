@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Trash2, Plus, Shield, User, Copy, Check, Link, X, KeyRound, ChevronDown, ChevronUp } from 'lucide-react';
 import { auth, admin } from '../api.js';
-import { formatTimeAgo } from '../format.js';
+import { formatTimeAgo, copyToClipboard } from '../format.js';
 
 const EXPIRY_OPTIONS = [
   { label: '1h', hours: 1 },
@@ -28,6 +28,7 @@ export default function UsersTab({ currentUserId, exactDates }) {
   const [newUsername, setNewUsername] = useState('');
   const [newEmail, setNewEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
+  const [newConfirmPassword, setNewConfirmPassword] = useState('');
   const [newEmoji, setNewEmoji] = useState('\u{1F60E}');
   const [newIsAdmin, setNewIsAdmin] = useState(false);
   const [error, setError] = useState('');
@@ -60,9 +61,13 @@ export default function UsersTab({ currentUserId, exactDates }) {
       setError('Password must be at least 8 characters');
       return;
     }
+    if (newPassword !== newConfirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
     try {
       await auth.createUser(newUsername.trim(), newPassword, newIsAdmin, newEmail.trim(), newEmoji);
-      setNewUsername(''); setNewEmail(''); setNewPassword(''); setNewEmoji('\u{1F60E}'); setNewIsAdmin(false);
+      setNewUsername(''); setNewEmail(''); setNewPassword(''); setNewConfirmPassword(''); setNewEmoji('\u{1F60E}'); setNewIsAdmin(false);
       setShowCreate(false);
       await refresh();
     } catch (e) {
@@ -126,7 +131,7 @@ export default function UsersTab({ currentUserId, exactDates }) {
   };
 
   const copyCode = (code) => {
-    navigator.clipboard.writeText(code).then(() => {
+    copyToClipboard(code).then(() => {
       setCopiedCode(code);
       setTimeout(() => setCopiedCode(null), 2000);
     });
@@ -149,6 +154,7 @@ export default function UsersTab({ currentUserId, exactDates }) {
     <div>
       {error && <div className="error-msg" style={{ marginBottom: 12 }}>{error}</div>}
 
+      <div className="admin-section-label">{'◢'} FAMILY MEMBERS {'◣'}</div>
       <div className="user-list">
         {users.map(u => (
           <div key={u.id} className="user-row">
@@ -230,6 +236,10 @@ export default function UsersTab({ currentUserId, exactDates }) {
           <div className="field">
             <label>PASSWORD (8+)</label>
             <input type="password" value={newPassword} onChange={e => setNewPassword(e.target.value)} autoComplete="new-password" />
+          </div>
+          <div className="field">
+            <label>CONFIRM PASSWORD</label>
+            <input type="password" value={newConfirmPassword} onChange={e => setNewConfirmPassword(e.target.value)} autoComplete="new-password" />
           </div>
           <div className="field">
             <label>EMOJI</label>

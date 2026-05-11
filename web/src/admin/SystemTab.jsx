@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Trash2, Plus, Shield, Copy, Check, X, KeyRound, Star } from 'lucide-react';
 import { auth, admin } from '../api.js';
-import { formatTimeAgo } from '../format.js';
+import { formatTimeAgo, copyToClipboard } from '../format.js';
 
 const formatExpiry = (ts) => {
   const diff = ts - Date.now();
@@ -22,6 +22,8 @@ export default function SystemTab({ currentUserId, exactDates }) {
   const [resetPwId, setResetPwId] = useState(null);
   const [resetPwValue, setResetPwValue] = useState('');
   const [copiedCode, setCopiedCode] = useState(null);
+  const [starterUses, setStarterUses] = useState(1);
+  const [starterExpiry, setStarterExpiry] = useState(168);
   const [sortBy, setSortBy] = useState('created_at');
   const [sortDir, setSortDir] = useState('desc');
 
@@ -91,7 +93,7 @@ export default function SystemTab({ currentUserId, exactDates }) {
   const createStarterCode = async () => {
     setError('');
     try {
-      await auth.createInvite({ max_uses: 1, expires_hours: 168, is_family_starter: true });
+      await auth.createInvite({ max_uses: starterUses, expires_hours: starterExpiry, is_family_starter: true });
       await refresh();
     } catch (e) {
       setError(e.message);
@@ -108,7 +110,7 @@ export default function SystemTab({ currentUserId, exactDates }) {
   };
 
   const copyCode = (code) => {
-    navigator.clipboard.writeText(code).then(() => {
+    copyToClipboard(code).then(() => {
       setCopiedCode(code);
       setTimeout(() => setCopiedCode(null), 2000);
     });
@@ -269,6 +271,28 @@ export default function SystemTab({ currentUserId, exactDates }) {
           </div>
         )}
 
+        <div style={{ display: 'flex', gap: 8, marginBottom: 10 }}>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontFamily: 'Orbitron', fontSize: 9, letterSpacing: '1px', color: '#8888aa', marginBottom: 4 }}>USES</div>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {[{ label: '1', value: 1 }, { label: '5', value: 5 }, { label: '∞', value: 0 }].map(o => (
+                <button key={o.value} className={`chart-toggle-btn ${starterUses === o.value ? 'active' : ''}`}
+                  style={{ flex: 1, padding: '6px 0', fontSize: 11, fontFamily: 'Orbitron', background: starterUses === o.value ? 'var(--neon-magenta)' : 'rgba(0,0,0,0.4)', color: starterUses === o.value ? '#fff' : '#8888aa', border: '1px solid rgba(255,16,240,0.3)', borderRadius: 6, cursor: 'pointer' }}
+                  onClick={() => setStarterUses(o.value)}>{o.label}</button>
+              ))}
+            </div>
+          </div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontFamily: 'Orbitron', fontSize: 9, letterSpacing: '1px', color: '#8888aa', marginBottom: 4 }}>EXPIRY</div>
+            <div style={{ display: 'flex', gap: 4 }}>
+              {[{ label: '1h', hours: 1 }, { label: '24h', hours: 24 }, { label: '7d', hours: 168 }].map(o => (
+                <button key={o.hours} className={`chart-toggle-btn ${starterExpiry === o.hours ? 'active' : ''}`}
+                  style={{ flex: 1, padding: '6px 0', fontSize: 11, fontFamily: 'Orbitron', background: starterExpiry === o.hours ? 'var(--neon-magenta)' : 'rgba(0,0,0,0.4)', color: starterExpiry === o.hours ? '#fff' : '#8888aa', border: '1px solid rgba(255,16,240,0.3)', borderRadius: 6, cursor: 'pointer' }}
+                  onClick={() => setStarterExpiry(o.hours)}>{o.label}</button>
+              ))}
+            </div>
+          </div>
+        </div>
         <button
           className="btn-primary"
           onClick={createStarterCode}

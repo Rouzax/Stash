@@ -23,7 +23,7 @@ export default function AdminArea({ user, onBack }) {
         <button className="admin-back" onClick={onBack} aria-label="Back to inventory">
           <ArrowLeft size={20} />
         </button>
-        <h1 className="admin-title">ADMIN</h1>
+        <h1 className="admin-title">ADMIN <span style={{ fontFamily: 'Outfit', fontSize: 14, color: '#8888aa', fontWeight: 400 }}>{user.family_name}</span></h1>
       </div>
 
       <div className="admin-tabs">
