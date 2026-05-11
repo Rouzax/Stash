@@ -37,7 +37,8 @@ const app = Fastify({
 });
 
 await app.register(fastifyCookie, { secret: SESSION_SECRET });
-await app.register(rateLimit, { max: 100, timeWindow: '1 minute' });
+const GLOBAL_RATE_LIMIT = Number(process.env.RATE_LIMIT) || 100;
+await app.register(rateLimit, { max: GLOBAL_RATE_LIMIT, timeWindow: '1 minute' });
 
 // Basic security headers on every response
 app.addHook('onSend', async (_request, reply) => {

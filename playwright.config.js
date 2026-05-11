@@ -12,7 +12,7 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: `cd server && SESSION_SECRET=test-secret-that-is-at-least-32-chars DB_PATH=./e2e-test.db PORT=${BACKEND_PORT} LOGIN_RATE_LIMIT=100 LOG_LEVEL=warn node index.js`,
+      command: `cd server && SESSION_SECRET=test-secret-that-is-at-least-32-chars DB_PATH=./e2e-test.db PORT=${BACKEND_PORT} RATE_LIMIT=1000 LOGIN_RATE_LIMIT=100 LOG_LEVEL=warn node index.js`,
       port: Number(BACKEND_PORT),
       reuseExistingServer: false,
     },
