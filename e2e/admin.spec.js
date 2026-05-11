@@ -113,7 +113,7 @@ test('Register - member invite full signup', async ({ page }) => {
   await page.fill('input[maxlength="8"]', 'TESTJOIN');
   await page.click('button.btn-primary:has-text("CONTINUE")');
   await expect(page.locator('.hint-box')).toContainText('The Testers');
-  await page.fill('input[autocomplete="off"]', 'newmember');
+  await page.fill('input[autocomplete="username"]', 'newmember');
   await page.fill('input[autocomplete="new-password"]', 'testpassword');
   await page.locator('input[autocomplete="new-password"]').nth(1).fill('testpassword');
   await page.click('button.btn-primary:has-text("JOIN FAMILY")');

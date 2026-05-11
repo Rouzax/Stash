@@ -301,7 +301,7 @@ export default function Inventory({ user: initialUser, onLogout, onNavigate }) {
     return (
       <>
         <SynthBackground />
-        <div className="loading-screen"><div className="loading-text">LOADING</div></div>
+        <div className="loading-screen"><div className="loading-text">LOADING...</div></div>
       </>
     );
   }

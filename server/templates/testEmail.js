@@ -14,5 +14,5 @@ export function renderTestEmail() {
 
   const { html, text } = wrapTemplate('Test email', bodyHtml, bodyText);
 
-  return { subject: '\u{1F9EA} Stash test email', html, text };
+  return { subject: '[Stash] Test email', html, text };
 }

@@ -118,7 +118,7 @@ export default function HistoryModal({ log, items, itemsById, user, onLogChange,
         {mode === 'list' && (
           <>
             <div className="modal-header">
-              <div className="modal-title">HISTORY</div>
+              <h2 className="modal-title">HISTORY</h2>
               <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <button className="history-add-btn" onClick={() => setMode('add')}>
                   <Plus size={14} /> ADD
@@ -183,7 +183,7 @@ export default function HistoryModal({ log, items, itemsById, user, onLogChange,
           <>
             <div className="modal-header">
               <button className="btn-icon" onClick={() => setMode('list')}><ArrowLeft size={18} /></button>
-              <div className="modal-title">ADD ENTRY</div>
+              <h2 className="modal-title">ADD ENTRY</h2>
               <button className="btn-close" onClick={onClose}><X size={18} /></button>
             </div>
 
@@ -243,7 +243,7 @@ export default function HistoryModal({ log, items, itemsById, user, onLogChange,
           <>
             <div className="modal-header">
               <button className="btn-icon" onClick={() => { setMode('list'); setEditEntry(null); }}><ArrowLeft size={18} /></button>
-              <div className="modal-title">EDIT</div>
+              <h2 className="modal-title">EDIT ENTRY</h2>
               <button className="btn-close" onClick={onClose}><X size={18} /></button>
             </div>
 

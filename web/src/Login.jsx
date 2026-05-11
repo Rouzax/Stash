@@ -219,7 +219,7 @@ export default function Login({ mode, onAuth }) {
               <input
                 ref={userRef}
                 type="text"
-                autoComplete={isRegister || isBootstrap ? 'off' : 'username'}
+                autoComplete="username"
                 value={username}
                 onChange={e => setUsername(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && pwRef.current?.focus()}
