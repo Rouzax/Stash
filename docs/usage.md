@@ -11,6 +11,8 @@ When you open Stash for the first time, a setup form appears. Fill it in:
 
 Submit the form. You land on the main inventory screen, logged in as admin. This form only appears once. After this, new members must be invited.
 
+<img src="../images/login.png" alt="Login screen" width="300">
+
 !!! info "You are the superadmin"
     The account created during bootstrap is the superadmin. This is a special role that spans all families on the instance. See [Superadmin](#superadmin) below for what that means.
 
@@ -58,6 +60,8 @@ Fill in the fields:
 
 Tap **SAVE** and the item appears on the inventory grid.
 
+<img src="../images/item-modal.png" alt="Item edit modal" width="300">
+
 To edit an item, tap the pencil icon on its card.
 
 To delete an item, open the edit form and tap **DELETE**. The item disappears from the inventory grid. Your consumption history for that item is kept: it still counts toward your rush meter and shows up in your charts and the admin activity feed.
@@ -75,6 +79,8 @@ Long-pressing either button removes ten portions at once (useful for restocking 
 To add stock (restock), use the **+** button on the card. Long-press **+** to add ten at once.
 
 The count on screen updates immediately. If the request fails, the count snaps back.
+
+<img src="../images/inventory.png" alt="Inventory screen" width="300">
 
 !!! tip "Quarter doses"
     The ±¼ button is useful for items you consume in fractions (half a gummy, a small sip of a drink). The quarter step is `portion_size ÷ 4`.
@@ -97,6 +103,8 @@ The math:
 - **Rush %** = `rush_score × 100`
 
 A single standard portion (rush factor 1.0, decay 4 hours) at the moment of consumption = 100%.
+
+<img src="../images/rush-active.png" alt="Rush meter active" width="300">
 
 ### Mascot tiers
 
@@ -182,6 +190,8 @@ You can change:
 
 Your username cannot be changed after registration. To change your password, see below.
 
+<img src="../images/profile.png" alt="Profile settings" width="300">
+
 ### Display preferences
 
 - **Show exact dates**: replaces relative timestamps ("2h ago") with full dates. Affects the inventory history, admin activity feed, and user lists.
@@ -231,6 +241,8 @@ For each member you can:
 
 You cannot delete your own account.
 
+<img src="../images/admin-users.png" alt="Users tab" width="350">
+
 To create a new account directly without an invite code:
 
 1. Fill in the **Create User** form at the bottom of the tab.
@@ -250,6 +262,8 @@ To generate a new member invite:
 
 The Settings tab lets you rename your family. Type a new name and save.
 
+<img src="../images/admin-settings.png" alt="Settings tab" width="350">
+
 The Settings tab also contains a **Danger Zone** section, visible only to the superadmin, for deleting the family. Deletion requires typing the family name to confirm.
 
 ### Activity tab
@@ -257,6 +271,8 @@ The Settings tab also contains a **Danger Zone** section, visible only to the su
 The Activity tab shows a chronological feed of what your family has been eating and restocking. Each entry shows the timestamp, the user (emoji and name), the item (emoji and name), and the action (consumed or restocked, with the amount). If an item has been deleted, its entries remain in the feed with a "(removed)" label.
 
 Use the two dropdown filters to narrow the feed by user or by item. Tap **Load More** at the bottom to page through older entries.
+
+<img src="../images/admin-activity.png" alt="Activity feed" width="350">
 
 ## Superadmin
 
@@ -271,6 +287,8 @@ The System tab is visible only to the superadmin. It has three sections:
 - **Global user list**: all users across all families, sortable by last seen, created date, or family. You can toggle admin status, toggle superadmin status, reset a password, or delete any user from here.
 - **Family overview**: cards for every family on the instance, showing the family name, member count, and item count.
 - **Family starter codes**: create and revoke the codes that let new users set up their own families. Each code shows the code itself, remaining uses, and expiry.
+
+<img src="../images/admin-system.png" alt="System tab" width="350">
 
 ### Creating a family starter code
 
