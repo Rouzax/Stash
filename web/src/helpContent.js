@@ -120,10 +120,10 @@ export const helpTopics = [
         'Go to FAMILY > Users tab > expand Invite Codes section',
         'Tap Generate Invite, pick max uses (1, 5, or unlimited) and expiry (1h, 24h, 7d)',
         'Share the code with your family member',
-        'They enter it on the join screen along with a username and password',
+        'They enter the code on the join screen and tap CONTINUE, then fill in a username and password',
         'Revoke a code early by tapping the trash icon',
       ]},
-      { type: 'tip', text: 'Invite codes are case-insensitive. The family name field is ignored for member invites.' },
+      { type: 'tip', text: 'Invite codes are case-insensitive. The app automatically shows the right fields based on the code type.' },
     ]
   },
   {
@@ -155,7 +155,7 @@ export const helpTopics = [
         'Family starter codes: generate codes that let someone create a brand-new family',
         'Delete families: removes all users, items, and history in that family',
       ]},
-      { type: 'tip', text: 'Family starter codes are the only way to create new families. Recipients enter the code on the join screen with a family name to bootstrap their own household.' },
+      { type: 'tip', text: 'Family starter codes are the only way to create new families. Recipients enter the code and click CONTINUE, then fill in a family name and their credentials to bootstrap their own household.' },
     ]
   },
 ];

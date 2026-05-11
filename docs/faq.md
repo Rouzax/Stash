@@ -81,15 +81,15 @@ Only the superadmin can add new families. There is no open or self-service regis
 3. Scroll to **NEW FAMILY CODES** (the pink section) and tap **Generate Code**.
 4. Copy the code and send it to the person who will run the new family.
 
-That person goes to the Stash join screen, enters the starter code in the **INVITE CODE** field, types a name in the **FAMILY NAME** field, then picks a username and password. Their account is created, a new family is set up with the name they chose, and they become that family's admin. They can then invite their own family members with member invites.
+That person goes to the Stash join screen, enters the starter code in the **INVITE CODE** field, and clicks **CONTINUE**. The app confirms they are creating a new family. They fill in a **FAMILY NAME**, pick a username and password, then click **CREATE FAMILY**. Their account is created, a new family is set up with the name they chose, and they become that family's admin. They can then invite their own family members with member invites.
 
 ## How do invite codes work?
 
 There are two kinds of invite codes:
 
-**Member invites** are created by any family admin in the **MEMBER INVITES** section of the admin panel. The invited person enters the code on the join screen, picks a username and password, and is added to that admin's family. The **FAMILY NAME** field on the join screen is ignored for member invites.
+**Member invites** are created by any family admin in the **MEMBER INVITES** section of the admin panel. The invited person enters the code on the join screen and clicks **CONTINUE**. The app shows which family they are joining, and they pick a username and password and click **JOIN FAMILY** to be added to that admin's family.
 
-**Family starter codes** are created only by the superadmin in the **NEW FAMILY CODES** section. The recipient enters the code on the join screen along with a family name and their credentials. A new family is created with that name and they become its admin.
+**Family starter codes** are created only by the superadmin in the **NEW FAMILY CODES** section. The recipient enters the code on the join screen and clicks **CONTINUE**. The app shows they are creating a new family, and they fill in a family name and their credentials, then click **CREATE FAMILY**. A new family is created with that name and they become its admin.
 
 For both types: the admin chooses how many times the code can be used and when it expires. The code is a random 8-character string (letters and numbers, no ambiguous characters like `0`, `O`, `1`, `I`).
 

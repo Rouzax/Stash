@@ -30,7 +30,7 @@ There are two types of invite codes:
 3. Choose how many uses the code allows (1, 5, or unlimited) and how long it stays valid (1 hour, 24 hours, or 7 days).
 4. Copy the code and send it to your family member.
 
-The family member opens Stash, sees the login/join screen, and enters the code in the **INVITE CODE** field. They pick a username and password. The **FAMILY NAME** field is ignored for member invites. They join your family automatically.
+The family member opens Stash, goes to the **JOIN / CREATE** tab, and enters the code in the **INVITE CODE** field, then clicks **CONTINUE**. The app shows a "Joining: {family name}" confirmation. They pick a username and password, then click **JOIN FAMILY**. They join your family automatically.
 
 ### Family starter codes
 
@@ -302,14 +302,11 @@ The System tab is visible only to the superadmin. It has three sections:
 
 The recipient opens Stash, goes to the join screen, and:
 
-1. Enters the family starter code in the **INVITE CODE** field.
-2. Fills in a **FAMILY NAME** for their new family.
-3. Picks a username and password.
+1. Enters the family starter code in the **INVITE CODE** field and clicks **CONTINUE**.
+2. The app confirms they are creating a new family and they fill in a **FAMILY NAME**.
+3. Picks a username and password, then clicks **CREATE FAMILY**.
 
 Their account is created, a new family is created with the name they chose, and they become that family's admin. They can then generate their own member invites to add people to their family.
-
-!!! warning "Family name is required for starter codes"
-    If someone uses a family starter code without filling in a family name, registration will fail. Let them know to fill in both fields.
 
 ## Changing your password
 
