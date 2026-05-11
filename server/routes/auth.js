@@ -458,6 +458,33 @@ export default async function authRoutes(app) {
     };
   });
 
+  // Check invite code validity (unauthenticated, for two-step registration)
+  app.post('/api/auth/invite-check', {
+    config: {
+      rateLimit: { max: 5, timeWindow: '1 minute' }
+    }
+  }, async (request, reply) => {
+    const code = inviteCode(request.body?.code);
+    if (!code) {
+      return reply.code(400).send({ valid: false });
+    }
+    const now = Date.now();
+    const invite = db.prepare(
+      'SELECT family_id, max_uses, use_count, is_family_starter, expires_at FROM invite_codes WHERE code = ?'
+    ).get(code);
+
+    if (!invite || invite.expires_at < now || (invite.max_uses > 0 && invite.use_count >= invite.max_uses)) {
+      return { valid: false };
+    }
+
+    if (invite.is_family_starter) {
+      return { valid: true, is_family_starter: true };
+    }
+
+    const family = db.prepare('SELECT name FROM families WHERE id = ?').get(invite.family_id);
+    return { valid: true, is_family_starter: false, family_name: family?.name || 'Unknown' };
+  });
+
   // Admin: generate invite code (family admins create member invites, superadmin can also create family starters)
   app.post('/api/auth/invites', { preHandler: requireAdmin }, async (request) => {
     const rawUses = Number(request.body?.max_uses);
