@@ -69,3 +69,53 @@ test('System tab - superadmin only', async ({ page }) => {
   await expect(page.locator('.family-row')).toHaveCount(2);
   await page.screenshot({ path: 'docs/images/admin-system.png', fullPage: true });
 });
+
+test('Register step 1 - invalid invite code shows error', async ({ page }) => {
+  await page.goto('/');
+  await page.click('.auth-tabs button:nth-child(2)');
+  await page.fill('input[maxlength="8"]', 'ZZZZZZZZ');
+  await page.click('button.btn-primary:has-text("CONTINUE")');
+  await expect(page.locator('.error-msg')).toContainText('Invalid or expired invite code');
+});
+
+test('Register step 1 - valid member code shows join form', async ({ page }) => {
+  await page.goto('/');
+  await page.click('.auth-tabs button:nth-child(2)');
+  await page.fill('input[maxlength="8"]', 'TESTJOIN');
+  await page.click('button.btn-primary:has-text("CONTINUE")');
+  await expect(page.locator('.hint-box')).toContainText('The Testers');
+  await expect(page.locator('button.btn-primary:has-text("JOIN FAMILY")')).toBeVisible();
+});
+
+test('Register step 1 - valid starter code shows create form', async ({ page }) => {
+  await page.goto('/');
+  await page.click('.auth-tabs button:nth-child(2)');
+  await page.fill('input[maxlength="8"]', 'NEWHOME0');
+  await page.click('button.btn-primary:has-text("CONTINUE")');
+  await expect(page.locator('.hint-box')).toContainText('NEW FAMILY');
+  await expect(page.locator('label:has-text("FAMILY NAME")')).toBeVisible();
+  await expect(page.locator('button.btn-primary:has-text("CREATE FAMILY")')).toBeVisible();
+});
+
+test('Register - back button returns to step 1 with code preserved', async ({ page }) => {
+  await page.goto('/');
+  await page.click('.auth-tabs button:nth-child(2)');
+  await page.fill('input[maxlength="8"]', 'TESTJOIN');
+  await page.click('button.btn-primary:has-text("CONTINUE")');
+  await expect(page.locator('.hint-box')).toBeVisible();
+  await page.click('button:has-text("Back to invite code")');
+  await expect(page.locator('input[maxlength="8"]')).toHaveValue('TESTJOIN');
+});
+
+test('Register - member invite full signup', async ({ page }) => {
+  await page.goto('/');
+  await page.click('.auth-tabs button:nth-child(2)');
+  await page.fill('input[maxlength="8"]', 'TESTJOIN');
+  await page.click('button.btn-primary:has-text("CONTINUE")');
+  await expect(page.locator('.hint-box')).toContainText('The Testers');
+  await page.fill('input[autocomplete="off"]', 'newmember');
+  await page.fill('input[autocomplete="new-password"]', 'testpassword');
+  await page.locator('input[autocomplete="new-password"]').nth(1).fill('testpassword');
+  await page.click('button.btn-primary:has-text("JOIN FAMILY")');
+  await page.waitForSelector('.header');
+});
