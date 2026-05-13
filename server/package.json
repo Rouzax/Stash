@@ -1,6 +1,6 @@
 {
   "name": "stash-server",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "Stash inventory tracker - server",
   "type": "module",
   "main": "index.js",
