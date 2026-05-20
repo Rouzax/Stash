@@ -150,7 +150,7 @@ export default async function authRoutes(app) {
   // Admin: list users in the same family
   app.get('/api/auth/users', { preHandler: requireAdmin }, async (request) => {
     return db.prepare(`
-      SELECT id, username, is_admin, email, emoji, color, last_login_at, created_at
+      SELECT id, username, is_admin, email, emoji, color, last_login_at, last_seen_at, created_at
       FROM users WHERE family_id = ? ORDER BY created_at ASC LIMIT 1000
     `).all(request.session.family_id).map(u => ({ ...u, is_admin: !!u.is_admin }));
   });
@@ -306,7 +306,7 @@ export default async function authRoutes(app) {
   app.get('/api/auth/users/all', { preHandler: requireSuperadmin }, async () => {
     return db.prepare(`
       SELECT u.id, u.username, u.is_admin, u.is_superadmin, u.family_id,
-             u.email, u.emoji, u.color, u.last_login_at, u.created_at,
+             u.email, u.emoji, u.color, u.last_login_at, u.last_seen_at, u.created_at,
              f.name AS family_name
       FROM users u
       JOIN families f ON f.id = u.family_id

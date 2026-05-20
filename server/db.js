@@ -137,6 +137,10 @@ if (!userCols.some(c => c.name === 'last_login_at')) {
   db.exec('ALTER TABLE users ADD COLUMN last_login_at INTEGER');
 }
 
+if (!userCols.some(c => c.name === 'last_seen_at')) {
+  db.exec('ALTER TABLE users ADD COLUMN last_seen_at INTEGER');
+}
+
 if (!itemCols.some(c => c.name === 'deleted_at')) {
   db.exec('ALTER TABLE items ADD COLUMN deleted_at INTEGER DEFAULT NULL');
 }

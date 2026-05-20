@@ -169,7 +169,9 @@ export default function UsersTab({ currentUserId, exactDates }) {
               <div className="user-meta">
                 {u.is_admin ? 'Admin' : 'Member'}
                 {' · '}
-                {formatTimeAgo(u.last_login_at, exactDates)}
+                Seen {formatTimeAgo(u.last_seen_at, exactDates)}
+                {' · '}
+                Login {formatTimeAgo(u.last_login_at, exactDates)}
                 {' · '}
                 {new Date(u.created_at).toLocaleDateString()}
               </div>

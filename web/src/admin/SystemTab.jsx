@@ -24,7 +24,7 @@ export default function SystemTab({ currentUserId, exactDates }) {
   const [copiedCode, setCopiedCode] = useState(null);
   const [starterUses, setStarterUses] = useState(1);
   const [starterExpiry, setStarterExpiry] = useState(168);
-  const [sortBy, setSortBy] = useState('created_at');
+  const [sortBy, setSortBy] = useState('last_seen_at');
   const [sortDir, setSortDir] = useState('desc');
 
   const refresh = async () => {
@@ -147,7 +147,8 @@ export default function SystemTab({ currentUserId, exactDates }) {
 
       <div className="system-sort">
         {[
-          { col: 'last_login_at', label: 'LAST SEEN' },
+          { col: 'last_seen_at', label: 'LAST SEEN' },
+          { col: 'last_login_at', label: 'LAST LOGIN' },
           { col: 'created_at', label: 'CREATED' },
           { col: 'family_name', label: 'FAMILY' },
         ].map(s => (
@@ -178,7 +179,9 @@ export default function SystemTab({ currentUserId, exactDates }) {
                 {' · '}
                 {u.is_admin ? 'Admin' : 'Member'}
                 {' · '}
-                {formatTimeAgo(u.last_login_at, exactDates)}
+                Seen {formatTimeAgo(u.last_seen_at, exactDates)}
+                {' · '}
+                Login {formatTimeAgo(u.last_login_at, exactDates)}
               </div>
             </div>
             {u.id !== currentUserId && (

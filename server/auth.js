@@ -5,6 +5,9 @@ import { db } from './db.js';
 const SESSION_DURATION_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 export const COOKIE_NAME = 'stash_sid';
 
+const LAST_SEEN_THROTTLE_MS = 60_000;
+const lastSeenCache = new Map();
+
 export async function hashPassword(password) {
   return argon2.hash(password, { type: argon2.argon2id });
 }
@@ -76,6 +79,13 @@ export async function requireAuth(request, reply) {
     return reply.code(401).send({ error: 'unauthorized' });
   }
   request.session = session;
+
+  const now = Date.now();
+  const lastWritten = lastSeenCache.get(session.user_id) || 0;
+  if (now - lastWritten >= LAST_SEEN_THROTTLE_MS) {
+    lastSeenCache.set(session.user_id, now);
+    db.prepare('UPDATE users SET last_seen_at = ? WHERE id = ?').run(now, session.user_id);
+  }
 }
 
 export async function requireAdmin(request, reply) {
