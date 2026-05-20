@@ -8,23 +8,22 @@ RUN npm ci
 COPY web/ ./
 RUN npm run build
 
-# ---------- Backend deps (glibc base so argon2 + better-sqlite3 use prebuilt binaries) ----------
-FROM node:22-slim AS server-deps
-RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
+# ---------- Backend deps (native modules: argon2 has musl prebuilds, better-sqlite3 compiles from source) ----------
+FROM node:22-alpine AS server-deps
+RUN apk add --no-cache python3 make g++
 WORKDIR /app/server
 COPY server/package*.json ./
 RUN npm ci --omit=dev
 
 # ---------- Runtime ----------
-FROM node:22-slim AS runtime
-RUN apt-get update && apt-get install -y --no-install-recommends tini wget && rm -rf /var/lib/apt/lists/*
+FROM node:22-alpine AS runtime
+RUN apk add --no-cache tini wget
 WORKDIR /app
 
-COPY --from=server-deps /app/server/node_modules ./node_modules
-COPY server/ ./
-COPY --from=web-build /app/web/dist ./public
-
-RUN mkdir -p /data && chown -R node:node /app /data
+RUN mkdir -p /data && chown node:node /data
+COPY --from=server-deps --chown=node:node /app/server/node_modules ./node_modules
+COPY --chown=node:node server/ ./
+COPY --from=web-build --chown=node:node /app/web/dist ./public
 
 USER node
 
