@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.7
 
 # ---------- Frontend build (static output, no need for target-arch emulation) ----------
-FROM --platform=linux/amd64 node:22-alpine AS web-build
+FROM --platform=linux/amd64 node:26-alpine AS web-build
 WORKDIR /app/web
 COPY web/package*.json ./
 RUN npm ci
@@ -9,14 +9,14 @@ COPY web/ ./
 RUN npm run build
 
 # ---------- Backend deps (native modules: argon2 has musl prebuilds, better-sqlite3 compiles from source) ----------
-FROM node:22-alpine AS server-deps
+FROM node:26-alpine AS server-deps
 RUN apk add --no-cache python3 make g++
 WORKDIR /app/server
 COPY server/package*.json ./
 RUN npm ci --omit=dev
 
 # ---------- Runtime ----------
-FROM node:22-alpine AS runtime
+FROM node:26-alpine AS runtime
 RUN apk add --no-cache tini wget
 WORKDIR /app
 
