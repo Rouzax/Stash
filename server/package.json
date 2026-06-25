@@ -16,7 +16,7 @@
     "@fastify/rate-limit": "^11.0.0",
     "@fastify/static": "^9.0.0",
     "argon2": "^0.44.0",
-    "better-sqlite3": "^12.10.1",
+    "better-sqlite3": "^12.11.1",
     "fastify": "^5.8.5",
     "nodemailer": "^9.0.1"
   }
