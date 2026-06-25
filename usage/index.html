@@ -1,0 +1,1633 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Self-hosted family candy tracker with per-person rush meters">
+      
+      
+      
+        <link rel="canonical" href="https://rouzax.github.io/Stash/usage/">
+      
+      
+        <link rel="prev" href="../configuration/">
+      
+      
+        <link rel="next" href="../updating/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Usage - Stash</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Outfit:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Outfit";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../stylesheets/synthwave.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="slate" data-md-color-primary="pink" data-md-color-accent="cyan">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#usage" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Stash" class="md-header__button md-logo" aria-label="Stash" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Stash
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Usage
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/Rouzax/Stash" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Rouzax/Stash
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Stash" class="md-nav__button md-logo" aria-label="Stash" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Stash
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/Rouzax/Stash" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Rouzax/Stash
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Usage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#first-login-bootstrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        First login (bootstrap)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inviting-members" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inviting members
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Inviting members">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#member-invites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Member invites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#family-starter-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Family starter codes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-items" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding items
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#taking-items" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Taking items
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Taking items">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#giving-items-away" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Giving items away
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rush-o-meter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rush-O-Meter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rush-O-Meter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mascot-tiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mascot tiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per-item-rush-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-item rush configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resetting-the-meter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resetting the meter
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#charts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Charts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Charts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#editing-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Editing history
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clearing-chart-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clearing chart history
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#low-stock-alerts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Low-stock alerts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#profile-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Profile settings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Profile settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#display-preferences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Display preferences
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notifications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Notifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enabling-notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enabling notifications
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#password-reset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Password reset
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#admin-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin panel
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Admin panel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#users-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Users tab
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#settings-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Settings tab
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#activity-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Activity tab
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#superadmin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Superadmin
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Superadmin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System tab
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-family-starter-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating a family starter code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-the-recipient-uses-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the recipient uses it
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#changing-your-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changing your password
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../updating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Updating
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../faq/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FAQ
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#first-login-bootstrap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        First login (bootstrap)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inviting-members" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inviting members
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Inviting members">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#member-invites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Member invites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#family-starter-codes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Family starter codes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#adding-items" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Adding items
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#taking-items" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Taking items
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Taking items">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#giving-items-away" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Giving items away
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rush-o-meter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rush-O-Meter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rush-O-Meter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mascot-tiers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mascot tiers
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per-item-rush-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-item rush configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#resetting-the-meter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resetting the meter
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#charts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Charts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Charts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#editing-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Editing history
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clearing-chart-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Clearing chart history
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#low-stock-alerts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Low-stock alerts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#profile-settings" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Profile settings
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Profile settings">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#display-preferences" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Display preferences
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Notifications
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Notifications">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#enabling-notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enabling notifications
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#password-reset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Password reset
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#admin-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Admin panel
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Admin panel">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#users-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Users tab
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#settings-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Settings tab
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#activity-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Activity tab
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#superadmin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Superadmin
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Superadmin">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#system-tab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        System tab
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#creating-a-family-starter-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Creating a family starter code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#how-the-recipient-uses-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How the recipient uses it
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#changing-your-password" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Changing your password
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="usage">Usage</h1>
+<h2 id="first-login-bootstrap">First login (bootstrap)</h2>
+<p>When you open Stash for the first time, a setup form appears. Fill it in:</p>
+<ul>
+<li><strong>Family name</strong> - the name for your household's shared stash (e.g. "The Smiths", "Apartment 4B")</li>
+<li><strong>Username</strong> - your personal login handle</li>
+<li><strong>Password</strong> - at least 8 characters</li>
+<li><strong>Emoji</strong> - an avatar for yourself (optional, defaults to 😎)</li>
+</ul>
+<p>Submit the form. You land on the main inventory screen, logged in as admin. This form only appears once. After this, new members must be invited.</p>
+<p><img src="../images/login.png" alt="Login screen" width="300"></p>
+<div class="admonition info">
+<p class="admonition-title">You are the superadmin</p>
+<p>The account created during bootstrap is the superadmin. This is a special role that spans all families on the instance. See <a href="#superadmin">Superadmin</a> below for what that means.</p>
+</div>
+<h2 id="inviting-members">Inviting members</h2>
+<p>There are two types of invite codes:</p>
+<ul>
+<li><strong>Member invites</strong>: invite someone into your own family. Any family admin can create these.</li>
+<li><strong>Family starter codes</strong>: let someone create a brand-new family and become its admin. Only the superadmin can create these.</li>
+</ul>
+<h3 id="member-invites">Member invites</h3>
+<ol>
+<li>Open the menu (three dots, top right) and tap <strong>FAMILY</strong>.</li>
+<li>In the admin panel, scroll to <strong>MEMBER INVITES</strong> and tap <strong>Generate Invite</strong>.</li>
+<li>Choose how many uses the code allows (1, 5, or unlimited) and how long it stays valid (1 hour, 24 hours, or 7 days).</li>
+<li>Copy the code and send it to your family member.</li>
+</ol>
+<p>The family member opens Stash, goes to the <strong>JOIN / CREATE</strong> tab, and enters the code in the <strong>INVITE CODE</strong> field, then clicks <strong>CONTINUE</strong>. The app shows a "Joining: {family name}" confirmation. They pick a username and password, then click <strong>JOIN FAMILY</strong>. They join your family automatically.</p>
+<h3 id="family-starter-codes">Family starter codes</h3>
+<p>See <a href="#superadmin">Superadmin</a> below.</p>
+<div class="admonition info">
+<p class="admonition-title">Invite codes are case-insensitive</p>
+<p>Codes are displayed in uppercase but the registration form accepts any case.</p>
+</div>
+<h2 id="adding-items">Adding items</h2>
+<p>Open the menu and tap the <strong>+</strong> button (or the plus icon in the header) to add an item.</p>
+<p>Fill in the fields:</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>What it does</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Name</strong></td>
+<td>What to call the item (e.g. "Tikkels", "Protein Powder")</td>
+</tr>
+<tr>
+<td><strong>Emoji / Icon</strong></td>
+<td>Pick from the presets or type your own</td>
+</tr>
+<tr>
+<td><strong>Neon color</strong></td>
+<td>Color for the card glow and accents</td>
+</tr>
+<tr>
+<td><strong>Unit</strong></td>
+<td><code>pcs</code> (pieces), <code>mg</code>, <code>g</code>, or <code>ml</code></td>
+</tr>
+<tr>
+<td><strong>Starting count</strong></td>
+<td>How many you have right now</td>
+</tr>
+<tr>
+<td><strong>Low-stock threshold</strong></td>
+<td>The count at which the card starts pulsing. Set to 0 to disable.</td>
+</tr>
+<tr>
+<td><strong>Portion size</strong></td>
+<td>How much one tap of TAKE removes. Defaults to 1 for <code>pcs</code>, 100 for <code>mg</code> and <code>g</code>, 250 for <code>ml</code>.</td>
+</tr>
+<tr>
+<td><strong>Rush %</strong></td>
+<td>How much this item contributes to the Rush-O-Meter relative to a standard portion. 100% is default. Set higher for stronger items, lower for milder ones.</td>
+</tr>
+<tr>
+<td><strong>Decay</strong></td>
+<td>How long until one portion's rush contribution fades to zero. Options: 30 min, 1 h, 2 h, 4 h, 6 h, 8 h.</td>
+</tr>
+<tr>
+<td><strong>Onset</strong></td>
+<td>How long after consumption before the rush contribution begins. Options: 0 min (immediate), 5 min, 10 min, 15 min, 30 min. Defaults to 0.</td>
+</tr>
+</tbody>
+</table>
+<p>Tap <strong>SAVE</strong> and the item appears on the inventory grid.</p>
+<p><img src="../images/item-modal.png" alt="Item edit modal" width="300"></p>
+<p>To edit an item, tap the pencil icon on its card.</p>
+<p>To delete an item, open the edit form and tap <strong>DELETE</strong>. The item disappears from the inventory grid. Your consumption history for that item is kept: it still counts toward your rush meter and shows up in your charts and the admin activity feed.</p>
+<h2 id="taking-items">Taking items</h2>
+<p>Each item card has three action buttons:</p>
+<ul>
+<li><strong>TAKE</strong> - removes one full portion (whatever <code>portion_size</code> is set to)</li>
+<li><strong>±¼</strong> - removes one quarter of a portion</li>
+<li><strong>GIVE</strong> - give items to someone outside the household</li>
+</ul>
+<p>Long-pressing either button removes ten portions at once (useful for restocking in reverse, or tracking a big session).</p>
+<p>To add stock (restock), use the <strong>+</strong> button on the card. Long-press <strong>+</strong> to add ten at once.</p>
+<p>The count on screen updates immediately. If the request fails, the count snaps back.</p>
+<p><img src="../images/inventory.png" alt="Inventory screen" width="300"></p>
+<div class="admonition tip">
+<p class="admonition-title">Quarter doses</p>
+<p>The ±¼ button is useful for items you consume in fractions (half a gummy, a small sip of a drink). The quarter step is <code>portion_size ÷ 4</code>.</p>
+</div>
+<h3 id="giving-items-away">Giving items away</h3>
+<p>Tap <strong>GIVE</strong> on an item card to record giving snacks to someone outside the household. A small dialog asks for the amount and an optional recipient name (e.g. "Dave", "office"). Give-aways reduce the item count but do not affect your rush meter or chart. They appear in your history with a yellow border, and in the weekly digest under a separate "SHARED" section.</p>
+<h2 id="rush-o-meter">Rush-O-Meter</h2>
+<p>The Rush-O-Meter is a bar at the top of the inventory screen. It shows how much you have consumed recently, expressed as a percentage.</p>
+<h3 id="how-it-works">How it works</h3>
+<p>Every time you take an item, the server logs the consumption with a timestamp and captures the item's current rush settings (rush factor, portion size, onset, and decay). The Rush-O-Meter replays those log entries using the captured settings and calculates a rolling score. Each portion's contribution decays linearly to zero over the item's decay window. If an item has an onset delay, its contribution is ignored until that delay has passed. The meter ticks down on its own as time passes.</p>
+<p>The math:</p>
+<ul>
+<li><strong>Rush score</strong> = sum over recent consumptions of <code>(rush_factor x portions_consumed x (1 - effective_age / decay_window))</code>, where <code>effective_age = max(0, age - onset_delay)</code>. Entries still within their onset window are not counted.</li>
+<li><strong>Rush %</strong> = <code>rush_score × 100</code></li>
+</ul>
+<p>A single standard portion (rush factor 1.0, decay 4 hours) at the moment of consumption = 100%.</p>
+<p><img src="../images/rush-active.png" alt="Rush meter active" width="300"></p>
+<h3 id="mascot-tiers">Mascot tiers</h3>
+<p>The mascot emoji in the header reflects your current rush level:</p>
+<table>
+<thead>
+<tr>
+<th>Rush %</th>
+<th>Mascot</th>
+<th>Label</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0–25</td>
+<td>😴</td>
+<td>CHILL</td>
+</tr>
+<tr>
+<td>25–50</td>
+<td>🙂</td>
+<td>WARMING UP</td>
+</tr>
+<tr>
+<td>50–75</td>
+<td>😄</td>
+<td>HYPED</td>
+</tr>
+<tr>
+<td>75–150</td>
+<td>🤪</td>
+<td>FULL RAVE</td>
+</tr>
+<tr>
+<td>150–250</td>
+<td>🤯</td>
+<td>OVERDRIVE</td>
+</tr>
+<tr>
+<td>250+</td>
+<td>💀</td>
+<td>COMA</td>
+</tr>
+</tbody>
+</table>
+<h3 id="per-item-rush-configuration">Per-item rush configuration</h3>
+<p>You control two settings per item:</p>
+<ul>
+<li><strong>Rush %</strong>: scales the contribution of each portion. 200% means one portion counts as two standard portions toward the meter. 50% means half. Range: 10%–1000%.</li>
+<li><strong>Decay</strong>: how long before that portion's contribution fades. Shorter decay = faster recovery.</li>
+<li><strong>Onset</strong>: adds a delay before each portion starts contributing to the meter. Use this for items that take time to kick in. A candy might be immediate (0 min); caffeine might take 15 minutes.</li>
+</ul>
+<p>These settings let you model the real-world difference between, say, a piece of dark chocolate (high rush, fast decay) and a cup of tea (low rush, slow decay).</p>
+<p>Changing these settings only affects future consumption. Past chart entries and rush calculations keep the values that were in effect when you actually took the item.</p>
+<h3 id="resetting-the-meter">Resetting the meter</h3>
+<p>If you want to clear your rush history without deleting consumption data, tap the Rush-O-Meter bar. A reset button appears. Tapping it sets a "reset timestamp": log entries before that timestamp are ignored when calculating your current rush level. Your charts are not affected.</p>
+<h2 id="charts">Charts</h2>
+<p>Below the item grid, you see a bar chart of rush units consumed over time. Use the <strong>WEEK</strong> / <strong>YEAR</strong> toggle to switch views:</p>
+<ul>
+<li><strong>WEEK</strong> - past 7 days, one bar per day</li>
+<li><strong>YEAR</strong> - past 12 months, one bar per month</li>
+</ul>
+<p>The chart shows your own consumption only; each person's chart is private to their account.</p>
+<h3 id="editing-history">Editing history</h3>
+<p>Tap the pencil icon next to the chart title to open the history editor. This shows a scrollable list of all your consumption and restocking entries, most recent first.</p>
+<p>You can:</p>
+<ul>
+<li><strong>Add an entry</strong> you forgot to log. Tap ADD, pick the item, choose consumed or restocked, enter the amount, set the date and time, and save. The entry appears in your chart and rush meter as if you had logged it at that time. Adding an entry does not change the item's current stock count.</li>
+<li><strong>Edit an entry</strong> to fix the amount or timestamp. Tap the pencil icon next to any entry.</li>
+<li><strong>Delete an entry</strong> that was logged by mistake. Tap the trash icon, then confirm.</li>
+</ul>
+<p>Changes take effect immediately: the chart and rush meter update as soon as you save.</p>
+<h3 id="clearing-chart-history">Clearing chart history</h3>
+<p>To clear all your consumption history from the charts:</p>
+<ol>
+<li>Open your profile settings.</li>
+<li>Scroll to the <strong>RUSH METER</strong> section.</li>
+<li>Tap <strong>CLEAR CHART HISTORY</strong> and confirm.</li>
+</ol>
+<p>This permanently deletes all your consumption log entries. Your rush meter resets to zero and your charts become empty. Other family members' data is not affected. Item counts are not changed.</p>
+<h2 id="low-stock-alerts">Low-stock alerts</h2>
+<p>When an item's count drops to or below its <strong>threshold</strong>, the card starts pulsing with a neon-pink glow. This is a visual reminder to restock.</p>
+<p>To configure:</p>
+<ol>
+<li>Tap the pencil icon on the item card.</li>
+<li>Set the <strong>Low-stock threshold</strong> field to the count at which you want the alert.</li>
+<li>Save.</li>
+</ol>
+<p>Set the threshold to <code>0</code> to disable alerts for that item.</p>
+<h2 id="profile-settings">Profile settings</h2>
+<p>Tap your name pill in the top-right corner (or go to menu → PROFILE) to open your profile settings.</p>
+<p>You can change:</p>
+<ul>
+<li><strong>Emoji</strong> - your avatar shown in the header pill</li>
+<li><strong>Color</strong> - the neon color associated with your account</li>
+<li><strong>Email</strong> - optional. Required to receive email notifications and to use password reset.</li>
+</ul>
+<p>Your username cannot be changed after registration. To change your password, see below.</p>
+<p><img src="../images/profile.png" alt="Profile settings" width="300"></p>
+<h3 id="display-preferences">Display preferences</h3>
+<ul>
+<li><strong>Show exact dates</strong>: replaces relative timestamps ("2h ago") with full dates. Affects the inventory history, admin activity feed, and user lists.</li>
+<li><strong>Synthwave background</strong>: toggles the animated grid, stars, and scanlines behind the main interface. Enabled by default.</li>
+</ul>
+<h2 id="notifications">Notifications</h2>
+<p>Stash can send email notifications when certain events happen. Notifications require SMTP to be configured (see <a href="../configuration/">Configuration</a>) and an email address on your account.</p>
+<h3 id="enabling-notifications">Enabling notifications</h3>
+<ol>
+<li>Set your email address in your profile settings.</li>
+<li>Open your profile settings and scroll to the <strong>NOTIFICATIONS</strong> section.</li>
+<li>Toggle on the notifications you want:</li>
+<li><strong>Low stock alerts</strong>: sends an email when an item drops to or below its threshold after someone takes one. Sent to all opted-in family members, not just the person who took the item. Rate-limited to one alert per item every 6 hours.</li>
+<li><strong>Weekly digest</strong>: a Monday morning summary of the week's consumption. Includes top consumed items with a per-user breakdown, items currently below threshold, and peak snack day.</li>
+<li><strong>Rush meter warnings</strong>: sends you an email when your personal rush meter crosses 80%. Rate-limited to one warning every 4 hours.</li>
+</ol>
+<p>Notifications are per-user. Each person chooses which types they want. If SMTP is not configured on the server, the toggle section still appears but emails are silently skipped.</p>
+<h3 id="password-reset">Password reset</h3>
+<p>If you forget your password:</p>
+<ol>
+<li>Open the login screen and tap <strong>Forgot password?</strong></li>
+<li>Enter your username and tap <strong>SEND RESET LINK</strong>.</li>
+<li>Check your email for a message from Stash with a reset link.</li>
+<li>Click the link, enter a new password, and confirm.</li>
+</ol>
+<p>The reset link expires after 1 hour. If the link has expired, request a new one.</p>
+<p>Password reset requires an email address on your account. If you never set one, ask a family admin to delete your account and re-create it, or to set an email for you.</p>
+<h2 id="admin-panel">Admin panel</h2>
+<p>Open the menu and tap <strong>FAMILY</strong> (visible only to admins) to open the admin area. The admin area is a full-screen view with four tabs: <strong>Users</strong>, <strong>Settings</strong>, <strong>Activity</strong>, and <strong>System</strong> (superadmin only).</p>
+<h3 id="users-tab">Users tab</h3>
+<p>The Users tab lists every member of your family. Each entry shows the member's emoji, username, role badge (Admin or Member), last login time, and the date their account was created.</p>
+<p>For each member you can:</p>
+<ul>
+<li>Promote or demote admin status (shield icon)</li>
+<li>Reset their password (key icon)</li>
+<li>Delete their account (trash icon, requires confirmation)</li>
+</ul>
+<p>You cannot delete your own account.</p>
+<p><img src="../images/admin-users.png" alt="Users tab" width="350"></p>
+<p>To create a new account directly without an invite code:</p>
+<ol>
+<li>Fill in the <strong>Create User</strong> form at the bottom of the tab.</li>
+<li>Enter a username, password, email (optional), emoji, and whether the account should be an admin.</li>
+<li>Tap <strong>Create</strong>.</li>
+</ol>
+<p><strong>Invite codes</strong> are in a collapsible section on the Users tab. Tap it to expand the list of active member invite codes. Each code shows the code itself (tap the copy icon to copy it), how many uses remain, and when it expires. Tap the trash icon to revoke a code early.</p>
+<p>To generate a new member invite:</p>
+<ol>
+<li>Expand the invite codes section and tap <strong>Generate Invite</strong>.</li>
+<li>Choose max uses: <code>1</code>, <code>5</code>, or <code>∞</code> (unlimited).</li>
+<li>Choose expiry: <code>1h</code>, <code>24h</code>, or <code>7d</code>.</li>
+<li>Copy the code and share it with the person joining.</li>
+</ol>
+<h3 id="settings-tab">Settings tab</h3>
+<p>The Settings tab lets you rename your family. Type a new name and save.</p>
+<p><img src="../images/admin-settings.png" alt="Settings tab" width="350"></p>
+<p>The Settings tab also contains a <strong>Danger Zone</strong> section, visible only to the superadmin, for deleting the family. Deletion requires typing the family name to confirm.</p>
+<h3 id="activity-tab">Activity tab</h3>
+<p>The Activity tab shows a chronological feed of what your family has been eating and restocking. Each entry shows the timestamp, the user (emoji and name), the item (emoji and name), and the action (consumed or restocked, with the amount). If an item has been deleted, its entries remain in the feed with a "(removed)" label.</p>
+<p>Use the two dropdown filters to narrow the feed by user or by item. Tap <strong>Load More</strong> at the bottom to page through older entries.</p>
+<p><img src="../images/admin-activity.png" alt="Activity feed" width="350"></p>
+<h2 id="superadmin">Superadmin</h2>
+<p>The account created during the initial bootstrap is the superadmin. The superadmin can do everything a regular family admin can do, plus manage the entire instance across all families.</p>
+<p>There is no open registration. The only way to start a new family is for the superadmin to generate a family starter code.</p>
+<h3 id="system-tab">System tab</h3>
+<p>The System tab is visible only to the superadmin. It has three sections:</p>
+<ul>
+<li><strong>Global user list</strong>: all users across all families, sortable by last seen, created date, or family. You can toggle admin status, toggle superadmin status, reset a password, or delete any user from here.</li>
+<li><strong>Family overview</strong>: cards for every family on the instance, showing the family name, member count, and item count.</li>
+<li><strong>Family starter codes</strong>: create and revoke the codes that let new users set up their own families. Each code shows the code itself, remaining uses, and expiry.</li>
+</ul>
+<p><img src="../images/admin-system.png" alt="System tab" width="350"></p>
+<h3 id="creating-a-family-starter-code">Creating a family starter code</h3>
+<ol>
+<li>Log in as the superadmin.</li>
+<li>Open the menu and tap <strong>FAMILY</strong>.</li>
+<li>Go to the <strong>System</strong> tab.</li>
+<li>In the <strong>Family Starter Codes</strong> section, tap <strong>Generate Code</strong>, choose max uses and expiry, and copy the code.</li>
+<li>Send the code to the person who will run the new family.</li>
+</ol>
+<h3 id="how-the-recipient-uses-it">How the recipient uses it</h3>
+<p>The recipient opens Stash, goes to the join screen, and:</p>
+<ol>
+<li>Enters the family starter code in the <strong>INVITE CODE</strong> field and clicks <strong>CONTINUE</strong>.</li>
+<li>The app confirms they are creating a new family and they fill in a <strong>FAMILY NAME</strong>.</li>
+<li>Picks a username and password, then clicks <strong>CREATE FAMILY</strong>.</li>
+</ol>
+<p>Their account is created, a new family is created with the name they chose, and they become that family's admin. They can then generate their own member invites to add people to their family.</p>
+<h2 id="changing-your-password">Changing your password</h2>
+<p>Open the menu and tap <strong>PASSWORD</strong>.</p>
+<p>Enter your current password, then your new password (minimum 8 characters). Tap <strong>Change Password</strong>.</p>
+<p>Changing your password invalidates all your other sessions, so any other browser or device logged in as you will be signed out.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": [], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
