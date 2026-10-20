@@ -28,7 +28,7 @@ The next time you open Stash, the bootstrap form appears again.
 
 ## Can I run Stash without Docker?
 
-Yes. See the [Contributing](contributing/#development-setup) page for the dev setup instructions. It works on any machine with Node.js 22 or later and npm. There is no migration framework: the schema is created from scratch on first boot.
+Yes. See the [Contributing](contributing.md#development-setup) page for the dev setup instructions. It works on any machine with Node.js 22 or later and npm. There is no migration framework: the schema is created from scratch on first boot.
 
 ## Is my data safe when I update?
 
@@ -45,7 +45,7 @@ The only way to lose data is to explicitly delete the volume (`docker volume rm`
       sh -c 'cat /data/stash.db' > stash-backup.db
     ```
 
-2. On the new server, set up Stash following the [Installation](installation/) guide, but do not open the browser yet.
+2. On the new server, set up Stash following the [Installation](installation.md) guide, but do not open the browser yet.
 
 3. Copy the backup file to the new server and restore it:
 
