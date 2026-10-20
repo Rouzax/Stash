@@ -14,6 +14,12 @@ docker compose up -d
 
 Docker Compose will stop the running container, start a new one with the updated image, and reattach the data volume. Downtime is a few seconds.
 
+## How often new versions appear
+
+Feature releases are published whenever they are ready. In addition, a maintenance release is published automatically on Mondays when dependency updates have landed since the previous release; in a week without such changes, no release appears. Maintenance releases only bump the last number of the version (for example `0.2.17` to `0.2.18`) and list the updated dependencies in their [release notes](https://github.com/Rouzax/Stash/releases).
+
+Your installed version is shown at the bottom of your user settings, along with a link when a newer release is available.
+
 ## Back up before updating
 
 It is good practice to snapshot the database before any update:

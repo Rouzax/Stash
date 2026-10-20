@@ -31,7 +31,11 @@ Dependabot checks weekly and ignores versions published less than 7 days ago. Mi
 - **npm minor/patch groups** merge automatically once CI passes (`.github/workflows/dependabot-automerge.yml`).
 - **Everything else** waits for a manual review: major versions, GitHub Actions, the Docker base image, and the docs (`pip`) dependencies.
 
-Merged updates are not released until a new version tag is pushed.
+## Releases
+
+Pushing a `v*` tag builds the image and publishes the release (`.github/workflows/release.yml`). The image takes its version from the tag; the `version` fields in `server/package.json` and `web/package.json` are not bumped and only show up in local runs.
+
+Every Monday, `.github/workflows/auto-release.yml` checks whether anything under `server/`, `web/` or the `Dockerfile` changed since the last tag. If so, it runs the build and e2e tests on that commit, creates the next patch tag, and publishes the release. It can also be started by hand from the Actions tab.
 
 ## Code Style
 

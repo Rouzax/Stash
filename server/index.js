@@ -16,7 +16,9 @@ import { requireAuth } from './auth.js';
 import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
-const { version: APP_VERSION } = require('./package.json');
+// Release images get the version from the release tag at build time, so the
+// package.json version only applies to local runs.
+const APP_VERSION = process.env.APP_VERSION || require('./package.json').version;
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const PORT = Number(process.env.PORT) || 3000;

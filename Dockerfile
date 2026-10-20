@@ -27,7 +27,10 @@ COPY --from=web-build --chown=node:node /app/web/dist ./public
 
 USER node
 
+# Declared after the RUN steps so a new version does not invalidate their cache.
+ARG APP_VERSION
 ENV NODE_ENV=production \
+    APP_VERSION=${APP_VERSION} \
     PORT=3000 \
     DB_PATH=/data/stash.db
 
