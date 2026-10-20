@@ -62,7 +62,7 @@ Your `.env` should look something like this:
 SESSION_SECRET=a3f8c2e1d4b7a9f0e5c3b8d1a6f4e2c9b7a3d8f1e4c2b9a6d3f7e1c4b8a5d2
 ```
 
-Add other variables as needed (see [Configuration](configuration/) for the full list):
+Add other variables as needed (see [Configuration](configuration.md) for the full list):
 
 ```
 TZ=America/New_York
@@ -91,10 +91,10 @@ The first time you open Stash, you see a setup form:
 Submit the form. You are now logged in as admin and superadmin.
 
 !!! info "Only runs once"
-    The bootstrap form only appears when the database has no users. Once you submit it, it is gone. If you need to start over, see the [FAQ](faq/#how-do-i-reset-everything).
+    The bootstrap form only appears when the database has no users. Once you submit it, it is gone. If you need to start over, see the [FAQ](faq.md#how-do-i-reset-everything-and-start-over).
 
 !!! tip "You are the superadmin"
-    The account created here is the superadmin: the only account that can create family starter codes for new families on this instance. Keep these credentials safe. To add members to your own family, see [Inviting Members](usage/#inviting-members). To set up additional families, see [Superadmin](usage/#superadmin).
+    The account created here is the superadmin: the only account that can create family starter codes for new families on this instance. Keep these credentials safe. To add members to your own family, see [Inviting Members](usage.md#inviting-members). To set up additional families, see [Superadmin](usage.md#superadmin).
 
 ## Step 6 - Verify the container is healthy
 
@@ -114,7 +114,7 @@ Expected response: `{"ok":true}`
 
 ## Running behind a reverse proxy
 
-If you are fronting Stash with Traefik, Nginx, or Caddy, see the [Configuration](configuration/#reverse-proxy) page for examples and a note on the `BEHIND_PROXY` setting.
+If you are fronting Stash with Traefik, Nginx, or Caddy, see the [Configuration](configuration.md#reverse-proxy) page for examples and a note on the `BEHIND_PROXY` setting.
 
 !!! tip "Local use without HTTPS"
     If you are running Stash on your local network without TLS, set `BEHIND_PROXY=false` in your `.env`. Otherwise the browser refuses to set the session cookie on plain HTTP.

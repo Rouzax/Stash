@@ -80,4 +80,4 @@ docker compose up -d
 
 Open `http://your-host:3000` and follow the setup wizard to create your family and admin account.
 
-See the [Installation guide](installation/) for the full walkthrough.
+See the [Installation guide](installation.md) for the full walkthrough.
