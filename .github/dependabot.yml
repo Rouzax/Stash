@@ -1,11 +1,17 @@
 version: 2
 updates:
+  # Minor and patch bumps are grouped into one PR per directory so the
+  # auto-merge workflow can land them together; majors stay separate PRs
+  # for manual review.
   - package-ecosystem: github-actions
     directory: /
     schedule:
       interval: weekly
     cooldown:
       default-days: 7
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
 
   - package-ecosystem: npm
     directory: /
@@ -13,6 +19,9 @@ updates:
       interval: weekly
     cooldown:
       default-days: 7
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
 
   - package-ecosystem: npm
     directory: /server
@@ -20,6 +29,9 @@ updates:
       interval: weekly
     cooldown:
       default-days: 7
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
 
   - package-ecosystem: npm
     directory: /web
@@ -27,6 +39,9 @@ updates:
       interval: weekly
     cooldown:
       default-days: 7
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
 
   - package-ecosystem: docker
     directory: /
@@ -41,3 +56,6 @@ updates:
       interval: weekly
     cooldown:
       default-days: 7
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]

@@ -3,9 +3,12 @@ import { hash } from 'argon2';
 import path from 'node:path';
 import fs from 'node:fs';
 
+// Run as part of the e2e webServer command, before the server starts. The
+// server holds its database open, so replacing the file under a running
+// server would leave it reading the old, unseeded copy.
 const DB_PATH = path.join(import.meta.dirname, '..', 'server', 'e2e-test.db');
 
-export async function seedDatabase() {
+async function seedDatabase() {
   // Clean up any existing test database files
   for (const suffix of ['', '-wal', '-shm']) {
     const file = DB_PATH + suffix;
@@ -167,3 +170,5 @@ export async function seedDatabase() {
 
   db.close();
 }
+
+await seedDatabase();

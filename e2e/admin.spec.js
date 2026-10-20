@@ -1,9 +1,4 @@
 import { test, expect } from '@playwright/test';
-import { seedDatabase } from './seed.js';
-
-test.beforeAll(async () => {
-  await seedDatabase();
-});
 
 async function login(page, username = 'superadmin') {
   await page.goto('/');
