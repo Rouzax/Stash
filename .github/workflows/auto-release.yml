@@ -1,8 +1,9 @@
 name: Auto release
 
 # Weekly patch release of whatever has merged since the last tag, so
-# auto-merged dependency updates ship without a manual tag. Manual tags
-# still release through release.yml directly.
+# auto-merged dependency updates ship without a manual tag. In a week without
+# image changes it rebuilds the last tag instead, so Alpine fixes still ship.
+# Manual tags still release through release.yml directly.
 on:
   schedule:
     - cron: '0 6 * * 1'
@@ -20,6 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.next.outputs.tag }}
+      rebuild: ${{ steps.next.outputs.rebuild }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -32,7 +34,9 @@ jobs:
         run: |
           LAST=$(git describe --tags --abbrev=0 --match 'v*')
           if git diff --quiet "$LAST" HEAD -- server web Dockerfile; then
-            echo "No image changes since $LAST, nothing to release."
+            echo "No image changes since $LAST, rebuilding it."
+            echo "tag=$LAST" >> "$GITHUB_OUTPUT"
+            echo "rebuild=true" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           VERSION="${LAST#v}"
@@ -42,7 +46,8 @@ jobs:
 
   # Auto-merges land on main via GITHUB_TOKEN, which does not trigger the
   # Build workflow there, and each PR was tested on its own. Test the exact
-  # commit being released.
+  # commit being released. For a rebuild, HEAD has the same server, web and
+  # Dockerfile as the tag, so this tests the code being rebuilt.
   ci:
     needs: check
     if: needs.check.outputs.tag != ''
@@ -50,6 +55,7 @@ jobs:
 
   tag:
     needs: [check, ci]
+    if: needs.check.outputs.rebuild != 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -60,11 +66,14 @@ jobs:
           TAG: ${{ needs.check.outputs.tag }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+  # A rebuild skips the tag job, so run unless something before failed.
   release:
-    needs: [check, tag]
+    needs: [check, ci, tag]
+    if: ${{ !cancelled() && !failure() && needs.check.outputs.tag != '' }}
     uses: ./.github/workflows/release.yml
     with:
       tag: ${{ needs.check.outputs.tag }}
+      rebuild: ${{ needs.check.outputs.rebuild == 'true' }}
     permissions:
       contents: write
       packages: write
