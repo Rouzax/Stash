@@ -12,12 +12,16 @@ RUN npm ci
 COPY web/ ./
 RUN npm run build
 
-# ---------- Backend deps (native modules: argon2 has musl prebuilds, better-sqlite3 compiles from source) ----------
-FROM node:22-alpine@sha256:1314fb30ec37592d5845e5a160d522c0e680972aa534549940b8d73bde88481a AS server-deps
-RUN apk add --no-cache python3 make g++
+# ---------- Backend deps (installed once on the build host, for every platform) ----------
+# argon2 and better-sqlite3 ship prebuilt binaries for all platforms and pick
+# one when the app loads them, so node_modules is the same for amd64 and arm64
+# and nothing is compiled. Running npm on the build host keeps it out of QEMU,
+# where `npm ci` for arm64 can crash with an illegal instruction and hang the
+# build. No install scripts are needed for that, so none are run.
+FROM --platform=$BUILDPLATFORM node:22-alpine@sha256:1314fb30ec37592d5845e5a160d522c0e680972aa534549940b8d73bde88481a AS server-deps
 WORKDIR /app/server
 COPY server/package*.json ./
-RUN npm ci --omit=dev
+RUN npm ci --omit=dev --ignore-scripts
 
 # ---------- Runtime ----------
 FROM node:22-alpine@sha256:1314fb30ec37592d5845e5a160d522c0e680972aa534549940b8d73bde88481a AS runtime
