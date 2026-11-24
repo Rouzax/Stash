@@ -21,16 +21,20 @@ jobs:
         id: meta
         uses: dependabot/fetch-metadata@25dd0e34f4fe68f24cc83900b1fe3fe149efef98 # v3.1.0
 
-      # Only npm minor/patch updates qualify. Majors can break the app;
-      # Actions updates run in the privileged release workflow; Docker base
-      # images change the runtime; docs dependencies deploy straight to
-      # GitHub Pages without a CI gate. Those all stay manual.
+      # Qualifies: npm minor/patch updates, and a new digest of the Docker
+      # base image (dependabot.yml ignores Node version changes; the major
+      # check below is a second guard). Majors can break the app; Actions
+      # updates run in the privileged release workflow; docs dependencies
+      # deploy straight to GitHub Pages without a CI gate. Those all stay
+      # manual.
       # --auto waits for the ruleset's required checks before merging.
       - name: Enable auto-merge
         if: >-
-          steps.meta.outputs.package-ecosystem == 'npm_and_yarn' &&
-          (steps.meta.outputs.update-type == 'version-update:semver-minor' ||
-           steps.meta.outputs.update-type == 'version-update:semver-patch')
+          (steps.meta.outputs.package-ecosystem == 'npm_and_yarn' &&
+           (steps.meta.outputs.update-type == 'version-update:semver-minor' ||
+            steps.meta.outputs.update-type == 'version-update:semver-patch')) ||
+          (steps.meta.outputs.package-ecosystem == 'docker' &&
+           steps.meta.outputs.update-type != 'version-update:semver-major')
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}

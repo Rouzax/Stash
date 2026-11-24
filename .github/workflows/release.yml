@@ -10,6 +10,12 @@ on:
       tag:
         required: true
         type: string
+      # Rebuild an already released tag to pick up base image and Alpine
+      # fixes: re-push its image tags, but leave its GitHub Release alone.
+      rebuild:
+        required: false
+        type: boolean
+        default: false
 
 env:
   REGISTRY: ghcr.io
@@ -63,6 +69,9 @@ jobs:
           push: true
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          # The runtime stage runs `apk upgrade`; a cached layer would ship
+          # the Alpine packages of whichever build first cached it.
+          no-cache-filters: runtime
           build-args: |
             APP_VERSION=${{ steps.version.outputs.version }}
           tags: |
@@ -78,6 +87,7 @@ jobs:
           push-to-registry: true
 
       - name: Create GitHub Release
+        if: ${{ !inputs.rebuild }}
         uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64 # v3
         with:
           tag_name: ${{ env.TAG }}

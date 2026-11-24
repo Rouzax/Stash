@@ -16,7 +16,9 @@ Docker Compose will stop the running container, start a new one with the updated
 
 ## How often new versions appear
 
-Feature releases are published whenever they are ready. In addition, a maintenance release is published automatically on Mondays when dependency updates have landed since the previous release; in a week without such changes, no release appears. Maintenance releases only bump the last number of the version (for example `0.2.17` to `0.2.18`) and list the updated dependencies in their [release notes](https://github.com/Rouzax/Stash/releases).
+Feature releases are published whenever they are ready. In addition, a maintenance release is published automatically on Mondays when dependency updates have landed since the previous release. Maintenance releases only bump the last number of the version (for example `0.2.17` to `0.2.18`) and list the updated dependencies in their [release notes](https://github.com/Rouzax/Stash/releases).
+
+In a week without such changes, no new version appears. Instead, the current version's image is rebuilt on Monday with the latest operating system security fixes and pushed under the same tags. `docker compose pull` then downloads a new image while the version number stays the same. Your data and settings are not affected.
 
 Your installed version is shown at the bottom of your user settings, along with a link when a newer release is available.
 
@@ -54,6 +56,8 @@ image: ghcr.io/rouzax/stash:1.2.0
 ```
 
 Replace `1.2.0` with the tag you want. You can find all available tags on the [GitHub Container Registry page](https://github.com/Rouzax/Stash/pkgs/container/stash).
+
+A pinned tag still receives the weekly security rebuilds while it is the current version, so pulling it can fetch a newer image with the same app version. Once a newer version is released, the old tag no longer changes.
 
 !!! tip "When to pin"
     Pinning is useful in shared or production-like setups where you want to control exactly when you take updates. For home use, `:latest` is fine.
